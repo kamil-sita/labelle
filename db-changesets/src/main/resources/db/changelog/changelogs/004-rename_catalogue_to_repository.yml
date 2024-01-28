@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-01
+      author: kamil-sita
+      changes:
+        - renameTable:
+            oldTableName: catalogue
+            newTableName: repository
+  - changeSet:
+      id: 004-02
+      author: kamil-sita
+      changes:
+        - renameTable:
+            oldTableName: catalogue_relationship
+            newTableName: repository_relationship

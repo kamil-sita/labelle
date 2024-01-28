@@ -1,0 +1,105 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: task_type
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: task_code
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_name
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 002-02
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: task
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: task_type_id
+                  type: uuid
+                  constraints:
+                    references: task_type(id)
+                    foreignKeyName: fk_task_task_type_id
+                    nullable: false
+              - column:
+                  name: creation_date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 002-03
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: task_config
+            columns:
+              - column:
+                  name: task_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    references: task(id)
+                    foreignKeyName: fk_task_config_task_id
+                    nullable: false
+              - column:
+                  name: config
+                  type: text
+  - changeSet:
+      id: 002-04
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: task_result
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: task_id
+                  type: uuid
+                  constraints:
+                    references: task(id)
+                    foreignKeyName: fk_task_result_task_id
+                    nullable: false
+              - column:
+                  name: result
+                  type: text
+              - column:
+                  name: finished_at
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(1)
+                  constraints:
+                    nullable: false

@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0012-01
+      author: kamil-sita
+      changes:
+        - createView:
+            viewName: image_tags
+            selectQuery: select tag.value as tag_value, tag_src.value as tag_family, tag_image.image_id as image_id, repository.id as repository_id from tag, tag_image, tag_src, repository where tag.tag_src_id = tag_src.id and tag_src.repository_id = repository.id and tag_image.tag_id = tag.id

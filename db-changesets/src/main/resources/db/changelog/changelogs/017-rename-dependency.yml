@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0017-01
+      author: kamil-sita
+      changes:
+        - renameColumn:
+            tableName: task_dependencies
+            oldColumnName: task_id
+            newColumnName: parent_task_id
+        - renameColumn:
+            tableName: task_dependencies
+            oldColumnName: dependency_task_id
+            newColumnName: child_task_id

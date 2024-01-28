@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="LabelleGuiApplicationMain" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <module name="gui-local" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="place.sita.labelle.gui.local.LabelleGuiApplicationMain" />
+    <option name="VM_PARAMETERS" value="-splash:images/splash.png" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0019-01
+      author: kamil-sita
+      changes:
+        - addColumn:
+            tableName: task_execution
+            columns:
+              - column:
+                  name: result_value
+                  type: text

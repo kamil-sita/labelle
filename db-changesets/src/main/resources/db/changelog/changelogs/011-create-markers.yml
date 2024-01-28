@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0011-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: marker
+            columns:
+              - column:
+                  name: image_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: image(id)
+                    foreignKeyName: marker_image_id
+              - column:
+                  name: family
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: value
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shared
+                  type: boolean
+                  constraints:
+                    nullable: false

@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: 007-01
+      author: kamil-sita
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: CREATE TYPE task_status AS ENUM ('CREATED', 'SCHEDULED', 'IN_PROGRESS', 'DONE', 'DUPLICATE', 'SOFT_FAIL', 'HARD_FAIL', 'OVERRIDDEN_HARD_FAIL');
+        - dropColumn:
+            tableName: task
+            columns:
+              - column:
+                  name: status
+        - dropColumn:
+            tableName: task_type
+            columns:
+              - column:
+                  name: task_code
+              - column:
+                  name: task_name
+        - addColumn:
+            tableName: task_type
+            columns:
+              - column:
+                  name: code
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+        - addColumn:
+            tableName: task
+            columns:
+              - column:
+                  name: status
+                  type: task_status
+        - renameTable:
+            oldTableName: task_result
+            newTableName: task_execution
+        - dropColumn:
+            tableName: task_execution
+            columns:
+              - column:
+                  name: status
+        - sql:
+            dbms: postgresql
+            sql: CREATE TYPE task_execution_result AS ENUM ('DONE', 'DUPLICATE', 'SOFT_FAIL', 'HARD_FAIL');
+        - renameColumn:
+            tableName: task_execution
+            oldColumnName: result
+            newColumnName: log
+        - addColumn:
+            tableName: task_execution
+            columns:
+              - column:
+                  name: result
+                  type: task_execution_result
+                  constraints:
+                    nullable: false
+              - column:
+                  name: started_at
+                  type: timestamp
+                  constraints:
+                    nullable: false

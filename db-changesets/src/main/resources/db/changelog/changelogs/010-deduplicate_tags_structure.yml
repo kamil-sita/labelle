@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0010-01
+      author: kamil-sita
+      changes:
+        - dropColumn:
+            tableName: tag_image
+            columns:
+              - column:
+                  name: repository_id
+        - dropColumn:
+            tableName: tag
+            columns:
+              - column:
+                  name: repository_id

@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0015-01
+      author: kamil-sita
+      changes:
+        - addColumn:
+            tableName: task_execution
+            columns:
+              - column:
+                  name: configuration
+                  type: text
+                  constraints:
+                    nullable: true

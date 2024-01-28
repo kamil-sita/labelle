@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: catalogue
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 003-02
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: catalogue_relationship
+            columns:
+              - column:
+                  name: child_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    references: catalogue(id)
+                    foreignKeyName: fk_catalogue_relationship_child_id
+                    nullable: false
+              - column:
+                  name: parent_id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    references: catalogue(id)
+                    foreignKeyName: fk_catalogue_relationship_parent_id
+                    nullable: false

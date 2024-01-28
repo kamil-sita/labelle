@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 009-01
+      author: kamil-sita
+      changes:
+        - dropColumn:
+            tableName: task_execution
+            columns:
+              - column:
+                  name: finished_at
+              - column:
+                  name: started_at
+        - addColumn:
+            tableName: task_execution
+            columns:
+              - column:
+                  name: finished_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: started_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false

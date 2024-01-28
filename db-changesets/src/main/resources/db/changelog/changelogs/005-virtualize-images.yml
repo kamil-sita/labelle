@@ -1,0 +1,111 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: root
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: root_dir
+                  type: text
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: image_file
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: root_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: root(id)
+                    foreignKeyName: fk_image_file_root_id
+              - column:
+                  name: relative_dir
+                  type: text
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: image_resolvable
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: image_file
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: image_file(id)
+                    foreignKeyName: fk_image_resolvable_image_file_id
+              - column:
+                  name: synthetic
+                  type: boolean
+                  constraints:
+                    nullable: false
+        - dropColumn:
+            tableName: image
+            columnName: path
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: image_resolvable_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: image_resolvable(id)
+                    foreignKeyName: fk_image_image_resolvable_id
+              - column:
+                  name: repository_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: repository(id)
+                    foreignKeyName: fk_image_repository_id
+        - addColumn:
+            tableName: tag
+            columns:
+              - column:
+                  name: repository_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: repository(id)
+                    foreignKeyName: fk_tag_repository_id
+        - addColumn:
+            tableName: tag_src
+            columns:
+              - column:
+                  name: repository_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: repository(id)
+                    foreignKeyName: fk_tag_src_repository_id
+        - addColumn:
+            tableName: tag_image
+            columns:
+              - column:
+                  name: repository_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: repository(id)
+                    foreignKeyName: fk_tag_image_src_repository_id

@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0014-01
+      author: kamil-sita
+      changes:
+        - createView:
+            viewName: task_planning
+            selectQuery: |
+              select outer_task.task_type_id, outer_task.id, task_config.config, outer_task.creation_date
+              from task outer_task
+              left join task_config on outer_task.id = task_config.task_id
+              where outer_task.status in ('CREATED', 'SOFT_FAIL')
+              and not exists(
+                  select 1
+                  from task inner_task, task_dependencies
+                  where task_dependencies.dependency_task_id = inner_task.id
+                  and task_dependencies.task_id = outer_task.id
+                  and inner_task.status not in ('DONE', 'DUPLICATE', 'OVERRIDDEN_HARD_FAIL')
+              )

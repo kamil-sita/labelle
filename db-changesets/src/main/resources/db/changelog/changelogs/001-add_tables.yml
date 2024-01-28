@@ -1,0 +1,99 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: image
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: path
+                  type: varchar(65536)
+
+  - changeSet:
+      id: 001-02
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: tag_src_id
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: value
+                  type: varchar(256)
+
+  - changeSet:
+      id: 001-03
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: tag
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: value
+                  type: varchar(256)
+              - column:
+                  name: tag_src_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_tag_tag_src_id
+                    references: tag_src_id(id)
+
+  - changeSet:
+      id: 001-04
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: tag_image
+            columns:
+              - column:
+                  name: image_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: fk_tag_image_image_id
+                    references: image(id)
+              - column:
+                  name: tag_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    foreignKeyName: fk_tag_image_tag_id
+                    references: tag(id)
+
+  - changeSet:
+      id: 001-05
+      author: kamil-sita
+      changes:
+        - renameTable:
+            oldTableName: tag_src_id
+            newTableName: tag_src
+
+  - changeSet:
+      id: 001-06
+      author: kamil-sita
+      changes:
+        - addColumn:
+            tableName: tag_image
+            columns:
+              - column:
+                  name: source
+                  type: varchar(1)
+                  value: 's'

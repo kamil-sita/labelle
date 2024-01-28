@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0016-01
+      author: kamil-sita
+      changes:
+        - createView:
+            viewName: effective_historic_configuration
+            selectQuery: |
+              select
+                  task_execution.id as id,
+                  task_execution.task_id as task_id,
+                  task_execution.log as log,
+                  task_execution.result as result,
+                  task_execution.finished_at as finished_at,
+                  task_execution.started_at as started_at,
+                  coalesce(task_execution.configuration, task_config.config) as configuration
+              from task_execution
+              left join task_config on task_config.task_id = task_execution.task_id

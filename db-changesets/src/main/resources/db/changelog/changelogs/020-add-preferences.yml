@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0020-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: preferences
+            columns:
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: value
+                  type: text
+                  constraints:
+                    nullable: false

@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0021-01
+      author: kamil-sita
+      changes:
+        - dropNotNullConstraint:
+            tableName: image_resolvable
+            columnName: image_file
+  - changeSet:
+      id: 0021-02
+      author: kamil-sita
+      changes:
+        - renameColumn:
+            tableName: image_resolvable
+            oldColumnName: image_file
+            newColumnName: image_file_id

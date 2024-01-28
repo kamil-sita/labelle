@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: 006-01
+      author: kamil-sita
+      changes:
+        - dropColumn:
+            tableName: tag_image
+            columnName: image_id
+        - dropColumn:
+            tableName: tag_image
+            columnName: tag_id
+        - dropColumn:
+            tableName: image
+            columnName: id
+        - dropColumn:
+            tableName: tag
+            columnName: id
+        - dropColumn:
+            tableName: tag
+            columnName: tag_src_id
+        - dropColumn:
+            tableName: tag_src
+            columnName: id
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - addColumn:
+            tableName: tag_src
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - addColumn:
+            tableName: tag
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: tag_src_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: tag_src(id)
+                    foreignKeyName: fk_tag_tag_src_id;
+        - addColumn:
+            tableName: tag_image
+            columns:
+              - column:
+                  name: image_id
+                  type: uuid
+                  constraints:
+                    references: image(id)
+                    foreignKeyName: fk_tag_image_id
+              - column:
+                  name: tag_id
+                  type: uuid
+                  constraints:
+                    references: tag(id)
+                    foreignKeyName: fk_tag_image_tag_id
+        - dropColumn:
+            tableName: tag_image
+            columnName: source
+

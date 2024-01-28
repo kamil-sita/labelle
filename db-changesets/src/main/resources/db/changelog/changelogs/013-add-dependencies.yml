@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0013-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: task_dependencies
+            columns:
+              - column:
+                  name: task_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: task(id)
+                    foreignKeyName: tasK_dependencies_task_id
+              - column:
+                  name: dependency_task_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    references: task(id)
+                    foreignKeyName: tasK_dependencies_task_dependency_id

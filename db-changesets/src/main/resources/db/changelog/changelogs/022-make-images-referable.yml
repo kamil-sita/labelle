@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0022-01
+      author: kamil-sita
+      changes:
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: parent_id
+                  type: uuid
+                  constraints:
+                    references: image(id)
+                    foreignKeyName: fk_image_parent_id

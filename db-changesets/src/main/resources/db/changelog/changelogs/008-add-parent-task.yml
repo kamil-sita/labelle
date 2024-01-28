@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 008-01
+      author: kamil-sita
+      changes:
+        - addColumn:
+            tableName: task
+            columns:
+              - column:
+                  name: parent
+                  type: uuid
+                  constraints:
+                    nullable: false

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="900.0" minHeight="140.0" prefHeight="387.0" prefWidth="786.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label layoutX="24.0" layoutY="17.0" text="Type" />
+        <TextField fx:id="typeTextField" editable="false" layoutX="111.0" layoutY="13.0" prefHeight="26.0" prefWidth="236.0" />
+        <Label layoutX="24.0" layoutY="48.0" text="ID" />
+        <TextField fx:id="idTextField" editable="false" layoutX="111.0" layoutY="43.0" prefHeight="26.0" prefWidth="236.0" />
+        <Label layoutX="24.0" layoutY="78.0" text="Creation date" />
+        <TextField fx:id="creationDateTextField" editable="false" layoutX="111.0" layoutY="74.0" prefHeight="26.0" prefWidth="236.0" />
+        <Label layoutX="24.0" layoutY="108.0" text="Parent" />
+        <TextField fx:id="parentTextField" editable="false" layoutX="111.0" layoutY="104.0" prefHeight="26.0" prefWidth="236.0" />
+        <Button disable="true" layoutX="353.0" layoutY="103.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="66.0" text="Go to" />
+        <Label layoutX="24.0" layoutY="140.0" text="Task result" />
+        <TextField fx:id="taskResultTextField" layoutX="111.0" layoutY="136.0" prefHeight="26.0" prefWidth="236.0" />
+        <TabPane layoutY="137.0" prefHeight="350.0" prefWidth="863.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="175.0">
+            <tabs>
+                <Tab text="Configuration">
+                    <content>
+                        <AnchorPane fx:id="configuration" minHeight="0.0" minWidth="0.0" prefHeight="289.0" prefWidth="863.0" styleClass="background2">
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="History">
+                    <content>
+                        <AnchorPane fx:id="history" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+      <Label layoutX="436.0" layoutY="9.0" text="Results" />
+      <TextArea fx:id="resultsTextArea" editable="false" layoutX="436.0" layoutY="30.0" prefHeight="136.0" prefWidth="342.0" AnchorPane.leftAnchor="436.0" AnchorPane.rightAnchor="7.600000000000023" AnchorPane.topAnchor="30.0" />
+    </children>
+</AnchorPane>
