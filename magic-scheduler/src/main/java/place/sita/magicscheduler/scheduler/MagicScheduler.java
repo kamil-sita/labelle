@@ -30,7 +30,7 @@ public class MagicScheduler {
 
     private final TaskScheduler taskScheduler;
 
-    private final ThreadPoolExecutor executorService;
+    private final MagicSchedulerBackend magicSchedulerBackend;
 
     private final List<MagicSchedulerTask> tasks = new ArrayList<>();
     private final TaskTypeRepository taskTypeRepository;
@@ -38,23 +38,17 @@ public class MagicScheduler {
     private final ResourceHub resourceHub;
     private final ApplicationEventPublisher eventPublisher;
 
-    public MagicScheduler(TaskScheduler taskScheduler,
+    public MagicScheduler(TaskScheduler taskScheduler, MagicSchedulerBackend magicSchedulerBackend,
                           TaskTypeRepository taskTypeRepository,
                           SchedulerAwareTaskExecutionEnvironment executionEnvironment,
                           ResourceHub resourceHub,
                           ApplicationEventPublisher eventPublisher) {
         this.taskScheduler = taskScheduler;
-        this.taskTypeRepository = taskTypeRepository;
+	    this.magicSchedulerBackend = magicSchedulerBackend;
+	    this.taskTypeRepository = taskTypeRepository;
         this.executionEnvironment = executionEnvironment;
         this.resourceHub = resourceHub;
 	    this.eventPublisher = eventPublisher;
-	    executorService = new ThreadPoolExecutor(
-            1,
-            4,
-            2000, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>()
-        );
-        executorService.allowCoreThreadTimeOut(true);
     }
 
     //@Scheduled(fixedDelay = 2000)
@@ -93,7 +87,7 @@ public class MagicScheduler {
     }
 
     private void submitUnknownTaskToInternalScheduler() {
-        executorService.submit(new UnknownTask());
+        magicSchedulerBackend.runLater(new UnknownTask());
     }
 
     private NextJobResult getJob() {
