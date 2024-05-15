@@ -8,7 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.tasks.ExecutionsService;
+import place.sita.magicscheduler.ExecutionsService;
 import place.sita.modulefx.annotations.FxNode;
 import place.sita.modulefx.annotations.PostFxConstruct;
 

@@ -9,8 +9,8 @@ import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.TagRepository;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
-import place.sita.labelle.core.tasks.scheduler.TaskStateContext;
-import place.sita.labelle.core.tasks.scheduler.environment.TaskExecutionEnvironment;
+import place.sita.magicscheduler.scheduler.TaskStateContext;
+import place.sita.magicscheduler.scheduler.environment.TaskExecutionEnvironment;
 import place.sita.labelle.jooq.Tables;
 
 import java.util.Map;

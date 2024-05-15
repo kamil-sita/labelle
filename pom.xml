@@ -18,14 +18,18 @@
 
     <modules>
         <module>db-changesets</module>
+        <module>db-pre-codegen</module>
         <module>db-codegen</module>
         <module>db-spring</module>
         <module>tflang</module>
+
+        <module>core-common</module>
+        <module>magic-scheduler</module>
         <module>core</module>
+
         <module>module-fx</module>
         <module>module-fx-spring-boot</module>
         <module>gui-local</module>
-        <module>db-pre-codegen</module>
     </modules>
 
     <properties>

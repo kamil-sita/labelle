@@ -1,7 +1,7 @@
 package place.sita.labelle.core.repository.taskapi;
 
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.tasks.scheduler.ApiRegistrar.ApiRegistration;
+import place.sita.magicscheduler.scheduler.ApiRegistrar.ApiRegistration;
 
 @Component
 public class RepositoryApiSupport implements ApiRegistration<RepositoryApi> {

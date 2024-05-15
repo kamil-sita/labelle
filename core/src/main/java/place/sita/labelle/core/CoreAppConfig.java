@@ -4,9 +4,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import place.sita.labelle.extensions.ExtensionsConfig;
+import place.sita.magicscheduler.MagicSchedulerConfig;
 
 @Configuration
 @ComponentScan
-@Import(ExtensionsConfig.class)
+@Import({ExtensionsConfig.class, MagicSchedulerConfig.class})
 public class CoreAppConfig {
 }

@@ -1,13 +1,13 @@
 package place.sita.labelle.extensions.tagging;
 
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.tasks.TaskContext;
-import place.sita.labelle.core.tasks.TaskResult;
-import place.sita.labelle.core.tasks.TaskType;
 import place.sita.labelle.core.repository.inrepository.ImageResponse;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
-import place.sita.labelle.core.tasks.scheduler.RunPolicy;
-import place.sita.labelle.core.tasks.scheduler.resources.resource.Resource;
+import place.sita.magicscheduler.TaskContext;
+import place.sita.magicscheduler.TaskResult;
+import place.sita.magicscheduler.TaskType;
+import place.sita.magicscheduler.scheduler.RunPolicy;
+import place.sita.magicscheduler.scheduler.resources.resource.Resource;
 import place.sita.labelle.extensions.tagging.TagByRelyingOnWebuiSingleImage.WebuiSingleImageArgs;
 
 import java.util.ArrayList;

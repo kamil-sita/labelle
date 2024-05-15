@@ -7,12 +7,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.tasks.ExecutionsService;
-import place.sita.labelle.core.tasks.ExecutionsService.ScheduledTaskResponse;
-import place.sita.labelle.core.tasks.TaskTypeRepository;
-import place.sita.labelle.core.tasks.TaskTypeRepository.TaskTypeResponse;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
+import place.sita.magicscheduler.ExecutionsService;
+import place.sita.magicscheduler.TaskTypeRepository;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
@@ -49,7 +47,7 @@ public class SchedulerExecutionTab {
 
     @PostFxConstruct
     public void setupTaskTypes() {
-        ObservableList<TaskTypeResponse> observableList = FXCollections.observableArrayList();
+        ObservableList<TaskTypeRepository.TaskTypeResponse> observableList = FXCollections.observableArrayList();
         observableList.add(null);
         observableList.addAll(taskTypeRepository.allR());
         taskTypeChoiceBox.setItems(observableList);
@@ -71,13 +69,13 @@ public class SchedulerExecutionTab {
         });
     }
 
-    private LabPaginator<TaskTypeResponse> paginator;
+    private LabPaginator<TaskTypeRepository.TaskTypeResponse> paginator;
 
-    private void onJobSelected(ScheduledTaskResponse jobSelected) {
+    private void onJobSelected(ExecutionsService.ScheduledTaskResponse jobSelected) {
         schedulerExecutionViewFx.onJobSelected(jobSelected);
     }
 
-    private UUID extractId(TaskTypeResponse newValue) {
+    private UUID extractId(TaskTypeRepository.TaskTypeResponse newValue) {
         if (newValue == null) {
             return null;
         } else {

@@ -5,7 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.tasks.ExecutionsService;
+import place.sita.magicscheduler.ExecutionsService;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxNode;
 

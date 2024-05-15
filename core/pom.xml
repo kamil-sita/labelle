@@ -29,6 +29,12 @@
         </dependency>
 
         <dependency>
+            <groupId>place.sita.labelle</groupId>
+            <artifactId>magic-scheduler</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
@@ -81,6 +87,13 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>place.sita.labelle</groupId>
+            <artifactId>core-common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
@@ -90,7 +103,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>32.0.0-jre</version> <!-- or whatever the latest version is -->
+            <version>32.0.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

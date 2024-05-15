@@ -2,13 +2,13 @@ package place.sita.labelle.core.automation.tasks.clone;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import place.sita.labelle.core.tasks.TaskContext;
-import place.sita.labelle.core.tasks.TaskResult;
-import place.sita.labelle.core.tasks.TaskType;
 import place.sita.labelle.core.repository.inrepository.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.PersistableImagesTags;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
-import place.sita.labelle.core.tasks.scheduler.resources.resource.Resource;
+import place.sita.magicscheduler.TaskContext;
+import place.sita.magicscheduler.TaskResult;
+import place.sita.magicscheduler.TaskType;
+import place.sita.magicscheduler.scheduler.resources.resource.Resource;
 
 import java.util.HashMap;
 import java.util.List;
