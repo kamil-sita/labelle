@@ -37,19 +37,22 @@ public class TypeSpecificQueue {
     private final ExecutionResultsSubmitter executionResultsSubmitter;
     private final TaskTypeRepository taskTypeRepository;
     private final SoftToHardFailPolicy softToHardFailPolicy;
+    private final SchedulerProperties schedulerProperties;
 
     public TypeSpecificQueue(TaskScheduler taskScheduler,
                              DSLContext dslContext,
                              MagicScheduler magicScheduler,
                              ExecutionResultsSubmitter executionResultsSubmitter,
                              TaskTypeRepository taskTypeRepository,
-                             SoftToHardFailPolicy softToHardFailPolicy) {
+                             SoftToHardFailPolicy softToHardFailPolicy,
+                             SchedulerProperties schedulerProperties) {
         this.taskScheduler = taskScheduler;
         this.dslContext = dslContext;
         this.magicScheduler = magicScheduler;
         this.executionResultsSubmitter = executionResultsSubmitter;
         this.taskTypeRepository = taskTypeRepository;
         this.softToHardFailPolicy = softToHardFailPolicy;
+	    this.schedulerProperties = schedulerProperties;
     }
 
     private boolean firstExecution = true;
@@ -110,13 +113,15 @@ public class TypeSpecificQueue {
     public void fetch() {
         int fetch = getTaskCountToFetch();
 
-        if (firstExecution) {
-            processFailedJobs();
-            firstExecution = false;
-        } else {
-            log.debug("Fetching for {}", taskType.code());
+        if (schedulerProperties.isQueueEnabled()) {
+            if (firstExecution) {
+                processFailedJobs();
+                firstExecution = false;
+            } else {
+                log.debug("Fetching for {}", taskType.code());
 
-            fetchActual();
+                fetchActual();
+            }
         }
 
         scheduleNextExecution(fetch);
