@@ -17,7 +17,7 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 
 	@Override
 	public String code() {
-		return "import-images-tread-subdirectories-as-tags"; //todo typo
+		return "import-images-treat-subdirectories-as-tags";
 	}
 
 	@Override
