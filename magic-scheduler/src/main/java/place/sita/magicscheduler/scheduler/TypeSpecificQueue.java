@@ -174,7 +174,7 @@ public class TypeSpecificQueue {
         for (var job : readyToSubmitJobs) {
             try {
                 Object config = taskType.deserializeParam(job.config);
-                magicScheduler.schedule(job.id, taskType.code(), config, job.executionCount, () -> {
+                magicScheduler.schedule(job.id, (TaskType) taskType, config, job.executionCount, () -> {
                     tasksInSchedulerOrExecutor.remove(job.id);
                 });
             } catch (Exception e) {

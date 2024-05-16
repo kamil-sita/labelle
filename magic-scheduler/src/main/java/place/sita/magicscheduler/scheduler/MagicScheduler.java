@@ -6,7 +6,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 import place.sita.magicscheduler.TaskType;
-import place.sita.magicscheduler.TaskTypeRepository;
 import place.sita.magicscheduler.scheduler.environment.SchedulerAwareTaskExecutionEnvironment;
 import place.sita.magicscheduler.scheduler.events.TaskExecutionCompleteEvent;
 import place.sita.magicscheduler.scheduler.events.TaskPickedUpEvent;
@@ -18,7 +17,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.concurrent.*;
 
 /**
  * The MagicScheduler class is responsible for scheduling and executing tasks asynchronously.
@@ -32,20 +30,18 @@ public class MagicScheduler {
 
     private final MagicSchedulerBackend magicSchedulerBackend;
 
-    private final List<MagicSchedulerTask> tasks = new ArrayList<>();
-    private final TaskTypeRepository taskTypeRepository;
+    private final List<MagicSchedulerTask<?>> tasks = new ArrayList<>();
     private final SchedulerAwareTaskExecutionEnvironment executionEnvironment;
     private final ResourceHub resourceHub;
     private final ApplicationEventPublisher eventPublisher;
 
-    public MagicScheduler(TaskScheduler taskScheduler, MagicSchedulerBackend magicSchedulerBackend,
-                          TaskTypeRepository taskTypeRepository,
+    public MagicScheduler(TaskScheduler taskScheduler,
+                          MagicSchedulerBackend magicSchedulerBackend,
                           SchedulerAwareTaskExecutionEnvironment executionEnvironment,
                           ResourceHub resourceHub,
                           ApplicationEventPublisher eventPublisher) {
         this.taskScheduler = taskScheduler;
 	    this.magicSchedulerBackend = magicSchedulerBackend;
-	    this.taskTypeRepository = taskTypeRepository;
         this.executionEnvironment = executionEnvironment;
         this.resourceHub = resourceHub;
 	    this.eventPublisher = eventPublisher;
@@ -56,10 +52,7 @@ public class MagicScheduler {
         // todo
     }
 
-    public void schedule(UUID id, String code, Object parameter, int executionCount, ExecutionFinishedCallback callback) {
-        Instant submitted = Instant.now();
-
-        TaskType task = taskTypeRepository.byCode(code);
+    public <ParameterT> void schedule(UUID id, TaskType<ParameterT, ?, ?> task, ParameterT parameter, int executionCount, ExecutionFinishedCallback callback) {
         List<Resource<?>> resources = getResources(parameter, task);
         if (resources == null) {
             resources = List.of();
@@ -69,7 +62,7 @@ public class MagicScheduler {
             executionCount,
             id,
             resources,
-            code,
+            task,
             parameter,
             callback
         );
@@ -170,12 +163,12 @@ public class MagicScheduler {
      * PRIVATE CLASSES
      */
 
-    private record MagicSchedulerTask(
+    private record MagicSchedulerTask<ParameterT>(
         int executionCount,
         UUID id,
         List<Resource<?>> resources,
-        String code,
-        Object parameter,
+        TaskType<ParameterT, ?, ?> taskType,
+        ParameterT parameter,
         ExecutionFinishedCallback executionFinishedCallback) {
     }
 
@@ -199,12 +192,12 @@ public class MagicScheduler {
             }
         }
 
-        private void execute(MagicSchedulerTask task) {
-            TaskType<?, ?, ?> type = taskTypeRepository.byCode(task.code);
-            Object parameter = task.parameter;
+        private <ParameterT> void execute(MagicSchedulerTask<ParameterT> task) {
+            TaskType<ParameterT, ?, ?> type = task.taskType;
+            ParameterT parameter = task.parameter;
             ApiTaskExecutionResult result = null;
             try {
-                result = executionEnvironment.executeTask(task.id, (TaskType) type, (Object) parameter, task.executionCount);
+                result = executionEnvironment.executeTask(task.id, type, parameter, task.executionCount);
             } catch (Throwable throwable) {
                 log.error("Throwable while execution of task with ID " + task.id, throwable);
                 throw throwable;
