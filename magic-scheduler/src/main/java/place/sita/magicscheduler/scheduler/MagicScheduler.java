@@ -26,7 +26,7 @@ import java.util.*;
 public class MagicScheduler {
     private static final Logger log = LoggerFactory.getLogger(MagicScheduler.class);
 
-    private final TaskScheduler taskScheduler;
+    private final ScheduleLater scheduleLater;
 
     private final MagicSchedulerBackend magicSchedulerBackend;
 
@@ -35,12 +35,12 @@ public class MagicScheduler {
     private final ResourceHub resourceHub;
     private final ApplicationEventPublisher eventPublisher;
 
-    public MagicScheduler(TaskScheduler taskScheduler,
+    public MagicScheduler(ScheduleLater scheduleLater,
                           MagicSchedulerBackend magicSchedulerBackend,
                           SchedulerAwareTaskExecutionEnvironment executionEnvironment,
                           ResourceHub resourceHub,
                           ApplicationEventPublisher eventPublisher) {
-        this.taskScheduler = taskScheduler;
+	    this.scheduleLater = scheduleLater;
 	    this.magicSchedulerBackend = magicSchedulerBackend;
         this.executionEnvironment = executionEnvironment;
         this.resourceHub = resourceHub;
@@ -177,7 +177,7 @@ public class MagicScheduler {
                 return;
             }
             if (nextJob instanceof NextJobNotAvailableYet nextJobNotAvailableYet) {
-                taskScheduler.schedule(
+                scheduleLater.schedule(
                     MagicScheduler.this::submitUnknownTaskToInternalScheduler,
                     nextJobNotAvailableYet.expectedJobAvailabilityTime);
                 return;

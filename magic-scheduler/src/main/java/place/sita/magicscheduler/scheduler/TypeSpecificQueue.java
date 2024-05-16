@@ -26,7 +26,7 @@ import static place.sita.labelle.jooq.tables.Task.TASK;
 @Scope(scopeName = SCOPE_PROTOTYPE)
 public class TypeSpecificQueue {
 
-    private final TaskScheduler taskScheduler;
+    private final ScheduleLater scheduleLater;
 
     private static final Logger log = LoggerFactory.getLogger(TypeSpecificQueue.class);
     private TaskType<?, ?, ?> taskType;
@@ -39,14 +39,14 @@ public class TypeSpecificQueue {
     private final SoftToHardFailPolicy softToHardFailPolicy;
     private final SchedulerProperties schedulerProperties;
 
-    public TypeSpecificQueue(TaskScheduler taskScheduler,
+    public TypeSpecificQueue(ScheduleLater scheduleLater,
                              DSLContext dslContext,
                              MagicScheduler magicScheduler,
                              ExecutionResultsSubmitter executionResultsSubmitter,
                              TaskTypeRepository taskTypeRepository,
                              SoftToHardFailPolicy softToHardFailPolicy,
                              SchedulerProperties schedulerProperties) {
-        this.taskScheduler = taskScheduler;
+        this.scheduleLater = scheduleLater;
         this.dslContext = dslContext;
         this.magicScheduler = magicScheduler;
         this.executionResultsSubmitter = executionResultsSubmitter;
@@ -107,7 +107,7 @@ public class TypeSpecificQueue {
         long delay = minDelay + (long) ((maxDelay - minDelay) * (1.0 * fetch/inSystemTargetCount));
 
         Instant nextExecution = Instant.now().plus(delay, ChronoUnit.MILLIS);
-        taskScheduler.schedule(this::fetch, nextExecution);
+        scheduleLater.schedule(this::fetch, nextExecution);
     }
 
     public void fetch() {
