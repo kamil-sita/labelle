@@ -9,7 +9,14 @@ import place.sita.magicscheduler.scheduler.resources.resource.Resource;
 import java.util.List;
 
 @Component
-public class TestTask implements TaskType<String, Void, String> {
+public class StringTestTask implements TaskType<String, Void, String> {
+
+	private final StringTaskTestValueProcessor stringTaskTestValueProcessor;
+
+	public StringTestTask(StringTaskTestValueProcessor stringTaskTestValueProcessor) {
+		this.stringTaskTestValueProcessor = stringTaskTestValueProcessor;
+	}
+
 	@Override
 	public String code() {
 		return "test-task";
@@ -22,7 +29,7 @@ public class TestTask implements TaskType<String, Void, String> {
 
 	@Override
 	public TaskResult<String> runTask(String parameter, TaskContext<Void> taskContext) {
-		return TaskResult.success("Success: " + parameter);
+		return stringTaskTestValueProcessor.process(parameter, taskContext);
 	}
 
 	@Override
