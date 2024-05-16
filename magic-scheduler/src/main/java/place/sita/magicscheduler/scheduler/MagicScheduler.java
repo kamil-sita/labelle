@@ -53,7 +53,7 @@ public class MagicScheduler {
             resources = List.of();
         }
 
-        MagicSchedulerTask magicSchedulerTask = new MagicSchedulerTask(
+        MagicSchedulerTask<ParameterT> magicSchedulerTask = new MagicSchedulerTask<>(
             executionCount,
             id,
             resources,
