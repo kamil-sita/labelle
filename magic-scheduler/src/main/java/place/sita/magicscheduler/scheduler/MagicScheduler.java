@@ -47,11 +47,6 @@ public class MagicScheduler {
 	    this.eventPublisher = eventPublisher;
     }
 
-    //@Scheduled(fixedDelay = 2000)
-    public void optimize() {
-        // todo
-    }
-
     public <ParameterT> void schedule(UUID id, TaskType<ParameterT, ?, ?> task, ParameterT parameter, int executionCount, ExecutionFinishedCallback callback) {
         List<Resource<?>> resources = getResources(parameter, task);
         if (resources == null) {
