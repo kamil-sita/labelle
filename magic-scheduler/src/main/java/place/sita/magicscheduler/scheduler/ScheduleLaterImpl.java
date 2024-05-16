@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
-@ConditionalOnBean(TaskScheduler.class)
 @Component
+@ConditionalOnBean(TaskScheduler.class)
 public class ScheduleLaterImpl implements ScheduleLater {
 	private final TaskScheduler taskScheduler;
 

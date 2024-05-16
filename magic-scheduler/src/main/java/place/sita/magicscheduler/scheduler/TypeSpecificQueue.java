@@ -4,7 +4,6 @@ import org.jooq.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.utils.ExceptionUtil;
 import place.sita.labelle.jooq.enums.TaskStatus;
@@ -102,6 +101,9 @@ public class TypeSpecificQueue {
     }
 
     public void scheduleNextExecution(int fetch) {
+        if (!schedulerProperties.isQueueEnabled()) {
+            return;
+        }
         long maxDelay = 5000;
         long minDelay = 1000;
         long delay = minDelay + (long) ((maxDelay - minDelay) * (1.0 * fetch/inSystemTargetCount));
