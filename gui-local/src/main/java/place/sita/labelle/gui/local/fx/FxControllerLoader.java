@@ -3,13 +3,11 @@ package place.sita.labelle.gui.local.fx;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
-import place.sita.modulefx.annotations.FxChild;
-import place.sita.modulefx.annotations.FxNode;
-import place.sita.modulefx.annotations.Parent;
-import place.sita.modulefx.annotations.PostFxConstruct;
+import place.sita.modulefx.annotations.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -31,28 +29,58 @@ public class FxControllerLoader {
 	private Node setupForController(Object controller, Object parent, Node parentNode, String resource) {
 	    Node results = FxSceneBuilder.setupFxView(controller, resource);
 
-		setupParent(controller, parent, parentNode);
+		setupParent(controller, parent, parentNode, results);
 		injectChildren(controller);
 	    callPostFxInject(controller);
 
 	    return results;
 	}
 
-	private void setupParent(Object controller, Object parent, Node parentNode) {
+	private void setupParent(Object controller, Object parent, Node parentNode, Node childNode) {
 		Class<?> clazz = controller.getClass();
-		Arrays.stream(clazz.getDeclaredFields())
-			.filter(field -> field.isAnnotationPresent(Parent.class))
-			.forEach(field -> {
-				try {
-					if (parent == null) {
-						throw new RuntimeException("Cannot inject a null parent");
-					}
-					field.setAccessible(true);
-					field.set(controller, parent);
-				} catch (IllegalAccessException e) {
-					throw new RuntimeException(e);
+
+		checkSetHeightCorrelation(parentNode, childNode, clazz);
+
+		injectParentField(controller, parent, clazz);
+	}
+
+	private static void checkSetHeightCorrelation(Node parentNode, Node childNode, Class<?> clazz) {
+		if (clazz.isAnnotationPresent(FxDictatesHeight.class)) {
+			if (parentNode instanceof Region parentAsRegion) {
+				if (childNode instanceof Region childAsRegion) {
+					parentAsRegion.setMaxHeight(childAsRegion.getMaxHeight());
+					parentAsRegion.setMaxWidth(childAsRegion.getMaxWidth());
+
+					parentAsRegion.setMinHeight(childAsRegion.getMinHeight());
+					parentAsRegion.setMinWidth(childAsRegion.getMinWidth());
+
+					parentAsRegion.setPrefHeight(childAsRegion.getPrefHeight());
+					parentAsRegion.setPrefWidth(childAsRegion.getPrefWidth());
+				} else {
+					throw new RuntimeException(
+							"Non-region cannot dictate height. Node of " + childNode.getClass().getName() + " is not a Region");
 				}
-			});
+			} else {
+				throw new RuntimeException(
+						"Cannot dictate height of non-Region: Node of " + parentNode.getClass().getName() + " is not a Region");
+			}
+		}
+	}
+
+	private static void injectParentField(Object controller, Object parent, Class<?> clazz) {
+		Arrays.stream(clazz.getDeclaredFields())
+				.filter(field -> field.isAnnotationPresent(Parent.class))
+				.forEach(field -> {
+					try {
+						if (parent == null) {
+							throw new RuntimeException("Cannot inject a null parent");
+						}
+						field.setAccessible(true);
+						field.set(controller, parent);
+					} catch (IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+				});
 	}
 
 	private void injectChildren(Object controller) {

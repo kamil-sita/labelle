@@ -2,6 +2,7 @@ package place.sita.labelle.gui.local.repositoryfx;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import place.sita.modulefx.annotations.FxDictatesHeight;
 import place.sita.modulefx.annotations.FxNode;
 
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxNode(resourceFile = "/fx/repository/persistent_id_component.fxml")
+@FxDictatesHeight
 public class PersistentIdController {
 
     @FXML

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="50.0" minHeight="50.0" prefHeight="50.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <columnConstraints>
       <ColumnConstraints hgrow="ALWAYS" minWidth="40.0" prefWidth="200.0" />
       <ColumnConstraints hgrow="ALWAYS" minWidth="40.0" prefWidth="200.0" />
@@ -19,7 +19,7 @@
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="140.0" prefWidth="180.0" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" valignment="CENTER" vgrow="SOMETIMES" />
    </rowConstraints>
    <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
