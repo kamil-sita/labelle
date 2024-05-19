@@ -30,6 +30,7 @@ import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagRe
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.core.utils.Result2;
+import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
 
@@ -48,7 +49,7 @@ import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelect
 
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
-@FxTab(order = 3, tabName = "Repository", resourceFile = "/fx/repository.fxml")
+@FxTab(order = 3, tabName = "Repository", resourceFile = "/fx/repository/repository.fxml")
 public class RepositoryFxTab {
 
     private static final Logger log = LoggerFactory.getLogger(RepositoryFxTab.class);
@@ -76,9 +77,6 @@ public class RepositoryFxTab {
     private Pagination paginator;
 
     @FXML
-    private ImageView imageView;
-
-    @FXML
     private TableView<?> markersTable;
 
     @FXML
@@ -100,7 +98,10 @@ public class RepositoryFxTab {
     private TextField markerFamilyTextField;
 
     @FXML
-    private AnchorPane imageViewContainer;
+    private AnchorPane imageDisplay;
+
+    @FxChild(patchNode = "imageDisplay")
+    private ScalableImageDisplayController scalableImageDisplayController;
 
     @PostFxConstruct
     public void setupRepositories() {
@@ -109,14 +110,6 @@ public class RepositoryFxTab {
         Platform.runLater(() -> {
             repositoryChoiceBox.setItems(repositories);
         });
-    }
-
-    @PostFxConstruct
-    public void scaleImgAutomatically() {
-        imageView.fitWidthProperty().bind(imageViewContainer.widthProperty());
-        imageView.fitHeightProperty().bind(imageViewContainer.heightProperty());
-
-        imageView.setPreserveRatio(true);
     }
 
     private LabPaginatorFactory.LabPaginator<FilteringParameters> labPaginator;
@@ -153,7 +146,6 @@ public class RepositoryFxTab {
         });
     }
 
-
     private Future<Result2<BufferedImage, Exception>> currentFutureImage;
     private void loadImage(ImageResponse selected) {
         if (currentFutureImage != null) {
@@ -172,8 +164,7 @@ public class RepositoryFxTab {
             }
             if (result.isSuccess()) {
                 try {
-                    javafx.scene.image.Image image = SwingFXUtils.toFXImage(result.getSuccess(), null);;
-                    imageView.setImage(image);
+                    scalableImageDisplayController.set(result.getSuccess());
                 } catch (Exception e) {
                     log.error("Couldn't set image", e);
                 }
