@@ -76,9 +76,10 @@ public class InRepositoryService {
                 .values(imageResolvableId, imageFileId, false)
                 .execute();
         UUID imageInRepoId = UUID.randomUUID();
+        String reference = UUID.randomUUID().toString(); // todo can we generate something more friendly?
         dslContext.insertInto(Tables.IMAGE)
-                .columns(Tables.IMAGE.ID, Tables.IMAGE.IMAGE_RESOLVABLE_ID, Tables.IMAGE.REPOSITORY_ID)
-                .values(imageInRepoId, imageResolvableId, repoId)
+                .columns(Tables.IMAGE.ID, Tables.IMAGE.IMAGE_RESOLVABLE_ID, Tables.IMAGE.REPOSITORY_ID, Tables.IMAGE.REFERENCE_ID)
+                .values(imageInRepoId, imageResolvableId, repoId, reference)
                 .execute();
 
         ImageResponse image = new ImageResponse(imageInRepoId, r.directory(), relPath);
@@ -129,12 +130,22 @@ public class InRepositoryService {
 
         UUID newImageId = UUID.randomUUID();
 
-        UUID parent = copyOrRefer == CopyOrRefer.REFER ? originalImageId : null;
+        // todo reference logic
+
+        String referenceId = JqRepo.fetchOne(() ->
+            dslContext
+                .select(IMAGE.REFERENCE_ID)
+                .from(IMAGE)
+                .where(IMAGE.ID.eq(originalImageId))
+                .fetch()
+        );
+
+        // todo we can probably do with less queries. And better copying, not one by one.
 
         JqRepo.insertOne(() ->
             dslContext.insertInto(IMAGE)
-                .columns(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.PARENT_ID)
-                .values(newImageId, underlyingImageResolvable, newRepoId, parent)
+                .columns(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID)
+                .values(newImageId, underlyingImageResolvable, newRepoId, referenceId)
                 .execute()
         );
 
@@ -166,9 +177,10 @@ public class InRepositoryService {
             .values(imageResolvableId, null, true)
             .execute();
         UUID imageInRepoId = UUID.randomUUID();
+        UUID referenceId = UUID.randomUUID();
         dslContext.insertInto(Tables.IMAGE)
-            .columns(Tables.IMAGE.ID, Tables.IMAGE.IMAGE_RESOLVABLE_ID, Tables.IMAGE.REPOSITORY_ID)
-            .values(imageInRepoId, imageResolvableId, repoId)
+            .columns(Tables.IMAGE.ID, Tables.IMAGE.IMAGE_RESOLVABLE_ID, Tables.IMAGE.REPOSITORY_ID, Tables.IMAGE.REFERENCE_ID)
+            .values(imageInRepoId, imageResolvableId, repoId, referenceId.toString())
             .execute();
 
         return imageInRepoId;

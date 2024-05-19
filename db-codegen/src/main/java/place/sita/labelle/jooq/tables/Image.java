@@ -12,7 +12,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row4;
+import org.jooq.Row5;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -64,9 +64,14 @@ public class Image extends TableImpl<ImageRecord> {
     public final TableField<ImageRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>public.image.parent_id</code>.
+     * The column <code>public.image.reference_id</code>.
      */
-    public final TableField<ImageRecord, UUID> PARENT_ID = createField(DSL.name("parent_id"), SQLDataType.UUID, this, "");
+    public final TableField<ImageRecord, String> REFERENCE_ID = createField(DSL.name("reference_id"), SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.image.parent_reference</code>.
+     */
+    public final TableField<ImageRecord, String> PARENT_REFERENCE = createField(DSL.name("parent_reference"), SQLDataType.CLOB, this, "");
 
     private Image(Name alias, Table<ImageRecord> aliased) {
         this(alias, aliased, null);
@@ -112,13 +117,17 @@ public class Image extends TableImpl<ImageRecord> {
     }
 
     @Override
+    public List<UniqueKey<ImageRecord>> getUniqueKeys() {
+        return Arrays.asList(Keys.UQ_IMAGE_REFERENCE_ID_IN_REPOSITORY);
+    }
+
+    @Override
     public List<ForeignKey<ImageRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.IMAGE__FK_IMAGE_IMAGE_RESOLVABLE_ID, Keys.IMAGE__FK_IMAGE_REPOSITORY_ID, Keys.IMAGE__FK_IMAGE_PARENT_ID);
+        return Arrays.asList(Keys.IMAGE__FK_IMAGE_IMAGE_RESOLVABLE_ID, Keys.IMAGE__FK_IMAGE_REPOSITORY_ID);
     }
 
     private transient ImageResolvable _imageResolvable;
     private transient Repository _repository;
-    private transient Image _image;
 
     public ImageResolvable imageResolvable() {
         if (_imageResolvable == null)
@@ -132,13 +141,6 @@ public class Image extends TableImpl<ImageRecord> {
             _repository = new Repository(this, Keys.IMAGE__FK_IMAGE_REPOSITORY_ID);
 
         return _repository;
-    }
-
-    public Image image() {
-        if (_image == null)
-            _image = new Image(this, Keys.IMAGE__FK_IMAGE_PARENT_ID);
-
-        return _image;
     }
 
     @Override
@@ -168,11 +170,11 @@ public class Image extends TableImpl<ImageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row4 type methods
+    // Row5 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row4<UUID, UUID, UUID, UUID> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<UUID, UUID, UUID, String, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 }

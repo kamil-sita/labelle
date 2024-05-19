@@ -56,6 +56,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<ImageRecord> IMAGE_PKEY = Internal.createUniqueKey(Image.IMAGE, DSL.name("image_pkey"), new TableField[] { Image.IMAGE.ID }, true);
+    public static final UniqueKey<ImageRecord> UQ_IMAGE_REFERENCE_ID_IN_REPOSITORY = Internal.createUniqueKey(Image.IMAGE, DSL.name("uq_image_reference_id_in_repository"), new TableField[] { Image.IMAGE.REFERENCE_ID, Image.IMAGE.REPOSITORY_ID }, true);
     public static final UniqueKey<ImageFileRecord> IMAGE_FILE_PKEY = Internal.createUniqueKey(ImageFile.IMAGE_FILE, DSL.name("image_file_pkey"), new TableField[] { ImageFile.IMAGE_FILE.ID }, true);
     public static final UniqueKey<ImageResolvableRecord> IMAGE_RESOLVABLE_PKEY = Internal.createUniqueKey(ImageResolvable.IMAGE_RESOLVABLE, DSL.name("image_resolvable_pkey"), new TableField[] { ImageResolvable.IMAGE_RESOLVABLE.ID }, true);
     public static final UniqueKey<PreferencesRecord> PREFERENCES_PKEY = Internal.createUniqueKey(Preferences.PREFERENCES, DSL.name("preferences_pkey"), new TableField[] { Preferences.PREFERENCES.NAME }, true);
@@ -74,7 +75,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<ImageRecord, ImageResolvableRecord> IMAGE__FK_IMAGE_IMAGE_RESOLVABLE_ID = Internal.createForeignKey(Image.IMAGE, DSL.name("fk_image_image_resolvable_id"), new TableField[] { Image.IMAGE.IMAGE_RESOLVABLE_ID }, Keys.IMAGE_RESOLVABLE_PKEY, new TableField[] { ImageResolvable.IMAGE_RESOLVABLE.ID }, true);
-    public static final ForeignKey<ImageRecord, ImageRecord> IMAGE__FK_IMAGE_PARENT_ID = Internal.createForeignKey(Image.IMAGE, DSL.name("fk_image_parent_id"), new TableField[] { Image.IMAGE.PARENT_ID }, Keys.IMAGE_PKEY, new TableField[] { Image.IMAGE.ID }, true);
     public static final ForeignKey<ImageRecord, RepositoryRecord> IMAGE__FK_IMAGE_REPOSITORY_ID = Internal.createForeignKey(Image.IMAGE, DSL.name("fk_image_repository_id"), new TableField[] { Image.IMAGE.REPOSITORY_ID }, Keys.CATALOGUE_PKEY, new TableField[] { Repository.REPOSITORY.ID }, true);
     public static final ForeignKey<ImageFileRecord, RootRecord> IMAGE_FILE__FK_IMAGE_FILE_ROOT_ID = Internal.createForeignKey(ImageFile.IMAGE_FILE, DSL.name("fk_image_file_root_id"), new TableField[] { ImageFile.IMAGE_FILE.ROOT_ID }, Keys.ROOT_PKEY, new TableField[] { Root.ROOT.ID }, true);
     public static final ForeignKey<ImageResolvableRecord, ImageFileRecord> IMAGE_RESOLVABLE__FK_IMAGE_RESOLVABLE_IMAGE_FILE_ID = Internal.createForeignKey(ImageResolvable.IMAGE_RESOLVABLE, DSL.name("fk_image_resolvable_image_file_id"), new TableField[] { ImageResolvable.IMAGE_RESOLVABLE.IMAGE_FILE_ID }, Keys.IMAGE_FILE_PKEY, new TableField[] { ImageFile.IMAGE_FILE.ID }, true);

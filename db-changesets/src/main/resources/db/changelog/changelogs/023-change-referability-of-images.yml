@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0023-01
+      author: kamil-sita
+      changes:
+        - dropColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: parent_id
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: reference_id
+                  type: text
+                  constraints:
+                      nullable: false
+        - addUniqueConstraint:
+            tableName: image
+            columnNames: reference_id, repository_id
+            constraintName: uq_image_reference_id_in_repository
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: parent_reference
+                  type: text
