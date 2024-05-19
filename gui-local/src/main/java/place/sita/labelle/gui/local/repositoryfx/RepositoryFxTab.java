@@ -103,6 +103,12 @@ public class RepositoryFxTab {
     @FxChild(patchNode = "imageDisplay")
     private ScalableImageDisplayController scalableImageDisplayController;
 
+    @FXML
+    private AnchorPane persistentIdComponent;
+
+    @FxChild(patchNode = "persistentIdComponent")
+    private PersistentIdController persistentIdController;
+
     @PostFxConstruct
     public void setupRepositories() {
         ObservableList<Repository> repositories = FXCollections.observableArrayList();
