@@ -75,14 +75,9 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
-                                    <TextField fx:id="markerFamilyTextField" layoutX="32.0" layoutY="420.0" text="Family" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="32.0" />
-                                    <TextField fx:id="entryFamilyTextField" layoutX="32.0" layoutY="453.0" text="Entry" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="32.0" />
-                                    <Button layoutX="234.0" layoutY="373.0" mnemonicParsing="false" onAction="#addMarkerPress" prefHeight="25.0" prefWidth="76.0" text="Add" AnchorPane.bottomAnchor="95.0" AnchorPane.leftAnchor="234.0" />
                                     <Button mnemonicParsing="false" onAction="#removeMarkerPress" prefHeight="25.0" prefWidth="76.0" text="Remove" AnchorPane.bottomAnchor="94.0" AnchorPane.leftAnchor="478.0" />
-                                    <CheckBox fx:id="sharedCheckBox" layoutX="234.0" layoutY="457.0" mnemonicParsing="false" text="Shared" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="234.0" />
-                                    <Button layoutX="234.0" layoutY="407.0" mnemonicParsing="false" onAction="#updateMarkerPress" prefHeight="25.0" prefWidth="76.0" text="Update" />
-                                    <Label layoutX="53.0" layoutY="389.0" text="Markers" />
-                                    <TableView fx:id="markersTable" editable="true" layoutX="32.0" layoutY="26.0" prefHeight="341.0" prefWidth="262.0" AnchorPane.bottomAnchor="127.60000000000002" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="26.0">
+                                    <Label layoutX="14.0" layoutY="17.0" text="Markers (not implemented yet)" />
+                                    <TableView fx:id="markersTable" editable="true" layoutX="32.0" layoutY="68.8" prefHeight="297.0" prefWidth="262.0" AnchorPane.bottomAnchor="128.0" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="69.0">
                                        <columns>
                                           <TableColumn prefWidth="107.99999845027924" text="Family" />
                                           <TableColumn prefWidth="101.0" text="Entry" />
