@@ -28,7 +28,7 @@ public class FxControllerLoader {
 		return setupForController(controller, null, resource);
 	}
 
-	public Node setupForController(Object controller, Object parent, String resource) {
+	private Node setupForController(Object controller, Object parent, String resource) {
 	    Node results = FxSceneBuilder.setupFxView(controller, resource);
 
 		setupParent(controller, parent);
@@ -60,42 +60,51 @@ public class FxControllerLoader {
 		Arrays.stream(controllerClass.getDeclaredFields())
 			.filter(field -> field.isAnnotationPresent(FxChild.class))
 			.forEach(field -> {
-				FxChild childConfig = field.getAnnotation(FxChild.class);
-				try {
-					Class<?> classType = field.getType();
-					if (classType.isAnnotationPresent(FxNode.class)) {
-						String resource = classType.getAnnotation(FxNode.class).resourceFile();
-						Object bean = context.getBean(classType);
-						Node node = setupForController(bean, controller, resource);
-						field.setAccessible(true);
-						field.set(controller, bean);
-
-						String fieldToPatchName = childConfig.patchNode();
-						Field fieldToPatch = ReflectionUtils.findField(controllerClass, fieldToPatchName);
-						if (fieldToPatch == null) {
-							throw new RuntimeException("Cannot find field to patch: " + fieldToPatchName + " in " + classType.getName());
-						}
-
-						fieldToPatch.setAccessible(true);
-
-						Object object = fieldToPatch.get(controller);
-						if (object instanceof Pane pane) {
-							pane.getChildren().setAll(node);
-							AnchorPane.setTopAnchor(node, 0.0);
-							AnchorPane.setLeftAnchor(node, 0.0);
-							AnchorPane.setRightAnchor(node, 0.0);
-							AnchorPane.setBottomAnchor(node, 0.0);
-						} else {
-							throw new RuntimeException("Not a Pane - cannot inject");
-						}
-					} else {
-						throw new RuntimeException("Not an FxNode - cannot inject");
-					}
-				} catch (IllegalAccessException e) {
-					throw new RuntimeException(e);
-				}
+				injectChild(controller, field, controllerClass);
 			});
 
+	}
+
+	private void injectChild(Object parentController, Field fieldWithAnnotation, Class<?> parentControllerClass) {
+		FxChild childConfig = fieldWithAnnotation.getAnnotation(FxChild.class);
+		try {
+			Class<?> classType = fieldWithAnnotation.getType();
+			if (classType.isAnnotationPresent(FxNode.class)) {
+				String resource = classType.getAnnotation(FxNode.class).resourceFile();
+				Object bean = context.getBean(classType);
+				Node node = setupForController(bean, parentController, resource);
+				fieldWithAnnotation.setAccessible(true);
+				fieldWithAnnotation.set(parentController, bean);
+
+				// patch correlated node in parent controller
+				String fieldToPatchName = childConfig.patchNode();
+				Field fieldToPatch = ReflectionUtils.findField(parentControllerClass, fieldToPatchName);
+				if (fieldToPatch == null) {
+					throw new RuntimeException("Cannot find field to patch: " + fieldToPatchName + " in " + classType.getName());
+				}
+
+				fieldToPatch.setAccessible(true);
+
+				Object potentialJavaFxParent = fieldToPatch.get(parentController);
+				addChildToThisPotentialJavaFxParent(potentialJavaFxParent, node);
+			} else {
+				throw new RuntimeException("Cannot inject something that is not an @FxNode");
+			}
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void addChildToThisPotentialJavaFxParent(Object object, Node node) {
+		if (object instanceof Pane pane) {
+			pane.getChildren().setAll(node);
+			AnchorPane.setTopAnchor(node, 0.0);
+			AnchorPane.setLeftAnchor(node, 0.0);
+			AnchorPane.setRightAnchor(node, 0.0);
+			AnchorPane.setBottomAnchor(node, 0.0);
+		} else {
+			throw new RuntimeException("Not a Pane - cannot inject");
+		}
 	}
 
 	private static void callPostFxInject(Object controller) {
