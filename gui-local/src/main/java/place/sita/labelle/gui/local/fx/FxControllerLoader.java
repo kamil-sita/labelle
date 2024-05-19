@@ -25,20 +25,20 @@ public class FxControllerLoader {
 	}
 
 	public Node setupForController(Object controller, String resource) {
-		return setupForController(controller, null, resource);
+		return setupForController(controller, null, null, resource);
 	}
 
-	private Node setupForController(Object controller, Object parent, String resource) {
+	private Node setupForController(Object controller, Object parent, Node parentNode, String resource) {
 	    Node results = FxSceneBuilder.setupFxView(controller, resource);
 
-		setupParent(controller, parent);
+		setupParent(controller, parent, parentNode);
 		injectChildren(controller);
 	    callPostFxInject(controller);
 
 	    return results;
 	}
 
-	private void setupParent(Object controller, Object parent) {
+	private void setupParent(Object controller, Object parent, Node parentNode) {
 		Class<?> clazz = controller.getClass();
 		Arrays.stream(clazz.getDeclaredFields())
 			.filter(field -> field.isAnnotationPresent(Parent.class))
@@ -70,23 +70,16 @@ public class FxControllerLoader {
 		try {
 			Class<?> classType = fieldWithAnnotation.getType();
 			if (classType.isAnnotationPresent(FxNode.class)) {
+				Node parentNode = getParentNode(parentController, parentControllerClass, childConfig, classType);
+
 				String resource = classType.getAnnotation(FxNode.class).resourceFile();
 				Object bean = context.getBean(classType);
-				Node node = setupForController(bean, parentController, resource);
+				Node node = setupForController(bean, parentController, parentNode, resource);
 				fieldWithAnnotation.setAccessible(true);
 				fieldWithAnnotation.set(parentController, bean);
 
 				// patch correlated node in parent controller
-				String fieldToPatchName = childConfig.patchNode();
-				Field fieldToPatch = ReflectionUtils.findField(parentControllerClass, fieldToPatchName);
-				if (fieldToPatch == null) {
-					throw new RuntimeException("Cannot find field to patch: " + fieldToPatchName + " in " + classType.getName());
-				}
-
-				fieldToPatch.setAccessible(true);
-
-				Object potentialJavaFxParent = fieldToPatch.get(parentController);
-				addChildToThisPotentialJavaFxParent(potentialJavaFxParent, node);
+				addChildToThisPotentialJavaFxParent(parentNode, node);
 			} else {
 				throw new RuntimeException("Cannot inject something that is not an @FxNode");
 			}
@@ -95,8 +88,25 @@ public class FxControllerLoader {
 		}
 	}
 
-	private static void addChildToThisPotentialJavaFxParent(Object object, Node node) {
-		if (object instanceof Pane pane) {
+	private static Node getParentNode(Object parentController, Class<?> parentControllerClass, FxChild childConfig, Class<?> classType) throws IllegalAccessException {
+		// todo validate whether we keep on patching the same node; if it's not something that explicitly
+		//  should hold many children, we should throw an exception
+
+		String fieldToPatchName = childConfig.patchNode();
+		Field fieldToPatch = ReflectionUtils.findField(parentControllerClass, fieldToPatchName);
+		if (fieldToPatch == null) {
+			throw new RuntimeException("Cannot find field to patch: " + fieldToPatchName + " in " + classType.getName());
+		}
+		fieldToPatch.setAccessible(true);
+		Object potentialJavaFxParent = fieldToPatch.get(parentController);
+		if (potentialJavaFxParent instanceof Node node) {
+			return node;
+		}
+		throw new RuntimeException("Cannot patch field: " + fieldToPatchName + " in " + classType.getName() + ": not a Node");
+	}
+
+	private static void addChildToThisPotentialJavaFxParent(Node parent, Node node) {
+		if (parent instanceof Pane pane) {
 			pane.getChildren().setAll(node);
 			AnchorPane.setTopAnchor(node, 0.0);
 			AnchorPane.setLeftAnchor(node, 0.0);
