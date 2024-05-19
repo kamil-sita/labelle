@@ -48,6 +48,8 @@ public class FxControllerLoader {
 		if (clazz.isAnnotationPresent(FxDictatesHeight.class)) {
 			if (parentNode instanceof Region parentAsRegion) {
 				if (childNode instanceof Region childAsRegion) {
+					// todo this probably should not happen if it's a region that hold multiple children
+
 					parentAsRegion.setMaxHeight(childAsRegion.getMaxHeight());
 					parentAsRegion.setMaxWidth(childAsRegion.getMaxWidth());
 
