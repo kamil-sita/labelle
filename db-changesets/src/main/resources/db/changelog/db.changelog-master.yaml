@@ -45,3 +45,5 @@ databaseChangeLog:
       file: db/changelog/changelogs/022-make-images-referable.yml
   - include:
       file: db/changelog/changelogs/023-change-referability-of-images.yml
+  - include:
+      file: db/changelog/changelogs/024-add-deltas.yml

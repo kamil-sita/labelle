@@ -6,6 +6,7 @@ package place.sita.labelle.jooq;
 
 import place.sita.labelle.jooq.tables.EffectiveHistoricConfiguration;
 import place.sita.labelle.jooq.tables.Image;
+import place.sita.labelle.jooq.tables.ImageDelta;
 import place.sita.labelle.jooq.tables.ImageFile;
 import place.sita.labelle.jooq.tables.ImageResolvable;
 import place.sita.labelle.jooq.tables.ImageTags;
@@ -15,6 +16,7 @@ import place.sita.labelle.jooq.tables.Repository;
 import place.sita.labelle.jooq.tables.RepositoryRelationship;
 import place.sita.labelle.jooq.tables.Root;
 import place.sita.labelle.jooq.tables.Tag;
+import place.sita.labelle.jooq.tables.TagDelta;
 import place.sita.labelle.jooq.tables.TagImage;
 import place.sita.labelle.jooq.tables.TagSrc;
 import place.sita.labelle.jooq.tables.Task;
@@ -40,6 +42,11 @@ public class Tables {
      * The table <code>public.image</code>.
      */
     public static final Image IMAGE = Image.IMAGE;
+
+    /**
+     * The table <code>public.image_delta</code>.
+     */
+    public static final ImageDelta IMAGE_DELTA = ImageDelta.IMAGE_DELTA;
 
     /**
      * The table <code>public.image_file</code>.
@@ -85,6 +92,11 @@ public class Tables {
      * The table <code>public.tag</code>.
      */
     public static final Tag TAG = Tag.TAG;
+
+    /**
+     * The table <code>public.tag_delta</code>.
+     */
+    public static final TagDelta TAG_DELTA = TagDelta.TAG_DELTA;
 
     /**
      * The table <code>public.tag_image</code>.

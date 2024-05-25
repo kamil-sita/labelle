@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0024-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: tag_delta
+            columns:
+              - column:
+                  name: image_id
+                  type: uuid
+                  constraints:
+                      nullable: false
+                      references: image(id)
+                      foreignKeyName: fk_image_delta_image_id
+              - column:
+                  name: adds
+                  type: boolean
+                  constraints:
+                      nullable: false
+              - column:
+                  name: family
+                  type: text
+                  constraints:
+                      nullable: false
+              - column:
+                  name: tag
+                  type: text
+                  constraints:
+                      nullable: false
+        - createTable:
+            tableName: image_delta
+            columns:
+              - column:
+                  name: image_id
+                  type: uuid
+                  constraints:
+                      nullable: false
+                      references: image(id)
+                      foreignKeyName: fk_image_delta_image_id
+              - column:
+                  name: image_resolvable_id
+                  type: uuid
+                  constraints:
+                      nullable: false
+                      references: image_resolvable(id)
+                      foreignKeyName: fk_image_delta_image_resolvable_id
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: use_tag_delta
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                      nullable: false
+              - column:
+                  name: use_image_delta
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                      nullable: false

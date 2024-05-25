@@ -12,7 +12,7 @@ import org.jooq.Field;
 import org.jooq.ForeignKey;
 import org.jooq.Name;
 import org.jooq.Record;
-import org.jooq.Row5;
+import org.jooq.Row7;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -72,6 +72,16 @@ public class Image extends TableImpl<ImageRecord> {
      * The column <code>public.image.parent_reference</code>.
      */
     public final TableField<ImageRecord, String> PARENT_REFERENCE = createField(DSL.name("parent_reference"), SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.image.use_tag_delta</code>.
+     */
+    public final TableField<ImageRecord, Boolean> USE_TAG_DELTA = createField(DSL.name("use_tag_delta"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.image.use_image_delta</code>.
+     */
+    public final TableField<ImageRecord, Boolean> USE_IMAGE_DELTA = createField(DSL.name("use_image_delta"), SQLDataType.BOOLEAN.nullable(false).defaultValue(DSL.field("true", SQLDataType.BOOLEAN)), this, "");
 
     private Image(Name alias, Table<ImageRecord> aliased) {
         this(alias, aliased, null);
@@ -170,11 +180,11 @@ public class Image extends TableImpl<ImageRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row7 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<UUID, UUID, UUID, String, String> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row7<UUID, UUID, UUID, String, String, Boolean, Boolean> fieldsRow() {
+        return (Row7) super.fieldsRow();
     }
 }

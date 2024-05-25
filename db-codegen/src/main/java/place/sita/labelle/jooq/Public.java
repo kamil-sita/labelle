@@ -13,6 +13,7 @@ import org.jooq.impl.SchemaImpl;
 
 import place.sita.labelle.jooq.tables.EffectiveHistoricConfiguration;
 import place.sita.labelle.jooq.tables.Image;
+import place.sita.labelle.jooq.tables.ImageDelta;
 import place.sita.labelle.jooq.tables.ImageFile;
 import place.sita.labelle.jooq.tables.ImageResolvable;
 import place.sita.labelle.jooq.tables.ImageTags;
@@ -22,6 +23,7 @@ import place.sita.labelle.jooq.tables.Repository;
 import place.sita.labelle.jooq.tables.RepositoryRelationship;
 import place.sita.labelle.jooq.tables.Root;
 import place.sita.labelle.jooq.tables.Tag;
+import place.sita.labelle.jooq.tables.TagDelta;
 import place.sita.labelle.jooq.tables.TagImage;
 import place.sita.labelle.jooq.tables.TagSrc;
 import place.sita.labelle.jooq.tables.Task;
@@ -54,6 +56,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.image</code>.
      */
     public final Image IMAGE = Image.IMAGE;
+
+    /**
+     * The table <code>public.image_delta</code>.
+     */
+    public final ImageDelta IMAGE_DELTA = ImageDelta.IMAGE_DELTA;
 
     /**
      * The table <code>public.image_file</code>.
@@ -99,6 +106,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.tag</code>.
      */
     public final Tag TAG = Tag.TAG;
+
+    /**
+     * The table <code>public.tag_delta</code>.
+     */
+    public final TagDelta TAG_DELTA = TagDelta.TAG_DELTA;
 
     /**
      * The table <code>public.tag_image</code>.
@@ -158,6 +170,7 @@ public class Public extends SchemaImpl {
         return Arrays.asList(
             EffectiveHistoricConfiguration.EFFECTIVE_HISTORIC_CONFIGURATION,
             Image.IMAGE,
+            ImageDelta.IMAGE_DELTA,
             ImageFile.IMAGE_FILE,
             ImageResolvable.IMAGE_RESOLVABLE,
             ImageTags.IMAGE_TAGS,
@@ -167,6 +180,7 @@ public class Public extends SchemaImpl {
             RepositoryRelationship.REPOSITORY_RELATIONSHIP,
             Root.ROOT,
             Tag.TAG,
+            TagDelta.TAG_DELTA,
             TagImage.TAG_IMAGE,
             TagSrc.TAG_SRC,
             Task.TASK,
