@@ -1,79 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="728.0" prefWidth="374.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <CheckBox layoutX="14.0" layoutY="6.0" mnemonicParsing="false" text="Enable delta"/>
-        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0"
-              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+        <CheckBox layoutX="14.0" layoutY="6.0" mnemonicParsing="false" text="Enable delta" />
+        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
             <children>
                 <TitledPane expanded="false" text="Image delta">
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                        <AnchorPane maxHeight="180.0" minHeight="180.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="64.0" text="Parent" />
+                        <Label layoutX="106.0" layoutY="36.0" text="Root" />
+                        <Label layoutX="214.0" layoutY="36.0" text="Loc" />
+                        <CheckBox layoutX="15.0" layoutY="15.0" mnemonicParsing="false" text="Enable image delta" />
+                        <Label layoutX="14.0" layoutY="102.0" text="This" />
+                        <TextField layoutX="57.0" layoutY="60.0" prefHeight="26.0" prefWidth="131.0" />
+                        <TextField layoutX="57.0" layoutY="97.0" prefHeight="26.0" prefWidth="131.0" />
+                        <TextField layoutX="199.0" layoutY="60.0" prefHeight="26.0" prefWidth="131.0" />
+                        <TextField layoutX="199.0" layoutY="97.0" prefHeight="26.0" prefWidth="131.0" />
+                        <Button layoutX="14.0" layoutY="149.0" mnemonicParsing="false" text="Calculate image delta" />
+                        <Button layoutX="246.0" layoutY="149.0" mnemonicParsing="false" text="Apply image delta" />
+                     </children></AnchorPane>
                     </content>
                 </TitledPane>
                 <TitledPane text="Tags delta">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="342.0">
                             <children>
-                                <CheckBox layoutX="14.0" layoutY="14.0" mnemonicParsing="false"
-                                          text="Enable tag delta"/>
-                                <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0"
-                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                      AnchorPane.topAnchor="30.0">
+                                <CheckBox layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Enable tag delta" />
+                                <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
                                     <children>
                                         <TitledPane text="Parent tags (currently)">
                                             <content>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                            prefWidth="200.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                     <children>
-                                                        <TableView prefHeight="200.0" prefWidth="200.0"
-                                                                   AnchorPane.bottomAnchor="0.0"
-                                                                   AnchorPane.leftAnchor="0.0"
-                                                                   AnchorPane.rightAnchor="0.0"
-                                                                   AnchorPane.topAnchor="0.0">
+                                                        <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn prefWidth="160.0" text="Family"/>
-                                                                <TableColumn prefWidth="134.0" text="Entry"/>
+                                                                <TableColumn prefWidth="160.0" text="Family" />
+                                                                <TableColumn prefWidth="134.0" text="Entry" />
                                                             </columns>
                                                         </TableView>
                                                     </children>
                                                 </AnchorPane>
                                             </content>
                                         </TitledPane>
-                                        <TitledPane text="Delta">
+                                        <TitledPane prefHeight="331.0" prefWidth="354.0" text="Delta">
                                             <content>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0"
-                                                            prefWidth="200.0">
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="277.0" prefWidth="352.0">
                                                     <children>
-                                                        <TableView prefHeight="57.0" prefWidth="131.0">
-                                                            <columns>
-                                                                <TableColumn prefWidth="160.0" text="Family"/>
-                                                                <TableColumn prefWidth="134.0" text="Entry"/>
-                                                            </columns>
-                                                        </TableView>
+                                          <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                                   <children>
+                                                                    <TableView prefHeight="185.0" prefWidth="314.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                        <columns>
+                                                            <TableColumn prefWidth="42.39996016025543" text="X" />
+                                                            <TableColumn minWidth="5.6000183105468295" prefWidth="42.39995574951172" text="+/-" />
+                                                                            <TableColumn prefWidth="71.99998474121094" text="Family" />
+                                                                            <TableColumn prefWidth="175.99998474121094" text="Entry" />
+                                                                        </columns>
+                                                                    </TableView>
+                                                   </children>
+                                                </AnchorPane>
+                                                <AnchorPane maxHeight="71.0" minHeight="71.0" prefHeight="71.0" prefWidth="333.0">
+                                                   <children>
+                                                      <Label layoutX="14.0" layoutY="16.0" text="Family" />
+                                                      <Label layoutX="14.0" layoutY="50.0" prefWidth="27.0" text="Entry" />
+                                                      <TextField layoutX="69.0" layoutY="13.0" />
+                                                      <TextField layoutX="69.0" layoutY="46.0" />
+                                                      <Button layoutX="238.0" layoutY="12.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="65.0" text="+" />
+                                                      <Button layoutX="238.0" layoutY="45.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="65.0" text="-" />
+                                                   </children>
+                                                </AnchorPane>
+                                             </children>
+                                          </VBox>
                                                     </children>
                                                 </AnchorPane>
                                             </content>
                                         </TitledPane>
                                     </children>
                                 </VBox>
-                                <Button layoutX="225.0" layoutY="312.0" mnemonicParsing="false" text="Apply tags delta"
-                                        AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0"/>
-                                <Button layoutX="11.0" layoutY="316.0" mnemonicParsing="false"
-                                        text="Calculate tags delta"/>
+                                <Button layoutX="225.0" layoutY="312.0" mnemonicParsing="false" text="Apply tags delta" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" />
+                                <Button layoutX="8.0" layoutY="589.0" mnemonicParsing="false" text="Calculate tags delta" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
                             </children>
                         </AnchorPane>
                     </content>
                 </TitledPane>
             </children>
         </VBox>
-        <Button layoutX="232.0" layoutY="438.0" mnemonicParsing="false" text="Apply all enabled deltas"
-                AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0"/>
-        <Button layoutX="9.0" layoutY="438.0" mnemonicParsing="false" text="Calculate all enabled deltas"
-                AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0"/>
+        <Button layoutX="232.0" layoutY="438.0" mnemonicParsing="false" text="Apply all enabled deltas" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" />
+        <Button layoutX="9.0" layoutY="438.0" mnemonicParsing="false" text="Calculate all enabled deltas" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
     </children>
 </AnchorPane>
-
