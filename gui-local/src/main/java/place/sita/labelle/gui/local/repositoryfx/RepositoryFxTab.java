@@ -6,17 +6,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.gui.local.fx.ButtonCell;
@@ -24,7 +23,7 @@ import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.threading.Threading;
 import place.sita.labelle.core.filtering.LogicalExpr;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
-import place.sita.labelle.core.repository.inrepository.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagResponse;
 import place.sita.labelle.core.repository.repositories.Repository;
@@ -56,9 +55,12 @@ public class RepositoryFxTab {
 
     private final RepositoryService repositoryService;
     private final InRepositoryService inRepositoryService;
-    public RepositoryFxTab(RepositoryService repositoryService, InRepositoryService inRepositoryService, ImageCachingLoader imageCachingLoader) {
+    private final ApplicationContext context;
+
+    public RepositoryFxTab(RepositoryService repositoryService, InRepositoryService inRepositoryService, ApplicationContext context, ImageCachingLoader imageCachingLoader) {
         this.repositoryService = repositoryService;
         this.inRepositoryService = inRepositoryService;
+	    this.context = context;
 	    this.imageCachingLoader = imageCachingLoader;
     }
 
@@ -146,6 +148,7 @@ public class RepositoryFxTab {
                 this.selectedImage = selected;
                 loadImage(selected);
                 loadTags(selected);
+                emit(selected);
             }
         );
 
@@ -156,6 +159,10 @@ public class RepositoryFxTab {
                 labPaginator.hardReload(new FilteringParameters(newValue.id()));
             }
         });
+    }
+
+    private void emit(ImageResponse selected) {
+        context.publishEvent(new ImageSelectedEvent(selected));
     }
 
     private Future<Result2<BufferedImage, Exception>> currentFutureImage;

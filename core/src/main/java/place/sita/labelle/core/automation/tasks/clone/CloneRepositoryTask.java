@@ -2,7 +2,7 @@ package place.sita.labelle.core.automation.tasks.clone;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import place.sita.labelle.core.repository.inrepository.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.PersistableImagesTags;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;

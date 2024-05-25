@@ -7,12 +7,17 @@ import place.sita.labelle.core.images.imagelocator.ImagePtr;
 import place.sita.labelle.core.images.imagelocator.Root;
 import place.sita.labelle.core.persistence.JqRepo;
 import place.sita.labelle.core.repository.RootRepository;
+import place.sita.labelle.core.repository.inrepository.delta.DeltaRepository;
+import place.sita.labelle.core.repository.inrepository.delta.TagDeltaResponse;
+import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
+import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.utils.Result3;
 import place.sita.labelle.jooq.Tables;
 
 import javax.annotation.Nullable;
 import java.io.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static place.sita.labelle.jooq.tables.Image.IMAGE;
@@ -23,11 +28,19 @@ public class InRepositoryService {
     private final DSLContext dslContext;
     private final RootRepository rootRepository;
     private final TagRepository tagRepository;
+    private final ImageRepository imageRepository;
+    private final DeltaRepository deltaRepository;
 
-    public InRepositoryService(DSLContext dslContext, RootRepository rootRepository, TagRepository tagRepository) {
+    public InRepositoryService(
+        DSLContext dslContext,
+        RootRepository rootRepository,
+        TagRepository tagRepository,
+        ImageRepository imageRepository, DeltaRepository deltaRepository) {
         this.dslContext = dslContext;
         this.rootRepository = rootRepository;
 	    this.tagRepository = tagRepository;
+	    this.imageRepository = imageRepository;
+        this.deltaRepository = deltaRepository;
     }
 
 
@@ -37,17 +50,7 @@ public class InRepositoryService {
     }
 
     public List<ImageResponse> images(UUID repositoryUuid, int offset, int limit, String query) {
-        return dslContext
-            .select(IMAGE.ID, IMAGE.imageResolvable().imageFile().RELATIVE_DIR, IMAGE.imageResolvable().imageFile().root().ROOT_DIR)
-            .from(IMAGE)
-            .where(IMAGE.REPOSITORY_ID.equal(repositoryUuid))
-            .orderBy(IMAGE.ID)
-            .limit(limit)
-            .offset(offset)
-            .fetch()
-            .map(rr -> {
-                return new ImageResponse(rr.value1(), rr.value3(), rr.value2());
-            });
+        return imageRepository.images(repositoryUuid, offset, limit, query);
     }
 
     @Transactional
@@ -152,7 +155,6 @@ public class InRepositoryService {
         return newImageId;
     }
 
-    // todo current approach is likely very unoptimized. Why send a job only to re-retrieve the data later? Can it reasonably change?
     public ImagePtr getImagePtr(UUID imageId) {
         return dslContext
             .select(IMAGE.ID, IMAGE.imageResolvable().imageFile().RELATIVE_DIR, IMAGE.imageResolvable().imageFile().root().ROOT_DIR)
@@ -163,6 +165,10 @@ public class InRepositoryService {
                 return new ImageResponse(rr.value1(), rr.value3(), rr.value2()).toPtr();
             })
             .get(0);
+    }
+
+    public Optional<ImageResponse> loadImage(UUID imageId) {
+        return imageRepository.loadImage(imageId);
     }
 
     /**
@@ -242,6 +248,16 @@ public class InRepositoryService {
     public void replaceMarker(UUID imageId, String oldTag, String oldFamily, String newTag, String newFamily, boolean shared) {
         removeMarker(imageId, oldTag, oldFamily);
         addMarker(imageId, newTag, newFamily, shared);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TagDeltaResponse> getTagDeltas(UUID imageId) {
+        return deltaRepository.getTagDeltas(imageId);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<ImageResponse> getImageDelta(UUID imageId) {
+        return deltaRepository.getImageDelta(imageId);
     }
 
     private String subtr(String fileDir, String directory) {

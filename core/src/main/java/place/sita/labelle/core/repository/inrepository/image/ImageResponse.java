@@ -1,4 +1,4 @@
-package place.sita.labelle.core.repository.inrepository;
+package place.sita.labelle.core.repository.inrepository.image;
 
 import place.sita.labelle.core.images.imagelocator.ImagePtr;
 

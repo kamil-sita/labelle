@@ -1,7 +1,7 @@
 package place.sita.labelle.extensions.tagging;
 
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.repository.inrepository.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;

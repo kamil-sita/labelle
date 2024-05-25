@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="185.0" minHeight="185.0" minWidth="0.0" prefHeight="185.0" prefWidth="395.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label layoutX="5.0" layoutY="66.0" text="Parent" />
+        <Label layoutX="97.0" layoutY="38.0" text="Root" />
+        <Label layoutX="205.0" layoutY="38.0" text="Loc" />
+        <CheckBox fx:id="enableImageDeltaCheckBox" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Enable image delta" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+        <Label layoutX="5.0" layoutY="104.0" text="This" />
+        <TextField fx:id="parentRootTextField" layoutX="48.0" layoutY="62.0" prefHeight="26.0" prefWidth="131.0" />
+        <TextField fx:id="thisRootTextField" layoutX="48.0" layoutY="99.0" prefHeight="26.0" prefWidth="131.0" />
+        <TextField fx:id="parentLocTextField" layoutX="190.0" layoutY="62.0" prefHeight="26.0" prefWidth="131.0" />
+        <TextField fx:id="thisLocTextField" layoutX="190.0" layoutY="99.0" prefHeight="26.0" prefWidth="131.0" />
+        <Button layoutX="18.0" layoutY="123.0" mnemonicParsing="false" onAction="#calculateImageDeltaPress" text="Calculate image delta" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" />
+        <Button layoutX="250.0" layoutY="123.0" mnemonicParsing="false" onAction="#applyImageDeltaPress" text="Apply image delta" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+        <Button layoutX="338.0" layoutY="100.0" mnemonicParsing="false" onAction="#saveThisRootLocPress" text="Save" />
+    </children>
+</AnchorPane>
