@@ -74,63 +74,8 @@
                                       <tabs>
                                         <Tab text="Delta">
                                           <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                   <children>
-                                                      <CheckBox layoutX="14.0" layoutY="6.0" mnemonicParsing="false" text="Enable delta" />
-                                                      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
-                                                         <children>
-                                                            <TitledPane expanded="false" text="Image delta">
-                                                              <content>
-                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                              </content>
-                                                            </TitledPane>
-                                                            <TitledPane text="Tags delta">
-                                                              <content>
-                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="1000.0" prefWidth="342.0">
-                                                                     <children>
-                                                                        <CheckBox layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Enable tag delta" />
-                                                                        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
-                                                                           <children>
-                                                                              <TitledPane text="Parent tags (currently)">
-                                                                                <content>
-                                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                                                       <children>
-                                                                                          <TableView prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                                            <columns>
-                                                                                              <TableColumn prefWidth="160.0" text="Family" />
-                                                                                              <TableColumn prefWidth="134.0" text="Entry" />
-                                                                                            </columns>
-                                                                                          </TableView>
-                                                                                       </children>
-                                                                                    </AnchorPane>
-                                                                                </content>
-                                                                              </TitledPane>
-                                                                              <TitledPane text="Delta">
-                                                                                 <content>
-                                                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                                                       <children>
-                                                                                          <TableView prefHeight="57.0" prefWidth="131.0">
-                                                                                             <columns>
-                                                                                                <TableColumn prefWidth="160.0" text="Family" />
-                                                                                                <TableColumn prefWidth="134.0" text="Entry" />
-                                                                                             </columns>
-                                                                                          </TableView>
-                                                                                       </children></AnchorPane>
-                                                                                 </content>
-                                                                              </TitledPane>
-                                                                           </children>
-                                                                        </VBox>
-                                                                        <Button layoutX="225.0" layoutY="312.0" mnemonicParsing="false" text="Apply tags delta" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" />
-                                                                        <Button layoutX="11.0" layoutY="316.0" mnemonicParsing="false" text="Calculate tags delta" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                              </content>
-                                                            </TitledPane>
-                                                         </children>
-                                                      </VBox>
-                                                      <Button layoutX="232.0" layoutY="438.0" mnemonicParsing="false" text="Apply all enabled deltas" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="1.0" />
-                                                      <Button layoutX="9.0" layoutY="438.0" mnemonicParsing="false" text="Calculate all enabled deltas" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="1.0" />
-                                                   </children>
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" fx:id="deltasComponent">
+
                                                 </AnchorPane>
                                           </content>
                                         </Tab>
