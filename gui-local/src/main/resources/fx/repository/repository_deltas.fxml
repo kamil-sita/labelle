@@ -10,12 +10,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="728.0" prefWidth="374.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="728.0" prefWidth="595.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <CheckBox layoutX="14.0" layoutY="6.0" mnemonicParsing="false" text="Enable delta" />
-        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+        <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <TitledPane expanded="false" text="Image delta">
+                <TitledPane text="Image delta">
                     <content>
                         <AnchorPane maxHeight="180.0" minHeight="180.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -30,6 +29,7 @@
                         <TextField layoutX="199.0" layoutY="97.0" prefHeight="26.0" prefWidth="131.0" />
                         <Button layoutX="14.0" layoutY="149.0" mnemonicParsing="false" text="Calculate image delta" />
                         <Button layoutX="246.0" layoutY="149.0" mnemonicParsing="false" text="Apply image delta" />
+                        <Button layoutX="347.0" layoutY="98.0" mnemonicParsing="false" text="Save" />
                      </children></AnchorPane>
                     </content>
                 </TitledPane>
@@ -64,10 +64,10 @@
                                                    <children>
                                                                     <TableView prefHeight="185.0" prefWidth="314.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                         <columns>
-                                                            <TableColumn prefWidth="42.39996016025543" text="X" />
-                                                            <TableColumn minWidth="5.6000183105468295" prefWidth="42.39995574951172" text="+/-" />
-                                                                            <TableColumn prefWidth="71.99998474121094" text="Family" />
-                                                                            <TableColumn prefWidth="175.99998474121094" text="Entry" />
+                                                            <TableColumn prefWidth="64.0" text="X" />
+                                                            <TableColumn minWidth="5.6000183105468295" prefWidth="70.0" text="+/-" />
+                                                                            <TableColumn prefWidth="114.0" text="Family" />
+                                                                            <TableColumn prefWidth="151.0" text="Entry" />
                                                                         </columns>
                                                                     </TableView>
                                                    </children>
