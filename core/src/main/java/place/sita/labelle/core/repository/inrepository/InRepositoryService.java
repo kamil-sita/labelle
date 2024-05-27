@@ -89,19 +89,29 @@ public class InRepositoryService {
         return Result3.success(image);
     }
 
+    public Ids getIds(UUID imageId) {
+        return dslContext
+            .select(IMAGE.ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE)
+            .from(IMAGE)
+            .where(IMAGE.ID.equal(imageId))
+            .fetchOne(rr -> {
+                return new Ids(rr.value1(), rr.value2(), rr.value3());
+            });
+    }
+
     /**
      * Copies this image definition to another repository.
      *
-     * Note that this should not be used for children-parent repositories, but only for clones of repositories. See {@link InRepositoryService#referImage(UUID, UUID)}
+     * Note that this should not be used for children-parent repositories, but only for clones of repositories. See {@link InRepositoryService#referImage(UUID, UUID, String)}
      */
     @Transactional
     public UUID copyImage(UUID newRepoId, UUID originalImageId) {
-        return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.COPY);
+        return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.COPY, null);
     }
 
     @Transactional
-    public UUID referImage(UUID newRepoId, UUID originalImageId) {
-        return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.REFER);
+    public UUID referImage(UUID newRepoId, UUID originalImageId, String persistentId) {
+        return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.REFER, persistentId);
     }
 
     @Transactional // todo make this one throw if something goes wrong - unless it already does?
@@ -120,12 +130,20 @@ public class InRepositoryService {
             .execute();
     }
 
+    @Transactional
+    public void setVisibility(UUID imageId, boolean value) {
+        dslContext.update(IMAGE)
+            .set(IMAGE.VISIBLE_TO_CHILDREN, value)
+            .where(IMAGE.ID.eq(imageId))
+            .execute();
+    }
+
     private enum CopyOrRefer {
         COPY,
         REFER;
     }
 
-    private UUID copyOrRefer(UUID newRepoId, UUID originalImageId, CopyOrRefer copyOrRefer) {
+    private UUID copyOrRefer(UUID newRepoId, UUID originalImageId, CopyOrRefer copyOrRefer, String persistentId) {
         // this operation makes absolutely no sense if we are copying from the same repo, or if this image exists here. Let's check for that.
         UUID underlyingImageResolvable = JqRepo.fetchOne(() ->
             dslContext
@@ -149,22 +167,38 @@ public class InRepositoryService {
 
         UUID newImageId = UUID.randomUUID();
 
-        // todo reference logic
+        String referenceId;
+        if (persistentId == null) {
+            referenceId = JqRepo.fetchOne(() ->
+                dslContext
+                    .select(IMAGE.REFERENCE_ID)
+                    .from(IMAGE)
+                    .where(IMAGE.ID.eq(originalImageId))
+                    .fetch()
+            );
+        } else {
+            referenceId = persistentId;
+        }
 
-        String referenceId = JqRepo.fetchOne(() ->
-            dslContext
-                .select(IMAGE.REFERENCE_ID)
-                .from(IMAGE)
-                .where(IMAGE.ID.eq(originalImageId))
-                .fetch()
-        );
+        String parentReferenceId;
+        if (copyOrRefer == CopyOrRefer.COPY) {
+            parentReferenceId = JqRepo.fetchOne(() ->
+                dslContext
+                    .select(IMAGE.PARENT_REFERENCE)
+                    .from(IMAGE)
+                    .where(IMAGE.ID.eq(originalImageId))
+                    .fetch()
+            );
+        } else {
+            parentReferenceId = referenceId;
+        }
 
         // todo we can probably do with less queries. And better copying, not one by one.
 
         JqRepo.insertOne(() ->
             dslContext.insertInto(IMAGE)
-                .columns(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID)
-                .values(newImageId, underlyingImageResolvable, newRepoId, referenceId)
+                .columns(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE)
+                .values(newImageId, underlyingImageResolvable, newRepoId, referenceId, parentReferenceId)
                 .execute()
         );
 

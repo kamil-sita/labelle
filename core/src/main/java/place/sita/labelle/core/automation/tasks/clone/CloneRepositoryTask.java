@@ -2,6 +2,7 @@ package place.sita.labelle.core.automation.tasks.clone;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import place.sita.labelle.core.automation.tasks.AutomationTasksCommon;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.PersistableImagesTags;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
@@ -32,7 +33,7 @@ public class CloneRepositoryTask implements TaskType<CloneRepositoryTaskInput, R
     public TaskResult<UUID> runTask(CloneRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext) {
         UUID newRepoId = parameter.newRepositoryId() == null ? UUID.randomUUID() : parameter.newRepositoryId();
 
-        createRepo(parameter, taskContext, newRepoId);
+        AutomationTasksCommon.createRepo(parameter.newRepositoryName(), taskContext, newRepoId);
 
         addParents(parameter, taskContext, newRepoId);
 
