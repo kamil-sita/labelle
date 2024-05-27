@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0027-01
+      author: kamil-sita
+      changes:
+        - createView:
+            viewName: tag_delta_calc
+            selectQuery: |
+              SELECT 
+                  delta.added AS added, 
+                  delta.source AS source, 
+                  delta.tag AS tag, 
+                  delta.image_id AS image_id
+              FROM (
+                  (
+                      SELECT 
+                          true AS added, 
+                          child.tag_family AS source, 
+                          child.tag_value AS tag, 
+                          child.image_id
+                      FROM 
+                          image_tags child
+                      JOIN 
+                          image child_im ON child.image_id = child_im.id
+                      WHERE 
+                          child_im.parent_reference IS NOT NULL
+                          AND NOT EXISTS (
+                              SELECT 1
+                              FROM 
+                                  image_tags parent
+                              JOIN 
+                                  parent_child_image pci ON pci.parent_image_id = parent.image_id
+                              WHERE 
+                                  pci.child_image_id = child.image_id
+                                  AND child.tag_value = parent.tag_value
+                                  AND child.tag_family = parent.tag_family
+                          )
+                  )
+                  UNION
+                  (
+                      SELECT 
+                          false AS added, 
+                          parent.tag_family AS source, 
+                          parent.tag_value AS tag, 
+                          pci.child_image_id AS image_id
+                      FROM 
+                          image_tags parent
+                      JOIN 
+                          parent_child_image pci ON pci.parent_image_id = parent.image_id
+                      WHERE 
+                          NOT EXISTS (
+                              SELECT 1
+                              FROM 
+                                  image_tags child
+                              WHERE 
+                                  child.image_id = pci.child_image_id
+                                  AND child.tag_value = parent.tag_value
+                                  AND child.tag_family = parent.tag_family
+                          )
+                  )
+              ) delta

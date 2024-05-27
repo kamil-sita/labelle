@@ -2,15 +2,12 @@ package place.sita.labelle.core.repository.inrepository.delta;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.images.imagelocator.ImagePtr;
 import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.jooq.tables.ImageDelta;
 import place.sita.labelle.jooq.tables.TagDelta;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class DeltaRepository {
@@ -29,7 +26,7 @@ public class DeltaRepository {
 			.where(TagDelta.TAG_DELTA.IMAGE_ID.eq(imageId))
 			.fetch()
 			.map(rr -> {
-				return new TagDeltaResponse(rr.value3(), rr.value2(), TagDeltaType.ADD);
+				return new TagDeltaResponse(rr.value3(), rr.value2(), rr.value1() ? TagDeltaType.ADD : TagDeltaType.REMOVE);
 			});
 	}
 

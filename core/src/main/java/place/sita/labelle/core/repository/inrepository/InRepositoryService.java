@@ -104,6 +104,22 @@ public class InRepositoryService {
         return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.REFER);
     }
 
+    @Transactional // todo make this one throw if something goes wrong - unless it already does?
+    public void setPersistentId(UUID imageId, String persistentId) {
+        dslContext.update(IMAGE)
+            .set(IMAGE.REFERENCE_ID, persistentId)
+            .where(IMAGE.ID.eq(imageId))
+            .execute();
+    }
+
+    @Transactional
+    public void setParentPersistentId(UUID imageId, String parentPersistentId) {
+        dslContext.update(IMAGE)
+            .set(IMAGE.PARENT_REFERENCE, parentPersistentId)
+            .where(IMAGE.ID.eq(imageId))
+            .execute();
+    }
+
     private enum CopyOrRefer {
         COPY,
         REFER;

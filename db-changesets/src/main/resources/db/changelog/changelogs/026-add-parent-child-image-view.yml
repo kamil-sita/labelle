@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0026-01
+      author: kamil-sita
+      changes:
+        - createView:
+            viewName: parent_child_image
+            selectQuery: |
+              select child_image.id as child_image_id, parent_image.id as parent_image_id
+              from image child_image, repository_relationship, image parent_image
+              where 1=1
+              and child_image.repository_id = repository_relationship.child_id
+              and parent_image.repository_id = repository_relationship.parent_id
+              and child_image.parent_reference = parent_image.reference_id
+              and parent_image.visible_to_children = true

@@ -11,12 +11,14 @@ import place.sita.labelle.jooq.tables.ImageFile;
 import place.sita.labelle.jooq.tables.ImageResolvable;
 import place.sita.labelle.jooq.tables.ImageTags;
 import place.sita.labelle.jooq.tables.Marker;
+import place.sita.labelle.jooq.tables.ParentChildImage;
 import place.sita.labelle.jooq.tables.Preferences;
 import place.sita.labelle.jooq.tables.Repository;
 import place.sita.labelle.jooq.tables.RepositoryRelationship;
 import place.sita.labelle.jooq.tables.Root;
 import place.sita.labelle.jooq.tables.Tag;
 import place.sita.labelle.jooq.tables.TagDelta;
+import place.sita.labelle.jooq.tables.TagDeltaCalc;
 import place.sita.labelle.jooq.tables.TagImage;
 import place.sita.labelle.jooq.tables.TagSrc;
 import place.sita.labelle.jooq.tables.Task;
@@ -69,6 +71,11 @@ public class Tables {
     public static final Marker MARKER = Marker.MARKER;
 
     /**
+     * The table <code>public.parent_child_image</code>.
+     */
+    public static final ParentChildImage PARENT_CHILD_IMAGE = ParentChildImage.PARENT_CHILD_IMAGE;
+
+    /**
      * The table <code>public.preferences</code>.
      */
     public static final Preferences PREFERENCES = Preferences.PREFERENCES;
@@ -97,6 +104,11 @@ public class Tables {
      * The table <code>public.tag_delta</code>.
      */
     public static final TagDelta TAG_DELTA = TagDelta.TAG_DELTA;
+
+    /**
+     * The table <code>public.tag_delta_calc</code>.
+     */
+    public static final TagDeltaCalc TAG_DELTA_CALC = TagDeltaCalc.TAG_DELTA_CALC;
 
     /**
      * The table <code>public.tag_image</code>.

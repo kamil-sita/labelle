@@ -47,3 +47,9 @@ databaseChangeLog:
       file: db/changelog/changelogs/023-change-referability-of-images.yml
   - include:
       file: db/changelog/changelogs/024-add-deltas.yml
+  - include:
+      file: db/changelog/changelogs/025-add-parent-child-visibility.yml
+  - include:
+      file: db/changelog/changelogs/026-add-parent-child-image-view.yml
+  - include:
+      file: db/changelog/changelogs/027-add-tag-delta-view.yml

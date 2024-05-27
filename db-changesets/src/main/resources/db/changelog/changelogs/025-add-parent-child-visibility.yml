@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0025-01
+      author: kamil-sita
+      changes:
+        - addColumn:
+            tableName: image
+            columns:
+              - column:
+                  name: visible_to_children
+                  type: boolean
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
