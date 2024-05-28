@@ -28,7 +28,7 @@ public class Menu {
 
 	// todo
 	@FXML
-	public TabPane tabPane;
+	public TabPane mainTabPane;
 
 	private AtomicInteger scheduled = new AtomicInteger(0);
 	private AtomicInteger done = new AtomicInteger(0);

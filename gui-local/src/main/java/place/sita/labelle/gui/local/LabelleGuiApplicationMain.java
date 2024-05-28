@@ -8,9 +8,7 @@ import place.sita.labelle.core.CoreAppConfig;
 
 import java.awt.*;
 
-@SpringBootApplication
-@EnableScheduling
-@Import(CoreAppConfig.class)
+@Import(GuiConfig.class)
 public class LabelleGuiApplicationMain {
 
     public static void main(String[] args) {

@@ -23,7 +23,7 @@ import java.util.Objects;
 
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
-@FxTab(resourceFile = "/fx/repositories.fxml", order = 1, tabName = "Repositories FX")
+@FxTab(resourceFile = "/fx/repositories.fxml", order = 1, tabName = "Repositories")
 public class RepositoriesFxTab {
 
     private final RepositoryService repositoryService;
