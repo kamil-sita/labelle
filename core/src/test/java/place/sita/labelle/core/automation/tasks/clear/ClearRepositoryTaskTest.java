@@ -67,8 +67,8 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		var images = inRepositoryService.images(repo.id(), 0, Integer.MAX_VALUE, "");
-		assertThat(images).isEmpty();
+		int imageCount = inRepositoryService.images().count();
+		assertThat(imageCount).isZero();
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some family 2");
 
 		Repository unrelatedRepo = repositoryService.addRepository("Unrelated test repo");
-		UUID imageInUnrelatedRepo = inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());
+		inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());
 
 		// when
 		taskExecutionEnvironment.executeTask(
@@ -93,11 +93,11 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		var images = inRepositoryService.images(repo.id(), 0, Integer.MAX_VALUE, "");
-		assertThat(images).isEmpty();
+		int imageCount = inRepositoryService.images().process().filterByRepository(repo.id()).count();
+		assertThat(imageCount).isZero();
 
-		var imagesInUnrelatedRepo = inRepositoryService.images(unrelatedRepo.id(), 0, Integer.MAX_VALUE, "");
-		assertThat(imagesInUnrelatedRepo).isNotEmpty();
+		int imageCountInUnrelatedRepo = inRepositoryService.images().process().filterByRepository(unrelatedRepo.id()).count();
+		assertThat(imageCountInUnrelatedRepo).isOne();
 	}
 
 }
