@@ -1,7 +1,10 @@
 package place.sita.labelle.core.tasks;
 
 import org.springframework.stereotype.Component;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
+import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
 import place.sita.magicscheduler.TaskType;
@@ -29,12 +32,13 @@ public class MassTagTaskType implements TaskType<MassTagTaskType.Config, Reposit
 	public TaskResult<Response> runTask(Config parameter, TaskContext<RepositoryApi> taskContext) {
 
 		Set<UUID> image = new HashSet<>();
-		taskContext.getApi().getInRepositoryService().images(parameter.repositoryId, 0, Integer.MAX_VALUE, "")
-			.forEach(ir -> {
+		InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
+		try (CloseableIterator<ImageResponse> images = inRepositoryService.images().process().filterByRepository(parameter.repositoryId()).getIterator()) {
+			images.forEachRemaining(ir -> {
 				image.add(ir.id());
-				taskContext.getApi().getInRepositoryService()
-					.addTag(ir.id(), parameter.repositoryId, parameter.tag, parameter.family);
+				taskContext.getApi().getInRepositoryService().addTag(ir.id(), parameter.repositoryId, parameter.tag, parameter.family);
 			});
+		}
 
 		return TaskResult.success(new Response(parameter.repositoryId, image, parameter.family, parameter.tag));
 	}

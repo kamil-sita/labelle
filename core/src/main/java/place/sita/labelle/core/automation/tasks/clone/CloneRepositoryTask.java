@@ -3,9 +3,11 @@ package place.sita.labelle.core.automation.tasks.clone;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.automation.tasks.AutomationTasksCommon;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.PersistableImagesTags;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
+import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
 import place.sita.magicscheduler.TaskType;
@@ -43,15 +45,15 @@ public class CloneRepositoryTask implements TaskType<CloneRepositoryTaskInput, R
     }
 
     private static void copyImages(CloneRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext, UUID newRepoId) {
-        taskContext
-                .getApi()
-                .getInRepositoryService()
-                .images(parameter.repositoryToClone(), 0, Integer.MAX_VALUE, "")
-                .forEach(image -> {
-                    UUID imageId = copyImage(taskContext, newRepoId, image);
+        InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
 
-                    addTags(taskContext, newRepoId, image, imageId);
-                });
+        try (CloseableIterator<ImageResponse> imageIterator = inRepositoryService.images().process().filterByRepository(parameter.repositoryToClone()).getIterator()) {
+            imageIterator.forEachRemaining(image -> {
+                UUID imageId = copyImage(taskContext, newRepoId, image);
+
+                addTags(taskContext, newRepoId, image, imageId);
+            });
+        }
     }
 
     private static void addTags(TaskContext<RepositoryApi> taskContext, UUID newRepoId, ImageResponse image, UUID imageId) {
