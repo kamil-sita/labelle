@@ -1,9 +1,7 @@
 package place.sita.labelle.datasource.impl.jooq;
 
-import org.jooq.Cursor;
+import org.jooq.*;
 import org.jooq.Record;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectSelectStep;
 import place.sita.labelle.datasource.impl.UnderlyingDataSourceWithRemoval;
 import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.labelle.datasource.impl.UnderlyingDataSource;
@@ -137,12 +135,13 @@ public class JooqUnderlyingDataSourceBuilder {
 			SelectSelectStep<Record> preFrom = (SelectSelectStep<Record>) (SelectSelectStep) contextProvider.getContext()
 				.selectCount();
 
-			SelectJoinStep<Record> afterFrom = applyFiltering(preFrom, preprocessing);
+			SelectJoinStep<Record1<Integer>> afterFrom = (SelectJoinStep<Record1<Integer>>) (SelectJoinStep) applyFiltering(preFrom, preprocessing);
 
 			return
 				afterFrom
 				.where(queryBuilder.where(preprocessing))
-				.execute();
+				.fetchOne()
+				.component1();
 		}
 	}
 
