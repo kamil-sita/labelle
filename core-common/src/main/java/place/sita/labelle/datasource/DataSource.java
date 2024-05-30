@@ -1,5 +1,7 @@
 package place.sita.labelle.datasource;
 
+import place.sita.labelle.datasource.util.CloseableIterator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
