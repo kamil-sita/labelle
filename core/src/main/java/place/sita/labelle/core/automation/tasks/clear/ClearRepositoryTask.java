@@ -26,16 +26,22 @@ public class ClearRepositoryTask implements TaskType<ClearRepositoryTaskInput, R
 	@Override
 	@Transactional
 	public TaskResult<UUID> runTask(ClearRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext) {
-		taskContext
+		try (var imagesIterator = taskContext
 			.getApi()
 			.getInRepositoryService()
-			.images(parameter.repositoryId(), 0, Integer.MAX_VALUE, "")
-			.forEach(image -> {
+			.images()
+			.process()
+			.filterByRepository(parameter.repositoryId())
+			.getIterator()) {
+
+			imagesIterator.forEachRemaining(image -> {
 				taskContext
 					.getApi()
 					.getInRepositoryService()
 					.deleteImage(image.id());
 			});
+
+		}
 
 		return TaskResult.success(parameter.repositoryId());
 	}
