@@ -17,7 +17,7 @@ public sealed interface JooqUnderlyingDataSourceQueryBuilder<Type, AcceptedProce
 
 	Collection<? extends Condition> where(List<AcceptedProcessingType> preprocessing);
 
-	Number limit(List<AcceptedProcessingType> preprocessing);
+	Integer limit(List<AcceptedProcessingType> preprocessing);
 
-	Number offset(List<AcceptedProcessingType> preprocessing);
+	Integer offset(List<AcceptedProcessingType> preprocessing);
 }
