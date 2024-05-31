@@ -9,6 +9,7 @@ import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
+import place.sita.labelle.datasource.NonUniqueAnswerException;
 import place.sita.labelle.datasource.Page;
 import place.sita.labelle.jooq.Tables;
 
@@ -18,6 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ImageRepositoryTest extends TestContainersTest {
 
@@ -310,6 +312,140 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// then
 		assertThat(imageRepository.images().count()).isEqualTo(1);
 		assertThat(imageRepository.images().getAll().stream().map(ImageResponse::id).collect(Collectors.toSet())).containsExactly(image);
+	}
+
+	@Test
+	public void shouldGetAnyImageOptional_isAvailable() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		var optional = imageRepository.images().getAnyOptional();
+
+		// then
+		assertThat(optional).isPresent();
+		assertThat(optional.get().id()).isEqualTo(image);
+	}
+
+	@Test
+	public void shouldGetAnyImageOptional_isAvailable_multipleImages() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		var optional = imageRepository.images().getAnyOptional();
+
+		// then
+		assertThat(optional).isPresent();
+		HashSet<UUID> uniqueIds = new HashSet<>();
+		uniqueIds.add(optional.get().id());
+		uniqueIds.add(image);
+		uniqueIds.add(image2);
+		assertThat(uniqueIds).hasSize(2);
+	}
+
+	@Test
+	public void shouldNotGetAnyImageOptional_becauseOfFiltering() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		var optional = imageRepository.images().process().filterByImageId(UUID.randomUUID()).getAnyOptional();
+
+		// then
+		assertThat(optional).isEmpty();
+	}
+
+	@Test
+	public void shouldGetAnyImage() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		var any = imageRepository.images().getAny();
+
+		// then
+		assertThat(any.id()).isEqualTo(image);
+	}
+
+	@Test
+	public void shouldGetAnyImage_multipleImages() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		var any = imageRepository.images().getAny();
+
+		// then
+		HashSet<UUID> uniqueIds = new HashSet<>();
+		uniqueIds.add(any.id());
+		uniqueIds.add(image);
+		uniqueIds.add(image2);
+		assertThat(uniqueIds).hasSize(2);
+	}
+
+	@Test
+	public void shouldNotGetAnyImage() {
+		// when
+		ImageResponse any = imageRepository.images().getAny();
+
+		// then
+		assertThat(any).isNull();
+	}
+
+	@Test
+	public void shouldGetOnlyImage() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		var only = imageRepository.images().getOne();
+
+		// then
+		assertThat(only.id()).isEqualTo(image);
+	}
+
+	@Test
+	public void shouldGetOnlyImageOptional() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		var optional = imageRepository.images().getOneOptional();
+
+		// then
+		assertThat(optional).isPresent();
+		assertThat(optional.get().id()).isEqualTo(image);
+	}
+
+	@Test
+	public void shouldNotGetOnlyImageOptional() {
+		// when
+		var optional = imageRepository.images().getOneOptional();
+
+		// then
+		assertThat(optional).isEmpty();
+	}
+
+	@Test
+	public void shouldThrowWhenThereAreMultipleImagesAndRequiringOnly() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		inRepositoryService.addEmptySyntheticImage(repo.id());
+		inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when / then
+		assertThatThrownBy(() -> imageRepository.images().getOne())
+			.isInstanceOf(NonUniqueAnswerException.class);
 	}
 
 }
