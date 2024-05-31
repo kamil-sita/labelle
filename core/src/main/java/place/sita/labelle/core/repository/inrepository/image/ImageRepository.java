@@ -79,9 +79,12 @@ public class ImageRepository {
 						conditions.add(IMAGE.REPOSITORY_ID.equal(filterByRepositoryPreprocessor.repositoryUuid));
 					} else if (preprocessingType instanceof FilterByImageIdPreprocessor filterByImageIdPreprocessor) {
 						conditions.add(IMAGE.ID.equal(filterByImageIdPreprocessor.imageUuid));
+					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
+						// no op
 					} else {
 						throw new IllegalStateException();
 					}
+
 				}
 				return conditions;
 			}
