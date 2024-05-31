@@ -274,4 +274,42 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// then
 		assertThat(count).isEqualTo(5);
 	}
+
+	@Test
+	public void shouldRemoveImages() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		for (int i = 0; i < 100; i++) {
+			inRepositoryService.addEmptySyntheticImage(repo.id());
+		}
+
+		// when
+		imageRepository.images().remove();
+
+		// then
+		assertThat(imageRepository.images().count()).isEqualTo(0);
+	}
+
+	@Test
+	public void shouldRemoveSomeImages() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		Set<UUID> extraImagesInRepo = new HashSet<>();
+		for (int i = 0; i < 100; i++) {
+			extraImagesInRepo.add(inRepositoryService.addEmptySyntheticImage(repo.id()));
+		}
+
+		// when
+		while (!extraImagesInRepo.isEmpty()) {
+			UUID any = extraImagesInRepo.iterator().next();
+			imageRepository.images().process().filterByImageId(any).remove();
+			extraImagesInRepo.remove(any);
+		}
+
+		// then
+		assertThat(imageRepository.images().count()).isEqualTo(1);
+		assertThat(imageRepository.images().getAll().stream().map(ImageResponse::id).collect(Collectors.toSet())).containsExactly(image);
+	}
+
 }
