@@ -238,4 +238,40 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// then
 		assertThat(images).hasSize(10);
 	}
+
+	@Test
+	public void shouldPagingWorkCorrectly_2() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		Set<UUID> imagesInRepo = new HashSet<>();
+		for (int i = 0; i < 100; i++) {
+			imagesInRepo.add(inRepositoryService.addEmptySyntheticImage(repo.id()));
+		}
+
+		// when
+		Set<UUID> foundImages = new HashSet<>();
+		for (int i = 0; i < 10; i++) {
+			foundImages.addAll(
+				imageRepository.images().getPage(new Page(10 * i, 10)).getAll().stream().map(ImageResponse::id).collect(Collectors.toSet())
+			);
+		}
+
+		// then
+		assertThat(foundImages).isEqualTo(imagesInRepo);
+	}
+
+	@Test
+	public void shouldPagingWorkCorrectly_3() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		for (int i = 0; i < 15; i++) {
+			inRepositoryService.addEmptySyntheticImage(repo.id());
+		}
+
+		// when
+		int count = imageRepository.images().getPage(new Page(10, 10)).count();
+
+		// then
+		assertThat(count).isEqualTo(5);
+	}
 }

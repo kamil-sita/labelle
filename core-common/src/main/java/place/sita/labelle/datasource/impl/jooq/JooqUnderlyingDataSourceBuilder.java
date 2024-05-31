@@ -45,9 +45,14 @@ public class JooqUnderlyingDataSourceBuilder {
 
 		@Override
 		public void remove(List<AcceptedProcessingType> preprocessing) {
+			if (queryBuilder.offset(preprocessing) != null) {
+				throw new UnsupportedOperationException("Cannot remove with offset");
+			}
+
 			contextProvider.getContext()
 				.deleteFrom(queryBuilder.from(preprocessing))
 				.where(queryBuilder.where(preprocessing))
+				.limit(queryBuilder.limit(preprocessing))
 				.execute();
 		}
 
@@ -91,6 +96,8 @@ public class JooqUnderlyingDataSourceBuilder {
 			Cursor<Record> cursor = afterFrom
 				.where(queryBuilder.where(preprocessing))
 				.orderBy(queryBuilder.orderBy(preprocessing))
+				.limit(queryBuilder.limit(preprocessing))
+				.offset(queryBuilder.offset(preprocessing))
 				.fetchLazy();
 
 			Queue<Record> buffer = new ArrayDeque<>(pageSize);
@@ -140,7 +147,8 @@ public class JooqUnderlyingDataSourceBuilder {
 			return
 				afterFrom
 				.where(queryBuilder.where(preprocessing))
-				.limit(0)
+				.limit(queryBuilder.limit(preprocessing))
+				.offset(queryBuilder.offset(preprocessing))
 				.fetchOne()
 				.component1();
 		}

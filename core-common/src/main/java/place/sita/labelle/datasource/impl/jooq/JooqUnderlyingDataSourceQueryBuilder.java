@@ -16,4 +16,8 @@ public sealed interface JooqUnderlyingDataSourceQueryBuilder<Type, AcceptedProce
 	Collection<? extends OrderField<?>> orderBy(List<AcceptedProcessingType> preprocessing);
 
 	Collection<? extends Condition> where(List<AcceptedProcessingType> preprocessing);
+
+	Number limit(List<AcceptedProcessingType> preprocessing);
+
+	Number offset(List<AcceptedProcessingType> preprocessing);
 }
