@@ -88,6 +88,50 @@ public class ImageRepository {
 				}
 				return conditions;
 			}
+
+			@Override
+			public Number limit(List<PreprocessingType> preprocessing) {
+				Integer limit = null;
+				List<Condition> conditions = new ArrayList<>();
+				for (PreprocessingType preprocessingType : preprocessing) {
+					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
+						// no op
+					} else if (preprocessingType instanceof FilterByImageIdPreprocessor filterByImageIdPreprocessor) {
+						// no op
+					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
+						if (limit != null) {
+							throw new IllegalStateException();
+						}
+						limit = pagingPreprocessor.page().limit();
+					} else {
+						throw new IllegalStateException();
+					}
+
+				}
+				return limit;
+			}
+
+			@Override
+			public Number offset(List<PreprocessingType> preprocessing) {
+				Integer offset = null;
+				List<Condition> conditions = new ArrayList<>();
+				for (PreprocessingType preprocessingType : preprocessing) {
+					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
+						// no op
+					} else if (preprocessingType instanceof FilterByImageIdPreprocessor filterByImageIdPreprocessor) {
+						// no op
+					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
+						if (offset != null) {
+							throw new IllegalStateException();
+						}
+						offset = pagingPreprocessor.page().offset();
+					} else {
+						throw new IllegalStateException();
+					}
+
+				}
+				return offset;
+			}
 		};
 	}
 
