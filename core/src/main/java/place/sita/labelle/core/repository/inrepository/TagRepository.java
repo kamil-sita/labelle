@@ -68,16 +68,18 @@ public class TagRepository {
 			toInsert.put(family, id);
 		}
 
-		var ongoing = dslContext.insertInto(Tables.TAG_SRC)
-			.columns(Tables.TAG_SRC.ID, Tables.TAG_SRC.REPOSITORY_ID, Tables.TAG_SRC.VALUE);
+		if (!toInsert.isEmpty()) {
+			var ongoing = dslContext.insertInto(Tables.TAG_SRC)
+				.columns(Tables.TAG_SRC.ID, Tables.TAG_SRC.REPOSITORY_ID, Tables.TAG_SRC.VALUE);
 
-		for (var entry : toInsert.entrySet()) {
-			ongoing = ongoing.values(entry.getValue(), actualRepositoryId, entry.getKey());
-		}
+			for (var entry : toInsert.entrySet()) {
+				ongoing = ongoing.values(entry.getValue(), actualRepositoryId, entry.getKey());
+			}
 
-		int c = ongoing.execute();
-		if (c != toInsert.size()) {
-			throw new RuntimeException();
+			int c = ongoing.execute();
+			if (c != toInsert.size()) {
+				throw new RuntimeException();
+			}
 		}
 
 		return familyIds;
@@ -153,13 +155,13 @@ public class TagRepository {
 
 		int toPersist = 0;
 		for (var tag : persistableImagesTags.imageTags()) {
-			UUID tagId = tagIds.get(new TagView(tag.tag(), tag.family()));
 			UUID imageId = tag.imageId();
 
 			if (existingTags.getOrDefault(imageId, Collections.emptySet()).contains(new TagView(tag.tag(), tag.family()))) {
-				return;
+				continue;
 			}
 
+			UUID tagId = tagIds.get(new TagView(tag.tag(), tag.family()));
 			ongoing = ongoing.values(tagId, imageId);
 			toPersist++;
 		}
