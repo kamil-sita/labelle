@@ -90,9 +90,8 @@ public class ImageRepository {
 			}
 
 			@Override
-			public Number limit(List<PreprocessingType> preprocessing) {
+			public Integer limit(List<PreprocessingType> preprocessing) {
 				Integer limit = null;
-				List<Condition> conditions = new ArrayList<>();
 				for (PreprocessingType preprocessingType : preprocessing) {
 					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
 						// no op
@@ -112,9 +111,8 @@ public class ImageRepository {
 			}
 
 			@Override
-			public Number offset(List<PreprocessingType> preprocessing) {
+			public Integer offset(List<PreprocessingType> preprocessing) {
 				Integer offset = null;
-				List<Condition> conditions = new ArrayList<>();
 				for (PreprocessingType preprocessingType : preprocessing) {
 					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
 						// no op

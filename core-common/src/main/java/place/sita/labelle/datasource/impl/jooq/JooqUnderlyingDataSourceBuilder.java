@@ -144,13 +144,23 @@ public class JooqUnderlyingDataSourceBuilder {
 
 			SelectJoinStep<Record1<Integer>> afterFrom = (SelectJoinStep<Record1<Integer>>) (SelectJoinStep) applyFiltering(preFrom, preprocessing);
 
-			return
+			int countActual =
 				afterFrom
 				.where(queryBuilder.where(preprocessing))
-				.limit(queryBuilder.limit(preprocessing))
-				.offset(queryBuilder.offset(preprocessing))
 				.fetchOne()
 				.component1();
+
+			Integer offset = queryBuilder.offset(preprocessing);
+			Integer limit = queryBuilder.limit(preprocessing);
+
+			if (offset != null) {
+				countActual -= offset;
+			}
+			if (limit != null) {
+				countActual = Math.min(countActual, limit);
+			}
+
+			return countActual;
 		}
 	}
 
