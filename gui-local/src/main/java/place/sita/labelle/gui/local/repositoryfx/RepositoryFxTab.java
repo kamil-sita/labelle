@@ -148,7 +148,7 @@ public class RepositoryFxTab {
                 this.selectedImage = selected;
                 loadImage(selected);
                 loadTags(selected);
-                emit(selected);
+                pass(selected);
             }
         );
 
@@ -161,8 +161,8 @@ public class RepositoryFxTab {
         });
     }
 
-    private void emit(ImageResponse selected) {
-        context.publishEvent(new ImageSelectedEvent(selected));
+    private void pass(ImageResponse selected) {
+        deltasComponentController.onImageSelected(selected);
     }
 
     private Future<Result2<BufferedImage, Exception>> currentFutureImage;

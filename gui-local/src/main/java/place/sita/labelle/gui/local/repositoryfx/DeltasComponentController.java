@@ -30,9 +30,9 @@ public class DeltasComponentController {
 
 	private ImageResponse selected;
 
-	@EventListener
-	public void onImageSelected(ImageSelectedEvent selectedEvent) {
-		selected = selectedEvent.selected();
+	public void onImageSelected(ImageResponse selected) {
+		this.selected = selected;
+		tagDeltasComponentController.onImageSelected(selected);
 	}
 
 	@FXML

@@ -5,6 +5,7 @@ import place.sita.labelle.datasource.util.CloseableIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public interface DataSource<T, Self extends DataSource<T, Self>> {
 
@@ -38,6 +39,12 @@ public interface DataSource<T, Self extends DataSource<T, Self>> {
 
 	default int count() {
 		return getAll().size();
+	}
+
+	default void forEach(Consumer<T> consumer) {
+		try (CloseableIterator<T> iterator = getIterator()) {
+			iterator.forEachRemaining(consumer);
+		}
 	}
 
 }

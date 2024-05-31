@@ -54,6 +54,10 @@ public class InRepositoryService {
         return imageRepository.images();
     }
 
+    public <Self extends PreprocessableDataSourceWithRemoval<TagDeltaResponse, DeltaRepository.FilteringApi<Self>, Self>> Self  tagDeltas() {
+        return deltaRepository.tagDeltas();
+    }
+
     public List<ImageResponse> images(UUID repositoryUuid, int offset, int limit, String query) {
         return imageRepository.images(repositoryUuid, offset, limit, query);
     }

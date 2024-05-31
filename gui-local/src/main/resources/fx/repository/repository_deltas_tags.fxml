@@ -39,10 +39,10 @@
                                             <children>
                                                 <TableView fx:id="deltaTagsTableView" maxHeight="800.0" minHeight="100.0" prefHeight="800.0" prefWidth="314.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                     <columns>
-                                                        <TableColumn fx:id="deleteButtonTableColumn" prefWidth="64.0" text="X" />
+                                                        <TableColumn fx:id="deltaDeleteButtonTableColumn" prefWidth="64.0" text="X" />
                                                         <TableColumn fx:id="deltaTypeTableColumn" minWidth="5.6000183105468295" prefWidth="70.0" text="+/-" />
-                                                        <TableColumn fx:id="familyDeltaTableColumn" prefWidth="114.0" text="Family" />
-                                                        <TableColumn fx:id="familyEntryTableColumn" prefWidth="151.0" text="Entry" />
+                                                        <TableColumn fx:id="deltaFamilyTableColumn" prefWidth="114.0" text="Family" />
+                                                        <TableColumn fx:id="deltaEntryTableColumn" prefWidth="151.0" text="Entry" />
                                                     </columns>
                                                 </TableView>
                                             </children>
