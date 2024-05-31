@@ -140,6 +140,7 @@ public class JooqUnderlyingDataSourceBuilder {
 			return
 				afterFrom
 				.where(queryBuilder.where(preprocessing))
+				.limit(0)
 				.fetchOne()
 				.component1();
 		}
