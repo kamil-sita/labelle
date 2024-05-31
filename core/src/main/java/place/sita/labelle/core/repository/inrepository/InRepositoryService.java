@@ -226,10 +226,6 @@ public class InRepositoryService {
             .get(0);
     }
 
-    public Optional<ImageResponse> loadImage(UUID imageId) {
-        return imageRepository.loadImage(imageId);
-    }
-
     /**
      * This is currently mostly a test method, and will fail most executions against actual code,
      * but long term it should be a supported operation to add an (non-empty) synthethic image to a repository.
@@ -249,6 +245,12 @@ public class InRepositoryService {
             .execute();
 
         return imageInRepoId;
+    }
+
+    @Transactional
+    public ImageResponse addEmptySyntheticImageWrap(UUID repoId) {
+        UUID id = addEmptySyntheticImage(repoId);
+        return imageRepository.loadImage(id).get();
     }
 
     public void addTags(PersistableImagesTags persistableImagesTags) {

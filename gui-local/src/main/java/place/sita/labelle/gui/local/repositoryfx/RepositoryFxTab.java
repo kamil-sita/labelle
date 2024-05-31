@@ -258,6 +258,16 @@ public class RepositoryFxTab {
             });
     }
 
+
+    @FXML
+    public void onAddSyntheticImageAction(ActionEvent event) {
+        ifSelected(repositoryChoiceBox)
+            .then(repo -> {
+                ImageResponse response = inRepositoryService.addEmptySyntheticImageWrap(repo.id());
+                onUserAdded(List.of(response));
+            });
+    }
+
     private void onUserAdded(List<ImageResponse> image) {
 
     }

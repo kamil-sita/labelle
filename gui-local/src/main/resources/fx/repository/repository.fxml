@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
@@ -13,9 +12,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 
 <SplitPane dividerPositions="0.29797979797979796" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="861.0" prefWidth="993.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
   <items>
@@ -23,11 +20,12 @@
          <children>
             <ChoiceBox fx:id="repositoryChoiceBox" layoutX="13.0" layoutY="14.0" prefWidth="150.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
             <TextArea layoutX="14.0" layoutY="46.0" prefHeight="126.0" prefWidth="150.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="46.0" />
-            <Button layoutX="14.0" layoutY="779.0" mnemonicParsing="false" onAction="#onAddImageAction" prefHeight="34.0" prefWidth="240.0" text="Add" AnchorPane.bottomAnchor="46.60000000000002" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.399999999999977" />
+            <Button layoutX="14.0" layoutY="779.0" mnemonicParsing="false" onAction="#onAddImageAction" prefHeight="34.0" prefWidth="193.0" text="Add" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="85.0" />
             <Button layoutX="14.0" layoutY="633.0" mnemonicParsing="false" onAction="#removeButtonPress" prefHeight="25.0" prefWidth="240.0" text="Remove" AnchorPane.bottomAnchor="98.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.0" />
             <Separator layoutX="14.0" layoutY="768.0" prefHeight="3.0" prefWidth="240.0" AnchorPane.bottomAnchor="88.79999999999995" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.399999999999977" />
             <Button layoutX="14.0" layoutY="825.0" mnemonicParsing="false" onAction="#bulkAddButtonPress" prefHeight="26.0" prefWidth="271.0" text="Bulk add" AnchorPane.bottomAnchor="8.600000000000001" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="6.400000000000034" />
             <Pagination fx:id="paginator" layoutX="10.0" layoutY="181.0" prefHeight="536.0" prefWidth="271.0" AnchorPane.bottomAnchor="143.20000000000005" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="181.0" />
+            <Button layoutX="216.0" layoutY="778.0" mnemonicParsing="false" onAction="#onAddSyntheticImageAction" prefHeight="34.0" prefWidth="61.0" text="Synth" AnchorPane.bottomAnchor="47.200000000000024" AnchorPane.rightAnchor="14.399999999999977" />
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
@@ -74,7 +72,7 @@
                                       <tabs>
                                         <Tab text="Delta">
                                           <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" fx:id="deltasComponent">
+                                            <AnchorPane fx:id="deltasComponent" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
 
                                                 </AnchorPane>
                                           </content>
