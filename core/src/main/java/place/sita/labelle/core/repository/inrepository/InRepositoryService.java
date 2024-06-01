@@ -13,6 +13,7 @@ import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.utils.Result3;
 import place.sita.labelle.datasource.cross.PreprocessableDataSourceWithRemoval;
+import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;
 import place.sita.labelle.jooq.Tables;
 
 import javax.annotation.Nullable;
@@ -50,7 +51,7 @@ public class InRepositoryService {
             .fetchCount(IMAGE, IMAGE.REPOSITORY_ID.eq(repositoryUuid));
     }
 
-    public <Self extends PreprocessableDataSourceWithRemoval<ImageResponse, ImageRepository.FilteringApi<Self>, Self>> Self images() {
+    public <Self extends PreprocessableIdDataSourceWithRemoval<UUID, ImageResponse, ImageRepository.FilteringApi<Self>, Self>> Self images() {
         return imageRepository.images();
     }
 

@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
+import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
 import place.sita.labelle.gui.local.fx.threading.Threading;
 import place.sita.labelle.core.filtering.LogicalExpr;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
@@ -126,7 +127,7 @@ public class RepositoryFxTab {
         });
     }
 
-    private LabPaginatorFactory.LabPaginator<FilteringParameters> labPaginator;
+    private LabPaginator<ImageResponse, FilteringParameters> labPaginator;
 
     private record FilteringParameters(UUID repositoryId) {
 
@@ -247,6 +248,7 @@ public class RepositoryFxTab {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Open Resource File");
                 File file = fileChooser.showOpenDialog(getWindow());
+                // todo this can be null
                 inRepositoryService.addImage(repo.id(), file)
                     .onSuccess(image -> {
                         onUserAdded(List.of(image));
@@ -269,15 +271,14 @@ public class RepositoryFxTab {
     }
 
     private void onUserAdded(List<ImageResponse> image) {
-
+        if (!image.isEmpty()) {
+            ImageResponse first = image.get(0);
+            labPaginator.insertSelectInto(inRepositoryService.images().process().filterByRepository(selectedRepository.id()).indexOf(first), first);
+        }
     }
 
     private Window getWindow() {
         return repositoryChoiceBox.getScene().getWindow();
-    }
-
-    private void reFetchImages() {
-
     }
 
 

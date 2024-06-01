@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
 import place.sita.magicscheduler.ExecutionsService;
+import place.sita.magicscheduler.ExecutionsService.ScheduledTaskResponse;
 import place.sita.magicscheduler.TaskTypeRepository;
+import place.sita.magicscheduler.TaskTypeRepository.TaskTypeResponse;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
@@ -32,7 +34,7 @@ public class SchedulerExecutionTab {
     private Pagination taskPaginator;
 
     @FXML
-    private ChoiceBox<TaskTypeRepository.TaskTypeResponse> taskTypeChoiceBox;
+    private ChoiceBox<TaskTypeResponse> taskTypeChoiceBox;
 
     @FXML
     private AnchorPane view;
@@ -47,7 +49,7 @@ public class SchedulerExecutionTab {
 
     @PostFxConstruct
     public void setupTaskTypes() {
-        ObservableList<TaskTypeRepository.TaskTypeResponse> observableList = FXCollections.observableArrayList();
+        ObservableList<TaskTypeResponse> observableList = FXCollections.observableArrayList();
         observableList.add(null);
         observableList.addAll(taskTypeRepository.allR());
         taskTypeChoiceBox.setItems(observableList);
@@ -69,13 +71,13 @@ public class SchedulerExecutionTab {
         });
     }
 
-    private LabPaginator<TaskTypeRepository.TaskTypeResponse> paginator;
+    private LabPaginator<ScheduledTaskResponse, TaskTypeResponse> paginator;
 
-    private void onJobSelected(ExecutionsService.ScheduledTaskResponse jobSelected) {
+    private void onJobSelected(ScheduledTaskResponse jobSelected) {
         schedulerExecutionViewFx.onJobSelected(jobSelected);
     }
 
-    private UUID extractId(TaskTypeRepository.TaskTypeResponse newValue) {
+    private UUID extractId(TaskTypeResponse newValue) {
         if (newValue == null) {
             return null;
         } else {

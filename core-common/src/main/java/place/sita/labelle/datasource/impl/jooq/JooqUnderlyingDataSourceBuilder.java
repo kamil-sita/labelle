@@ -2,16 +2,28 @@ package place.sita.labelle.datasource.impl.jooq;
 
 import org.jooq.*;
 import org.jooq.Record;
+import org.jooq.impl.DSL;
+import place.sita.labelle.datasource.Identifiable;
 import place.sita.labelle.datasource.impl.UnderlyingDataSourceWithRemoval;
+import place.sita.labelle.datasource.impl.cross.UnderlyingIdDataSourceWithRemoval;
 import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.labelle.datasource.impl.UnderlyingDataSource;
 
 import java.util.*;
 
+import static org.jooq.impl.DSL.*;
+
 public class JooqUnderlyingDataSourceBuilder {
 
 	private JooqUnderlyingDataSourceBuilder() {
 
+	}
+
+	public static <Id, Type extends Identifiable<Id>, AcceptedPreprocessingType> UnderlyingIdDataSourceWithRemoval<Id, Type, AcceptedPreprocessingType> build(
+		JooqUnderlyingDataSourceBuilderWithRemovalAndId<Id, Type, AcceptedPreprocessingType> queryBuilder,
+		JooqContextProvider contextProvider
+	) {
+		return new UnderlyingIdDataSourceImplWithRemoval<>(queryBuilder, contextProvider);
 	}
 
 	public static <Type, AcceptedPreprocessingType> UnderlyingDataSource<Type, AcceptedPreprocessingType> build(
@@ -26,6 +38,70 @@ public class JooqUnderlyingDataSourceBuilder {
 		JooqContextProvider contextProvider
 	) {
 		return new UnderlyingDataSourceImplWithRemoval<>(queryBuilder, contextProvider);
+	}
+
+	private static class UnderlyingIdDataSourceImplWithRemoval<Id, Type extends Identifiable<Id>, AcceptedProcessingType> extends UnderlyingDataSourceImplWithRemoval<Type, AcceptedProcessingType> implements UnderlyingIdDataSourceWithRemoval<Id, Type, AcceptedProcessingType> {
+		private final JooqUnderlyingDataSourceBuilderWithRemovalAndId<Id, Type, AcceptedProcessingType> queryBuilder;
+		private final JooqContextProvider contextProvider;
+
+		private UnderlyingIdDataSourceImplWithRemoval(JooqUnderlyingDataSourceBuilderWithRemovalAndId<Id, Type, AcceptedProcessingType> queryBuilder, JooqContextProvider contextProvider) {
+			super(queryBuilder, contextProvider);
+			this.queryBuilder = queryBuilder;
+			this.contextProvider = contextProvider;
+		}
+
+		@Override
+		public int indexOf(Type type, List<AcceptedProcessingType> processing) {
+			if (queryBuilder.offset(processing) != null) {
+				throw new UnsupportedOperationException("Cannot find index with offset");
+			}
+			if (queryBuilder.limit(processing) != null) {
+				throw new UnsupportedOperationException("Cannot find index with limit");
+			}
+			Collection<TableFieldAndValue> deconstructed = queryBuilder.deconstructByOrder(type, processing);
+
+			DSLContext context = contextProvider.getContext();
+
+			var subQuery = context
+				.select(
+					tablesAndInsertionOrder(deconstructed)
+				)
+				.from(queryBuilder.from(processing))
+				.where(queryBuilder.where(processing));
+
+			int idx = context
+				.select(
+					DSL.field("insertion_index", Integer.class)
+				)
+				.from(subQuery)
+				.where(matchDeconstruct(deconstructed))
+				.fetch(rr -> rr.get("insertion_index", Integer.class))
+				.get(0);
+
+			return idx - 1;
+		}
+
+		private Collection<? extends SelectFieldOrAsterisk> tablesAndInsertionOrder(Collection<TableFieldAndValue> fields) {
+			List<SelectFieldOrAsterisk> fieldsAndOrder = new ArrayList<>(fields.size() + 1);
+			for (TableFieldAndValue field : fields) {
+				fieldsAndOrder.add(field.field());
+			}
+			fieldsAndOrder.add(rank().over(orderBy((Collection<? extends OrderField<?>>) (Collection) new ArrayList<>(fieldsAndOrder))).as("insertion_index"));
+			return fieldsAndOrder;
+		}
+
+		private Collection<? extends Condition> matchDeconstruct(Collection<TableFieldAndValue> deconstructed) {
+			List<Condition> conditions = new ArrayList<>(deconstructed.size());
+			for (TableFieldAndValue field : deconstructed) {
+				if (field.value() == null) {
+					conditions.add(field.field().as(field.field().getUnqualifiedName()).isNull());
+				} else {
+					conditions.add(field.field().as(field.field().getUnqualifiedName()).eq(field.value()));
+				}
+			}
+			return conditions;
+
+		}
 	}
 
 	private static class UnderlyingDataSourceImplWithRemoval<Type, AcceptedProcessingType> extends UnderlyingDataSourceImpl<Type, AcceptedProcessingType> implements UnderlyingDataSourceWithRemoval<Type, AcceptedProcessingType> {

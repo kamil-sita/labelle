@@ -18,5 +18,4 @@ public interface UnderlyingDataSource<Type, AcceptedPreprocessingType> {
 		}
 		return count;
 	}
-
 }

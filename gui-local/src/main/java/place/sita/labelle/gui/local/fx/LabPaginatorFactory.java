@@ -17,10 +17,11 @@ import java.util.function.Function;
 
 import static place.sita.labelle.gui.local.fx.PaginationUtil.getNumberOfPages;
 
+// todo: does this component has too much logic? Not enough logic? Is the logic separation here good?
 public class LabPaginatorFactory {
 
 
-    public static <T, CtxT> LabPaginator<CtxT> factory(Pagination pagination,
+    public static <T, CtxT> LabPaginator<T, CtxT> factory(Pagination pagination,
                                                  int pageSize,
                                                  Function<CtxT, Integer> countFunction,
                                                  BiFunction<Paging, CtxT, List<T>> elemsFunction,
@@ -28,13 +29,15 @@ public class LabPaginatorFactory {
         return new LabPaginatorImpl<>(pagination, pageSize, countFunction, elemsFunction, onSelected);
     }
 
-    public interface LabPaginator<CtxT> {
+    public interface LabPaginator<T, CtxT> {
 
         void hardReload(CtxT ctxT);
 
+        void insertSelectInto(int position, T element);
+
     }
 
-    private static class LabPaginatorImpl<T, CtxT> implements LabPaginator<CtxT> {
+    private static class LabPaginatorImpl<T, CtxT> implements LabPaginator<T, CtxT> {
 
         private final Pagination pagination;
         private final int pageSize;
@@ -60,12 +63,15 @@ public class LabPaginatorFactory {
             hardReload(null);
         }
 
+        private ListView<T> currentListView;
+
         private void createPageFactory(CtxT ctxT) {
             pagination.setPageFactory(param -> {
                 StackPane stackPane = new StackPane();
                 ProgressIndicator spinner = new ProgressIndicator(-1);
                 ListView<T> listView = new ListView<>();
                 stackPane.getChildren().addAll(listView, spinner);
+                // todo rewrite this to threading framework
                 Task<Void> loadDataTask = new Task<>() {
                     @Override
                     protected Void call() throws Exception {
@@ -86,6 +92,7 @@ public class LabPaginatorFactory {
                     onSelected.accept(nv);
                 });
                 new Thread(loadDataTask).start();
+                currentListView = listView;
                 return stackPane;
             });
         }
@@ -114,6 +121,35 @@ public class LabPaginatorFactory {
                 new Thread(() -> {
                 }).start();
             });
+        }
+
+        @Override
+        public void insertSelectInto(int position, T element) {
+            int pageOfPosition = position / pageSize;
+            int page = pagination.getCurrentPageIndex();
+            int positionOnPage = position % pageSize;
+            if (page == pageOfPosition) {
+                currentListView.getItems().add(positionOnPage, element);
+                if (currentListView.getItems().size() > pageSize) {
+                    currentListView.getItems().remove(pageSize);
+                }
+                currentListView.getSelectionModel().select(positionOnPage);
+                currentListView.scrollTo(positionOnPage);
+            } else {
+                pagination.setCurrentPageIndex(pageOfPosition);
+                Threading.onSeparateThread(toolkit -> {
+	                try {
+                        // not sure why it's needed. Not a big deal.
+		                Thread.sleep(10);
+	                } catch (InterruptedException e) {
+		                throw new RuntimeException(e);
+	                }
+                    toolkit.onFxThread(() -> {
+                        currentListView.getSelectionModel().select(positionOnPage);
+                        currentListView.scrollTo(positionOnPage);
+                    });
+                });
+            }
         }
     }
 

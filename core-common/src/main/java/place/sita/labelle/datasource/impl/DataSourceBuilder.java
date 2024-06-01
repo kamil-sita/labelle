@@ -1,12 +1,16 @@
 package place.sita.labelle.datasource.impl;
 
+import place.sita.labelle.datasource.Identifiable;
 import place.sita.labelle.datasource.PreprocessableDataSource;
+import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;
+import place.sita.labelle.datasource.impl.cross.UnderlyingIdDataSourceWithRemoval;
 import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.labelle.datasource.NonUniqueAnswerException;
 import place.sita.labelle.datasource.Page;
 import place.sita.labelle.datasource.cross.PreprocessableDataSourceWithRemoval;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +18,18 @@ public class DataSourceBuilder {
 
 	private DataSourceBuilder() {
 
+	}
+
+	public static <Id, T extends Identifiable<Id>, ProcessorApi, UnderstandablePreprocessingInfo, Self extends PreprocessableIdDataSourceWithRemoval<Id, T, ProcessorApi, Self>> Self build(
+			UnderlyingIdDataSourceWithRemoval<Id, T, UnderstandablePreprocessingInfo> underlyingDataSource,
+			PreprocessingFactory<ProcessorApi, UnderstandablePreprocessingInfo, Self> preprocessingFactory,
+			UnderlyingDataSourcePreprocessingAdapter<UnderstandablePreprocessingInfo> adapter,
+			PreferredPageSizeProvider preferredPageSizeProvider,
+			ByIdPreprocessingAdapter<Id, UnderstandablePreprocessingInfo> byIdPreprocessingAdapter) {
+
+		List<UnderstandablePreprocessingInfo> context = new ArrayList<>();
+
+		return (Self) new PreprocessableIdDataSourceWithRemovalImpl(adapter, underlyingDataSource, preprocessingFactory, context, preferredPageSizeProvider, byIdPreprocessingAdapter);
 	}
 
 	public static <T, ProcessorApi, UnderstandablePreprocessingInfo, Self extends PreprocessableDataSourceWithRemoval<T, ProcessorApi, Self>> Self build(
@@ -38,6 +54,44 @@ public class DataSourceBuilder {
 		return (Self) new PreprocessableDataSourceImpl(adapter, underlyingDataSource, preprocessingFactory, context, preferredPageSizeProvider);
 	}
 
+	private static class PreprocessableIdDataSourceWithRemovalImpl<Id, T extends Identifiable<Id>, ProcessorApi, UnderstandablePreprocessingInfo, Self extends PreprocessableIdDataSourceWithRemovalImpl<Id, T, ProcessorApi, UnderstandablePreprocessingInfo, Self>>
+		extends DataSourceBuilder.PreprocessableDataSourceWithRemovalImpl<T, ProcessorApi, UnderstandablePreprocessingInfo, Self>
+		implements PreprocessableIdDataSourceWithRemoval<Id, T, ProcessorApi, Self> {
+
+		private final ByIdPreprocessingAdapter<Id,UnderstandablePreprocessingInfo> byIdPreprocessingAdapter;
+		private final UnderlyingIdDataSourceWithRemoval<Id, T, UnderstandablePreprocessingInfo> underlyingDataSource;
+
+		private PreprocessableIdDataSourceWithRemovalImpl(
+			UnderlyingDataSourcePreprocessingAdapter<UnderstandablePreprocessingInfo> adapter,
+			UnderlyingIdDataSourceWithRemoval<Id, T, UnderstandablePreprocessingInfo> underlyingDataSource,
+			PreprocessingFactory<ProcessorApi, UnderstandablePreprocessingInfo, Self> preprocessingFactory,
+			List<UnderstandablePreprocessingInfo> context,
+			PreferredPageSizeProvider preferredPageSizeProvider,
+			ByIdPreprocessingAdapter<Id,UnderstandablePreprocessingInfo> byIdPreprocessingAdapter) {
+			super(adapter, underlyingDataSource, preprocessingFactory, context, preferredPageSizeProvider);
+			this.byIdPreprocessingAdapter = byIdPreprocessingAdapter;
+			this.underlyingDataSource = underlyingDataSource;
+		}
+
+		@Override
+		public Self byIds(Collection<Id> ids) {
+			UnderstandablePreprocessingInfo info = byIdPreprocessingAdapter.accept(ids);
+			return buildSelfWithProcessingInfo(info);
+		}
+
+		@Override
+		public int indexOf(T type) {
+			return underlyingDataSource.indexOf(type, context);
+		}
+
+		@Override
+		protected Self buildSelfWithProcessingInfo(UnderstandablePreprocessingInfo processingInfo) {
+			List<UnderstandablePreprocessingInfo> myContext = new ArrayList<>(context);
+			myContext.add(processingInfo);
+			return (Self) new PreprocessableIdDataSourceWithRemovalImpl<>(adapter, underlyingDataSource, preprocessingFactory, myContext, preferredPageSizeProvider, byIdPreprocessingAdapter);
+		}
+	}
+
 	private static class PreprocessableDataSourceWithRemovalImpl<T, ProcessorApi, UnderstandablePreprocessingInfo, Self extends PreprocessableDataSourceWithRemovalImpl<T, ProcessorApi, UnderstandablePreprocessingInfo, Self>>
 		extends DataSourceBuilder.PreprocessableDataSourceImpl<T, ProcessorApi, UnderstandablePreprocessingInfo, Self>
 		implements PreprocessableDataSourceWithRemoval<T, ProcessorApi, Self> {
@@ -53,6 +107,7 @@ public class DataSourceBuilder {
 			super(adapter, underlyingDataSource, preprocessingFactory, context, preferredPageSizeProvider);
 			this.underlyingDataSource = underlyingDataSource;
 		}
+
 
 		@Override
 		public void remove() {

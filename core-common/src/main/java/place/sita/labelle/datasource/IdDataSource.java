@@ -1,16 +1,25 @@
 package place.sita.labelle.datasource;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
-public interface IdDataSource<Id, Type extends Identifiable<Type>, Self extends IdDataSource<Id, Type, Self>> extends DataSource<Type, Self> {
+public interface IdDataSource<Id, Type extends Identifiable<Id>, Self extends IdDataSource<Id, Type, Self>> extends DataSource<Type, Self> {
 
-	Type getById(Id id);
+	default Type getById(Id id) {
+		return getByIdOptional(id).orElse(null);
+	}
 
-	Optional<Type> getByIdOptional(Id id);
+	default Optional<Type> getByIdOptional(Id id) {
+		return byId(id).getOneOptional();
+	}
 
-	Self preprocessById(Id id);
+	default Self byId(Id id) {
+		return byIds(List.of(id));
+	}
 
-	Self preprocessByIds(Collection<Id> ids);
+	Self byIds(Collection<Id> ids);
+
+	int indexOf(Type type);
 
 }

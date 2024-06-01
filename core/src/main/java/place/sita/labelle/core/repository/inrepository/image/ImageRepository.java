@@ -3,11 +3,14 @@ package place.sita.labelle.core.repository.inrepository.image;
 import org.jooq.*;
 import org.jooq.Record;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;
+import place.sita.labelle.datasource.impl.cross.UnderlyingIdDataSourceWithRemoval;
 import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilder;
-import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilderWithRemoval;
 import place.sita.labelle.datasource.Page;
 import place.sita.labelle.datasource.cross.PreprocessableDataSourceWithRemoval;
 import place.sita.labelle.datasource.impl.*;
+import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilderWithRemovalAndId;
+import place.sita.labelle.datasource.impl.jooq.TableFieldAndValue;
 import place.sita.labelle.jooq.tables.records.ImageFileRecord;
 import place.sita.labelle.jooq.tables.records.ImageRecord;
 import place.sita.labelle.jooq.tables.records.RootRecord;
@@ -26,24 +29,34 @@ public class ImageRepository {
 	}
 
 
-	public <Self extends PreprocessableDataSourceWithRemoval<ImageResponse, FilteringApi<Self>, Self>> Self images() {
+	public <Self extends PreprocessableIdDataSourceWithRemoval<UUID, ImageResponse, FilteringApi<Self>, Self>> Self images() {
 		return DataSourceBuilder.build(
 			getUnderlyingDataSourceWIthRemoval(),
 			this.<Self>getPreprocessingFactory(),
 			getUnderlyingDataSourcePreprocessingAdapter(),
-			getPreferredPageSizeProvider()
+			getPreferredPageSizeProvider(),
+			byIdPreprocessingAdapter()
 		);
 	}
 
-	private UnderlyingDataSourceWithRemoval<ImageResponse, PreprocessingType> getUnderlyingDataSourceWIthRemoval() {
+	private UnderlyingIdDataSourceWithRemoval<UUID, ImageResponse, PreprocessingType> getUnderlyingDataSourceWIthRemoval() {
 		return JooqUnderlyingDataSourceBuilder.build(
-			getJooqUnderlyingDataSourceBuilderWithRemoval(),
+			getJooqUnderlyingDataSourceBuilderWithIdAndRemoval(),
 			() -> dslContext
 		);
 	}
 
-	private static JooqUnderlyingDataSourceBuilderWithRemoval<ImageResponse, PreprocessingType> getJooqUnderlyingDataSourceBuilderWithRemoval() {
-		return new JooqUnderlyingDataSourceBuilderWithRemoval<>() {
+	private ByIdPreprocessingAdapter<UUID, PreprocessingType> byIdPreprocessingAdapter() {
+		return new ByIdPreprocessingAdapter<UUID, PreprocessingType>() {
+			@Override
+			public PreprocessingType accept(Collection<UUID> uuids) {
+				return new FilterByImageIdsPreprocessor(new ArrayList<>(uuids));
+			}
+		};
+	}
+
+	private static JooqUnderlyingDataSourceBuilderWithRemovalAndId<UUID, ImageResponse, PreprocessingType> getJooqUnderlyingDataSourceBuilderWithIdAndRemoval() {
+		return new JooqUnderlyingDataSourceBuilderWithRemovalAndId<>() {
 
 			private final TableField<ImageRecord, UUID> imageId = IMAGE.ID;
 			private final TableField<RootRecord, String> rootDir = IMAGE.imageResolvable().imageFile().root().ROOT_DIR;
@@ -72,13 +85,18 @@ public class ImageRepository {
 			}
 
 			@Override
+			public Collection<TableFieldAndValue> deconstructByOrder(ImageResponse imageResponse, List<PreprocessingType> preprocessing) {
+				return List.of(new TableFieldAndValue<>(IMAGE.ID, imageResponse.id()));
+			}
+
+			@Override
 			public Collection<? extends Condition> where(List<PreprocessingType> preprocessing) {
 				List<Condition> conditions = new ArrayList<>();
 				for (PreprocessingType preprocessingType : preprocessing) {
 					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
 						conditions.add(IMAGE.REPOSITORY_ID.equal(filterByRepositoryPreprocessor.repositoryUuid));
-					} else if (preprocessingType instanceof FilterByImageIdPreprocessor filterByImageIdPreprocessor) {
-						conditions.add(IMAGE.ID.equal(filterByImageIdPreprocessor.imageUuid));
+					} else if (preprocessingType instanceof FilterByImageIdsPreprocessor filterByImageIdsPreprocessor) {
+						conditions.add(IMAGE.ID.in(filterByImageIdsPreprocessor.imageIds));
 					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
 						// no op
 					} else {
@@ -95,7 +113,7 @@ public class ImageRepository {
 				for (PreprocessingType preprocessingType : preprocessing) {
 					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
 						// no op
-					} else if (preprocessingType instanceof FilterByImageIdPreprocessor filterByImageIdPreprocessor) {
+					} else if (preprocessingType instanceof FilterByImageIdsPreprocessor filterByImageIdsPreprocessor) {
 						// no op
 					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
 						if (limit != null) {
@@ -116,7 +134,7 @@ public class ImageRepository {
 				for (PreprocessingType preprocessingType : preprocessing) {
 					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
 						// no op
-					} else if (preprocessingType instanceof FilterByImageIdPreprocessor filterByImageIdPreprocessor) {
+					} else if (preprocessingType instanceof FilterByImageIdsPreprocessor filterByImageIdsPreprocessor) {
 						// no op
 					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
 						if (offset != null) {
@@ -163,7 +181,7 @@ public class ImageRepository {
 
 					@Override
 					public Self filterByImageId(UUID imageUuid) {
-						return adapter.accept(new FilterByImageIdPreprocessor(imageUuid));
+						return adapter.accept(new FilterByImageIdsPreprocessor(List.of(imageUuid)));
 					}
 				};
 			}
@@ -182,7 +200,7 @@ public class ImageRepository {
 
 	}
 
-	private record FilterByImageIdPreprocessor(UUID imageUuid) implements PreprocessingType {
+	private record FilterByImageIdsPreprocessor(List<UUID> imageIds) implements PreprocessingType {
 
 	}
 
