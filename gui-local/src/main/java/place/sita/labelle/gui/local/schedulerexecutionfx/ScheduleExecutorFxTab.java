@@ -18,7 +18,7 @@ import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelect
 
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
-@FxTab(resourceFile = "/fx/scheduler_executor.fxml", order = 0, tabName = "Scheduler Executor FX")
+@FxTab(resourceFile = "/fx/scheduler_executor.fxml", order = 0, tabName = "Scheduler Executor")
 public class ScheduleExecutorFxTab {
     private final TasksService tasksService;
 

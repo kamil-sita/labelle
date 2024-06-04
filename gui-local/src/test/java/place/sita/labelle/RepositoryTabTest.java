@@ -12,6 +12,8 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.ListViewMatchers;
+import place.sita.labelle.actions.RepositoryActions;
+import place.sita.labelle.actions.TabActions;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
 
@@ -35,31 +37,23 @@ public class RepositoryTabTest extends TestContainersTest {
 	@Test
 	public void shouldBeAbleToAddAndRemoveRepository(FxRobot robot) {
 		// visit Repositories tab
-		Node node = FxAssert.assertContext().getNodeFinder()
-			.lookup("#mainTabPane")
-			.lookup(".tab-header-area > .headers-region > .tab")
-			.lookup("Repositories").query();
+		Node node = TabActions.getMainTab("Repositories");
 
 		robot.clickOn(node);
 		robot.sleep(1, TimeUnit.SECONDS);
 
 		// check if list is empty
-		ListView repositoryList = FxAssert.assertContext().getNodeFinder()
-			.lookup("#repositoryList").query();
+		ListView repositoryList = RepositoryActions.getRepositoryList();
 
 		FxAssert.verifyThat(repositoryList, ListViewMatchers.isEmpty());
 		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(0);
 
 		// add repository
-		TextField testField = FxAssert.assertContext().getNodeFinder()
-			.lookup("#repositoryNameTextField").query();
-
-		robot.clickOn(testField);
-		robot.write("My test repository");
-		robot.clickOn("#addNewButton");
+		RepositoryActions.createNewRepository(robot, "My test repository");
 
 		// check state
 		FxAssert.verifyThat(repositoryList, ListViewMatchers.hasItems(1));
 		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(1);
+		assertThat(repositoryService.getRepositories(null).get(0).name()).isEqualTo("My test repository");
 	}
 }
