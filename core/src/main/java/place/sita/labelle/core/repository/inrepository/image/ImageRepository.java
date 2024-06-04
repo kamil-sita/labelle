@@ -81,12 +81,12 @@ public class ImageRepository {
 
 			@Override
 			public Collection<? extends OrderField<?>> orderBy(List<PreprocessingType> preprocessing) {
-				return List.of(imageId);
+				return List.of(rootDir, relativeDir);
 			}
 
 			@Override
 			public Collection<TableFieldAndValue> deconstructByOrder(ImageResponse imageResponse, List<PreprocessingType> preprocessing) {
-				return List.of(new TableFieldAndValue<>(IMAGE.ID, imageResponse.id()));
+				return List.of(new TableFieldAndValue<>(rootDir, imageResponse.root()), new TableFieldAndValue(relativeDir, imageResponse.path()));
 			}
 
 			@Override

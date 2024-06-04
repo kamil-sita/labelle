@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.datasource.Page;
 import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
@@ -50,15 +51,15 @@ import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelect
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxTab(order = 3, tabName = "Repository", resourceFile = "/fx/repository/repository.fxml")
-public class RepositoryFxTab {
+public class RepositoryTab {
 
-    private static final Logger log = LoggerFactory.getLogger(RepositoryFxTab.class);
+    private static final Logger log = LoggerFactory.getLogger(RepositoryTab.class);
 
     private final RepositoryService repositoryService;
     private final InRepositoryService inRepositoryService;
     private final ApplicationContext context;
 
-    public RepositoryFxTab(RepositoryService repositoryService, InRepositoryService inRepositoryService, ApplicationContext context, ImageCachingLoader imageCachingLoader) {
+    public RepositoryTab(RepositoryService repositoryService, InRepositoryService inRepositoryService, ApplicationContext context, ImageCachingLoader imageCachingLoader) {
         this.repositoryService = repositoryService;
         this.inRepositoryService = inRepositoryService;
 	    this.context = context;
@@ -144,7 +145,7 @@ public class RepositoryFxTab {
             paginator,
             pageSize,
             filteringParameters ->  inRepositoryService.count(getRepositoryId(filteringParameters), ""),
-            (paging, filtering) ->  inRepositoryService.images(getRepositoryId(filtering), paging.offset(), paging.pageSize(), ""),
+            (paging, filtering) ->  inRepositoryService.images().process().filterByRepository(getRepositoryId(filtering)).getPage(new Page(paging.offset(), paging.pageSize())).getAll(),
             selected -> {
                 this.selectedImage = selected;
                 loadImage(selected);

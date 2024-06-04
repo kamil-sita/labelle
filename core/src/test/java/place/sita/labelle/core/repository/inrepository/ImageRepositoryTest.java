@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
+import place.sita.labelle.core.images.imagelocator.ImageLocatorService;
 import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.repositories.Repository;
@@ -39,6 +40,9 @@ public class ImageRepositoryTest extends TestContainersTest {
 	@Autowired
 	private InRepositoryService inRepositoryService;
 
+	@Autowired
+	private ImageLocatorService imageLocatorService;
+
 	@AfterEach
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
@@ -49,6 +53,9 @@ public class ImageRepositoryTest extends TestContainersTest {
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
 
 		context.delete(Tables.REPOSITORY).execute();
+
+		context.delete(Tables.IMAGE_FILE).execute();
+		context.delete(Tables.ROOT).execute();
 
 		tagRepository.invalidateCaches();
 	}
@@ -446,6 +453,29 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// when / then
 		assertThatThrownBy(() -> imageRepository.images().getOne())
 			.isInstanceOf(NonUniqueAnswerException.class);
+	}
+
+	@Test
+	public void shouldReturnCorrectIndexOf() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/some_basic_directory/");
+		imageLocatorService.createRoot("C:/some_other_directory/");
+
+		// when / then
+		ImageResponse fifthImage = inRepositoryService.addImage(repo.id(), "C:/some_other_directory/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/some_other_directory/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/some_basic_directory/image3.jpg").getSuccess();
+		ImageResponse sixthImage = inRepositoryService.addImage(repo.id(), "C:/some_other_directory/image3.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/some_basic_directory/image1.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/some_basic_directory/image2.jpg").getSuccess();
+
+		assertThat(imageRepository.images().indexOf(firstImage)).isEqualTo(0);
+		assertThat(imageRepository.images().indexOf(secondImage)).isEqualTo(1);
+		assertThat(imageRepository.images().indexOf(thirdImage)).isEqualTo(2);
+		assertThat(imageRepository.images().indexOf(fourthImage)).isEqualTo(3);
+		assertThat(imageRepository.images().indexOf(fifthImage)).isEqualTo(4);
+		assertThat(imageRepository.images().indexOf(sixthImage)).isEqualTo(5);
 	}
 
 }

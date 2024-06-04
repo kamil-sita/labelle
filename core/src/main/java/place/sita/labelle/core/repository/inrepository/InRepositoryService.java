@@ -70,30 +70,35 @@ public class InRepositoryService {
 
     @Transactional
     public Result3<ImageResponse, DoesNotMatchAnyRoot, InsertFailedUnexpected> addImage(UUID repoId, File file) {
-        List<Root> roots = rootRepository.getRoots();
         String fileDir = file.getAbsolutePath();
-        Root r = findRoot(roots, fileDir);
+        return addImage(repoId, fileDir);
+    }
+
+    @Transactional
+    public Result3<ImageResponse, DoesNotMatchAnyRoot, InsertFailedUnexpected> addImage(UUID repoId, String absolutePath) {
+        List<Root> roots = rootRepository.getRoots();
+        Root r = findRoot(roots, absolutePath);
         if (r == null) {
             return Result3.failure1(new DoesNotMatchAnyRoot());
         }
         // todo transaction
-        String relPath = subtr(fileDir, r.directory());
+        String relPath = subtr(absolutePath, r.directory());
         UUID imageFileId = UUID.randomUUID();
         dslContext.insertInto(Tables.IMAGE_FILE)
-                .columns(Tables.IMAGE_FILE.ID, Tables.IMAGE_FILE.RELATIVE_DIR, Tables.IMAGE_FILE.ROOT_ID)
-                .values(imageFileId, relPath, r.id())
-                .execute();
+            .columns(Tables.IMAGE_FILE.ID, Tables.IMAGE_FILE.RELATIVE_DIR, Tables.IMAGE_FILE.ROOT_ID)
+            .values(imageFileId, relPath, r.id())
+            .execute();
         UUID imageResolvableId = UUID.randomUUID();
         dslContext.insertInto(Tables.IMAGE_RESOLVABLE)
-                .columns(Tables.IMAGE_RESOLVABLE.ID, Tables.IMAGE_RESOLVABLE.IMAGE_FILE_ID, Tables.IMAGE_RESOLVABLE.SYNTHETIC)
-                .values(imageResolvableId, imageFileId, false)
-                .execute();
+            .columns(Tables.IMAGE_RESOLVABLE.ID, Tables.IMAGE_RESOLVABLE.IMAGE_FILE_ID, Tables.IMAGE_RESOLVABLE.SYNTHETIC)
+            .values(imageResolvableId, imageFileId, false)
+            .execute();
         UUID imageInRepoId = UUID.randomUUID();
         String reference = UUID.randomUUID().toString(); // todo can we generate something more friendly?
         dslContext.insertInto(Tables.IMAGE)
-                .columns(Tables.IMAGE.ID, Tables.IMAGE.IMAGE_RESOLVABLE_ID, Tables.IMAGE.REPOSITORY_ID, Tables.IMAGE.REFERENCE_ID)
-                .values(imageInRepoId, imageResolvableId, repoId, reference)
-                .execute();
+            .columns(Tables.IMAGE.ID, Tables.IMAGE.IMAGE_RESOLVABLE_ID, Tables.IMAGE.REPOSITORY_ID, Tables.IMAGE.REFERENCE_ID)
+            .values(imageInRepoId, imageResolvableId, repoId, reference)
+            .execute();
 
         ImageResponse image = new ImageResponse(imageInRepoId, r.directory(), relPath);
         return Result3.success(image);
