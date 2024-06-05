@@ -2,6 +2,7 @@ package place.sita.labelle.core.images.loading;
 
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.images.imagelocator.ImagePtr;
+import place.sita.labelle.core.shutdown.Shutdownable;
 import place.sita.labelle.core.utils.DelegatingFuture;
 import place.sita.labelle.core.utils.Result2;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class ImageLoadingComponent {
+public class ImageLoadingComponent implements Shutdownable {
 
 	private final Set<ImagePtr> loading = new HashSet<>();
 	private final Map<ImagePtr, Future<Result2<BufferedImage, Exception>>> actualLoadingTasks = new HashMap<>();
@@ -89,4 +90,8 @@ public class ImageLoadingComponent {
 		};
 	}
 
+	@Override
+	public void shutdown() {
+		executors.shutdownNow();
+	}
 }

@@ -11,6 +11,7 @@ import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.core.shutdown.ShutdownRegistry;
 import place.sita.labelle.gui.local.fx.FxControllerLoader;
 import place.sita.labelle.gui.local.fx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
@@ -30,13 +31,20 @@ public class StageConfiguration {
 	private final Menu menu;
 	private final FxControllerLoader fxControllerLoader;
 	private final ConfigurableApplicationContext applicationContext;
+	private final ShutdownRegistry shutdownRegistry;
 
-	public StageConfiguration(List<ApplicationTab> applicationTabs, List<TabRegistrar> tabRegistrars, Menu menu, FxControllerLoader fxControllerLoader, ConfigurableApplicationContext applicationContext) {
+	public StageConfiguration(List<ApplicationTab> applicationTabs,
+	                          List<TabRegistrar> tabRegistrars,
+	                          Menu menu,
+	                          FxControllerLoader fxControllerLoader,
+	                          ConfigurableApplicationContext applicationContext,
+	                          ShutdownRegistry shutdownRegistry) {
 		this.applicationTabs = applicationTabs;
 		this.tabRegistrars = tabRegistrars;
 		this.menu = menu;
 		this.fxControllerLoader = fxControllerLoader;
 		this.applicationContext = applicationContext;
+		this.shutdownRegistry = shutdownRegistry;
 	}
 
 	public void configureStage(Stage stage) {
@@ -90,8 +98,8 @@ public class StageConfiguration {
 			public void handle(WindowEvent t) {
 				ThreadingSupportSupplier.shutdown();
 				Platform.exit();
+				shutdownRegistry.shutdown();
 				applicationContext.close();
-				System.exit(0); // todo closing all executorservices probably should've fixed it instead.
 			}
 		});
 	}

@@ -2,6 +2,7 @@ package place.sita.labelle.core.images.loading;
 
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.images.imagelocator.ImagePtr;
+import place.sita.labelle.core.shutdown.Shutdownable;
 import place.sita.labelle.core.utils.CompletedFuture;
 import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.core.utils.SharedFutures;
@@ -13,7 +14,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class ImageCachingLoader {
+public class ImageCachingLoader implements Shutdownable {
 
 	private final Object synchronizationObject = new Object();
 
@@ -96,5 +97,10 @@ public class ImageCachingLoader {
 			}
 			return result;
 		}
+	}
+
+	@Override
+	public void shutdown() {
+		executorService.shutdown();
 	}
 }

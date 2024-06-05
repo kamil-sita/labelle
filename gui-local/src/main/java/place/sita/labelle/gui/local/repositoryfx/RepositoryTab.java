@@ -31,6 +31,7 @@ import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagRe
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.core.utils.Result2;
+import place.sita.labelle.gui.local.fx.threading.Threading.KeyStone;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
@@ -41,8 +42,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
@@ -135,7 +134,6 @@ public class RepositoryTab {
     }
 
     private final ImageCachingLoader imageCachingLoader;
-    private final ExecutorService executors = Executors.newFixedThreadPool(1);
 
     private ImageResponse selectedImage;
 
@@ -168,12 +166,15 @@ public class RepositoryTab {
     }
 
     private Future<Result2<BufferedImage, Exception>> currentFutureImage;
+
+    private final KeyStone loadImageKeyStone = Threading.keyStone();
+
     private void loadImage(ImageResponse selected) {
         if (currentFutureImage != null) {
             currentFutureImage.cancel(true);
         }
         currentFutureImage = imageCachingLoader.load(selected.toPtr());
-        executors.submit(() -> {
+        Threading.onSeparateThread(loadTagsKeyStone, toolkit -> {
             Result2<BufferedImage, Exception> result;
             try {
                 result = currentFutureImage.get();
@@ -184,11 +185,13 @@ public class RepositoryTab {
                 return;
             }
             if (result.isSuccess()) {
-                try {
-                    scalableImageDisplayController.set(result.getSuccess());
-                } catch (Exception e) {
-                    log.error("Couldn't set image", e);
-                }
+                toolkit.onFxThread(() -> {
+                    try {
+                        scalableImageDisplayController.set(result.getSuccess());
+                    } catch (Exception e) {
+                        log.error("Couldn't set image", e);
+                    }
+                });
             }
         });
     }
@@ -221,10 +224,10 @@ public class RepositoryTab {
         });
     }
 
-    private final Threading.KeyStone keyStone = Threading.keyStone();
+    private final KeyStone loadTagsKeyStone = Threading.keyStone();
 
     private void loadTags(ImageResponse selected) {
-        Threading.onSeparateThread(keyStone, toolkit -> {
+        Threading.onSeparateThread(loadTagsKeyStone, toolkit -> {
             List<TagResponse> tags = inRepositoryService.getTags(selected.id());
             toolkit.onFxThread(() -> {
                 tagsTableData.clear();

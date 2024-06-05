@@ -8,6 +8,6 @@ import place.sita.magicscheduler.MagicSchedulerConfig;
 
 @Configuration
 @ComponentScan
-@Import({ExtensionsConfig.class, MagicSchedulerConfig.class})
+@Import({ExtensionsConfig.class, MagicSchedulerConfig.class, CoreCommonAppConfig.class})
 public class CoreAppConfig {
 }
