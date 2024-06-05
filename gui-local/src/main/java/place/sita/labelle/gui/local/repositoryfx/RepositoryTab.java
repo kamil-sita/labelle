@@ -174,7 +174,7 @@ public class RepositoryTab {
             currentFutureImage.cancel(true);
         }
         currentFutureImage = imageCachingLoader.load(selected.toPtr());
-        Threading.onSeparateThread(loadTagsKeyStone, toolkit -> {
+        Threading.onSeparateThread(loadImageKeyStone, toolkit -> {
             Result2<BufferedImage, Exception> result;
             try {
                 result = currentFutureImage.get();
