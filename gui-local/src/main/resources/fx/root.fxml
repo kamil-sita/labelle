@@ -11,7 +11,7 @@
       <ListView fx:id="rootListView" layoutX="14.0" layoutY="16.0" prefHeight="341.0" prefWidth="150.0" AnchorPane.bottomAnchor="43.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0" />
       <Label layoutX="176.0" layoutY="18.0" text="New root" />
       <TextField fx:id="textField" layoutX="176.0" layoutY="53.0" prefHeight="25.0" prefWidth="407.0" AnchorPane.leftAnchor="176.0" />
-      <Button layoutX="175.0" layoutY="90.0" mnemonicParsing="false" onAction="#addButtonPress" text="Add" />
+      <Button fx:id="addRootButton" layoutX="175.0" layoutY="90.0" mnemonicParsing="false" onAction="#addButtonPress" text="Add" />
       <Button layoutX="226.0" layoutY="90.0" mnemonicParsing="false" onAction="#updateButtonPress" text="Update" />
       <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#removeButtonPress" prefHeight="25.0" prefWidth="150.0" text="Remove" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
    </children>

@@ -56,20 +56,29 @@ public class ScheduleExecutorFxTab {
                 codeArea.setText(newValue.sampleValue());
                 validateButton.setDisable(false);
                 executeButton.setDisable(false);
+                clearButton.setDisable(false);
             } else {
                 codeLabel.setText("???");
                 nameLabel.setText("???");
                 codeArea.setText(null);
                 validateButton.setDisable(true);
                 executeButton.setDisable(true);
+                clearButton.setDisable(true);
             }
         });
+    }
+
+    @FXML
+    void clearButtonPress(ActionEvent event) {
+        codeArea.clear();
     }
 
     @FXML
     private Button validateButton;
     @FXML
     private Button executeButton;
+    @FXML
+    private Button clearButton;
 
     @FXML
     private TextField filterTextField;

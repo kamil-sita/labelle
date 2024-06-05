@@ -2,7 +2,6 @@ package place.sita.labelle;
 
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,7 +11,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.ListViewMatchers;
-import place.sita.labelle.actions.RepositoryActions;
+import place.sita.labelle.actions.RepositoriesActions;
 import place.sita.labelle.actions.TabActions;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
@@ -43,13 +42,13 @@ public class RepositoryTabTest extends TestContainersTest {
 		robot.sleep(1, TimeUnit.SECONDS);
 
 		// check if list is empty
-		ListView repositoryList = RepositoryActions.getRepositoryList();
+		ListView repositoryList = RepositoriesActions.getRepositoryList();
 
 		FxAssert.verifyThat(repositoryList, ListViewMatchers.isEmpty());
 		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(0);
 
 		// add repository
-		RepositoryActions.createNewRepository(robot, "My test repository");
+		RepositoriesActions.createNewRepository(robot, "My test repository");
 
 		// check state
 		FxAssert.verifyThat(repositoryList, ListViewMatchers.hasItems(1));

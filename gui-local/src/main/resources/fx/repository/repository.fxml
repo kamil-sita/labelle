@@ -60,10 +60,10 @@
                                       </columns>
                                     </TableView>
                                     <Label layoutX="15.0" layoutY="5.0" text="Tags" />
-                                    <TextField fx:id="tagFamilyTextField" prefHeight="26.0" prefWidth="212.0" text="Family" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
-                                    <TextField fx:id="tagEntryTextField" prefHeight="26.0" prefWidth="212.0" text="Entry" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
+                                    <TextField fx:id="tagFamilyTextField" prefHeight="26.0" prefWidth="212.0" promptText="Family" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
+                                    <TextField fx:id="tagEntryTextField" prefHeight="26.0" prefWidth="212.0" promptText="Entry" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
                                     <Button mnemonicParsing="false" onAction="#updateTagPress" prefHeight="25.0" prefWidth="76.0" text="Update" AnchorPane.bottomAnchor="14.599999999999987" AnchorPane.rightAnchor="15.199999999999989" />
-                                    <Button layoutX="251.0" layoutY="423.0" mnemonicParsing="false" onAction="#addTagPress" prefHeight="25.0" prefWidth="76.0" text="Add" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="15.399999999999977" />
+                                    <Button fx:id="addTagButton" layoutX="251.0" layoutY="423.0" mnemonicParsing="false" onAction="#addTagPress" prefHeight="25.0" prefWidth="76.0" text="Add" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="15.399999999999977" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">

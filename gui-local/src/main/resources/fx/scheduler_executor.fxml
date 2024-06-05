@@ -31,6 +31,7 @@
                   <Font name="Courier New" size="12.0" />
                </font>
             </TextArea>
+            <Button fx:id="clearButton" disable="true" layoutX="132.0" layoutY="358.0" mnemonicParsing="false" onAction="#clearButtonPress" text="Clear" AnchorPane.bottomAnchor="14.799999999999955" AnchorPane.leftAnchor="132.0" />
          </children></AnchorPane>
       <Group />
       <SwingNode />
