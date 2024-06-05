@@ -54,5 +54,13 @@ public class RepositoryTabTest extends TestContainersTest {
 		FxAssert.verifyThat(repositoryList, ListViewMatchers.hasItems(1));
 		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(1);
 		assertThat(repositoryService.getRepositories(null).get(0).name()).isEqualTo("My test repository");
+
+		// delete repository
+		robot.clickOn(RepositoriesActions.repository(0));
+		robot.clickOn(RepositoriesActions.deleteRepositoryButton());
+
+		// check state
+		FxAssert.verifyThat(repositoryList, ListViewMatchers.isEmpty());
+		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(0);
 	}
 }

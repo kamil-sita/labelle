@@ -77,7 +77,7 @@ public class CalculateTagDeltaWorkflowTest extends TestContainersTest {
 	}
 
 	@Test
-	public void shouldBeAbleToAddAndRemoveRepository(FxRobot robot) {
+	public void shouldGoThroughTagDeltaWorkflow(FxRobot robot) {
 		Node rootsTab = TabActions.getMainTab("Data roots");
 
 		robot.clickOn(rootsTab);
