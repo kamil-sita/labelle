@@ -68,10 +68,6 @@ public class RepositoryService {
         };
     }
 
-    public void updateFromUpstream(UUID repositoryId, LogicalExpr imageFilter) {
-        // todo not implemented
-    }
-
     public Repository addRepository(String name) {
         return addRepository(UUID.randomUUID(), name);
     }
