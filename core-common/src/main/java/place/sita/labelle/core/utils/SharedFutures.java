@@ -10,7 +10,6 @@ import java.util.function.Function;
 
 public class SharedFutures<KeyT, ValueT> {
 	private final Map<KeyT, AtomicInteger> waiting = new HashMap<>();
-	private final Set<KeyT> loading = new HashSet<>();
 	private final Map<KeyT, Future<Result2<ValueT, Exception>>> actualLoadingTasks = new HashMap<>();
 	private final Function<KeyT, Future<Result2<ValueT, Exception>>> loadingFunction;
 
@@ -21,11 +20,10 @@ public class SharedFutures<KeyT, ValueT> {
 
 	public Future<Result2<ValueT, Exception>> load(KeyT key) {
 		synchronized (this) {
-			if (loading.contains(key)) {
-				waiting.get(key).incrementAndGet(); // todo this can be null. After running a job and then using UI?
+			if (waiting.containsKey(key)) {
+				waiting.get(key).incrementAndGet();
 				return createWrapperOverActualTask(key, actualLoadingTasks.get(key));
 			} else {
-				loading.add(key);
 				waiting.put(key, new AtomicInteger(1));
 				Future<Result2<ValueT, Exception>> actualLoadingTask = loadingFunction.apply(key);
 				actualLoadingTasks.put(key, actualLoadingTask);
@@ -43,18 +41,14 @@ public class SharedFutures<KeyT, ValueT> {
 				synchronized (this) {
 					isCancelled = true;
 					var waitingC = waiting.get(key);
-					if (waitingC == null) { // todo this is unexpected, but has happened. Investigate as to why
-						return true;
-					} else {
-						int v = waitingC.decrementAndGet();
-						if (v == 0) {
-							boolean cancelled = actualLoadingTask.cancel(mayInterruptIfRunning);
-							waiting.remove(key);
-							actualLoadingTasks.remove(key);
-							return cancelled;
-						}
-						return false; // technically, we couldn't cancel it?
+					int v = waitingC.decrementAndGet();
+					if (v == 0) {
+						boolean cancelled = actualLoadingTask.cancel(mayInterruptIfRunning);
+						waiting.remove(key);
+						actualLoadingTasks.remove(key);
+						return cancelled;
 					}
+					return false; // technically, we couldn't cancel it?
 				}
 			}
 
