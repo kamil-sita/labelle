@@ -25,11 +25,10 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static place.sita.labelle.state.StateChange.withAction;
-import static place.sita.labelle.state.assertions.SimpleChangeAssertion.changeIn;
-import static place.sita.labelle.state.assertions.SimpleChangeAssertion.nonNullChangeIn;
+import static place.sita.labelle.state.assertions.SimpleChangeAssertion.*;
 
 @ExtendWith(ApplicationExtension.class)
-public class ImageLoadTest extends TestContainersTest {
+public class ImageLoadTest extends GuiTest {
 
 	@Autowired
 	private StageConfiguration stageConfiguration;
@@ -56,8 +55,11 @@ public class ImageLoadTest extends TestContainersTest {
 		// visit Repositories tab
 		Node node = TabActions.getMainTab("Repositories");
 
-		robot.clickOn(node);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(node);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		// check if list is empty
 		ListView repositoryList = RepositoriesActions.getRepositoryList();
@@ -74,11 +76,13 @@ public class ImageLoadTest extends TestContainersTest {
 		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(1);
 		assertThat(repositoryService.getRepositories(null).get(0).name()).isEqualTo("My test repository");
 
-
 		Node rootsTab = TabActions.getMainTab("Data roots");
 
-		robot.clickOn(rootsTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(rootsTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		DataRootsActions.createDataRoot(robot, root);
 
@@ -111,8 +115,11 @@ public class ImageLoadTest extends TestContainersTest {
 			.test();
 
 		Node repositoryTab = TabActions.getMainTab("Repository");
-		robot.clickOn(repositoryTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(repositoryTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		robot.clickOn(RepositoryActions.repositoryChoiceBox());
 		robot.type(KeyCode.DOWN);

@@ -16,9 +16,9 @@ import place.sita.labelle.actions.TabActions;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
 
-import java.util.concurrent.TimeUnit;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static place.sita.labelle.state.StateChange.withAction;
+import static place.sita.labelle.state.assertions.SimpleChangeAssertion.toBeTrueAfterAction;
 
 @ExtendWith(ApplicationExtension.class)
 public class RepositoryTabTest extends GuiTest {
@@ -38,8 +38,11 @@ public class RepositoryTabTest extends GuiTest {
 		// visit Repositories tab
 		Node node = TabActions.getMainTab("Repositories");
 
-		robot.clickOn(node);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(node);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		// check if list is empty
 		ListView repositoryList = RepositoriesActions.getRepositoryList();

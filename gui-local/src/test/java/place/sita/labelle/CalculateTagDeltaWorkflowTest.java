@@ -19,12 +19,16 @@ import place.sita.labelle.core.repository.inrepository.delta.TagDeltaResponse;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaType;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
+import place.sita.magicscheduler.scheduler.SchedulerStatistics;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static place.sita.labelle.state.StateChange.withAction;
+import static place.sita.labelle.state.assertions.SimpleChangeAssertion.changeIn;
+import static place.sita.labelle.state.assertions.SimpleChangeAssertion.toBeTrueAfterAction;
 
 @ExtendWith(ApplicationExtension.class)
 public class CalculateTagDeltaWorkflowTest extends GuiTest {
@@ -41,6 +45,9 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 	@Autowired
 	private InRepositoryService inRepositoryService;
 
+	@Autowired
+	private SchedulerStatistics schedulerStatistics;
+
 	@Start
 	public void start(Stage stage) {
 		stageConfiguration.configureStage(stage);
@@ -50,8 +57,11 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 	public void shouldGoThroughTagDeltaWorkflow(FxRobot robot) {
 		Node rootsTab = TabActions.getMainTab("Data roots");
 
-		robot.clickOn(rootsTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(rootsTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		FxAssert.verifyThat(DataRootsActions.getRootList(), ListViewMatchers.isEmpty());
 		assertThat(rootRepository.getRoots()).isEmpty();
@@ -65,8 +75,11 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 		// visit Repositories tab
 		Node repositoriesTab = TabActions.getMainTab("Repositories");
 
-		robot.clickOn(repositoriesTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(repositoriesTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		ListView repositoryList = RepositoriesActions.getRepositoryList();
 
@@ -87,8 +100,11 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 		// schedule adding an image
 		Node schedulerExecutorTab = TabActions.getMainTab("Scheduler Executor");
 
-		robot.clickOn(schedulerExecutorTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(schedulerExecutorTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		SchedulerExecutorActions.filterBy(robot, "add-image-v1");
 		FxAssert.verifyThat(SchedulerExecutorActions.taskList(), ListViewMatchers.hasItems(1));
@@ -105,12 +121,18 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 			.formatted(repositoryId.toString());
 
 		robot.write(json);
-		robot.clickOn(SchedulerExecutorActions.executeButton());
-		robot.sleep(5, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(SchedulerExecutorActions.executeButton());
+		})
+			.expect(changeIn(() -> schedulerStatistics.successfulTaskCount()))
+			.test();
 
 		Node repositoryTab = TabActions.getMainTab("Repository");
-		robot.clickOn(repositoryTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(repositoryTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		robot.clickOn(RepositoryActions.repositoryChoiceBox());
 		robot.type(KeyCode.DOWN);
@@ -142,16 +164,22 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 			.formatted(repositoryId.toString());
 
 		robot.write(json);
-		robot.clickOn(SchedulerExecutorActions.executeButton());
-		robot.sleep(5, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(SchedulerExecutorActions.executeButton());
+		})
+			.expect(changeIn(() -> schedulerStatistics.successfulTaskCount()))
+			.test();
 
-		robot.clickOn(repositoryTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(repositoryTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		robot.clickOn(RepositoryActions.repositoryChoiceBox());
 		robot.type(KeyCode.DOWN);
 		robot.type(KeyCode.ENTER);
-		robot.sleep(1, TimeUnit.SECONDS);
+		robot.sleep(1, TimeUnit.SECONDS); // todo - rewrite to stability action framework
 		robot.clickOn(RepositoryActions.imageInPaginator(0));
 		robot.sleep(1, TimeUnit.SECONDS);
 		robot.clickOn(RepositoryActions.removeTag(0));
