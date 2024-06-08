@@ -52,7 +52,7 @@ public class InternalTaskSubmitterImpl implements InternalTaskSubmitter {
 
         private final DSLContext dslContext;
 
-	    private DatabaseSubmitter(DSLContext dslContext) {
+	    public DatabaseSubmitter(DSLContext dslContext) {
 		    this.dslContext = dslContext;
 	    }
 
