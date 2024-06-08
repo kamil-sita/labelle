@@ -35,9 +35,6 @@ public class MagicSchedulerTest extends TestContainersTest {
 	private MagicSchedulerBackend magicSchedulerBackend;
 
 	@MockBean
-	private ScheduleLater scheduleLater;
-
-	@MockBean
 	private StringTaskTestValueProcessor stringTaskTestValueProcessor;
 
 	@Autowired
@@ -65,7 +62,7 @@ public class MagicSchedulerTest extends TestContainersTest {
 		assertThat(tasksBefore.get(0).taskCode()).isEqualTo(stringTestTask.code());
 		assertThat(tasksBefore.get(0).taskName()).isEqualTo(stringTestTask.name());
 		assertThat(tasksBefore.get(0).jobCreationTime()).isCloseTo(LocalDateTime.now(), new TemporalUnitWithinOffset(1, ChronoUnit.SECONDS));
-		assertThat(tasksBefore.get(0).taskStatus()).isEqualTo(TaskStatus.CREATED);
+		assertThat(tasksBefore.get(0).taskStatus()).isEqualTo(TaskStatus.SCHEDULED); // manually created tasks are immediately scheduled
 		var executionsBefore = executionsService.getExecutions(tasksBefore.get(0).taskId());
 		assertThat(executionsBefore).isEmpty();
 
