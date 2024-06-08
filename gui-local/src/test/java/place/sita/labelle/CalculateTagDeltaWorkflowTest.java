@@ -133,6 +133,8 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 		})
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
 			.test();
+		// todo code above unreliably fails
+		robot.sleep(1, TimeUnit.SECONDS);
 
 		robot.clickOn(RepositoryActions.repositoryChoiceBox());
 		robot.type(KeyCode.DOWN);
@@ -175,6 +177,8 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 		})
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
 			.test();
+		// todo code above unreliably fails
+		robot.sleep(1, TimeUnit.SECONDS);
 
 		robot.clickOn(RepositoryActions.repositoryChoiceBox());
 		robot.type(KeyCode.DOWN);
