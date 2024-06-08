@@ -3,6 +3,7 @@ package place.sita.labelle.core.repository;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import place.sita.labelle.core.cache.InvalidateableCache;
 import place.sita.labelle.core.persistence.ex.IllegalOperationOnStateException;
 import place.sita.labelle.core.persistence.ex.UnexpectedDatabaseReplyException;
 import place.sita.labelle.core.images.imagelocator.Root;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 import static place.sita.labelle.jooq.tables.Root.ROOT;
 
 @Repository
-public class RootRepository {
+public class RootRepository implements InvalidateableCache {
 
     private final DSLContext dslContext;
 
@@ -85,6 +86,11 @@ public class RootRepository {
             .filter(r -> !r.id().equals(id))
             .toList());
         return Result2.success(null);
+    }
+
+    @Override
+    public void invalidate() {
+        rootCache = null;
     }
 
     public record BaseOfRootViolation() {
