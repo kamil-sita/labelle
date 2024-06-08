@@ -156,12 +156,30 @@ public class TypeSpecificQueue {
         submitTasksWithConfig(inner, jobsToSubmit);
     }
 
-    public void scheduleWithoutQueue(UUID id, String config) {
+    private void scheduleWithoutQueue(UUID id, String config) {
+        dslContext.transaction(inner -> {
+            submitTasksWithConfig(inner, List.of(new TaskWithConfig(id, config)));
+        });
+    }
+
+    public void doInSchedulingLock(InSchedulingLock r) {
+        Context context = new Context() {
+            @Override
+            public void scheduleWithoutQueue(UUID id, String config) {
+                TypeSpecificQueue.this.scheduleWithoutQueue(id, config);
+            }
+        };
         synchronized (schedulingLock) {
-            dslContext.transaction(inner -> {
-                submitTasksWithConfig(inner, List.of(new TaskWithConfig(id, config)));
-            });
+            r.run(context);
         }
+    }
+
+    public interface Context {
+        void scheduleWithoutQueue(UUID id, String config);
+    }
+
+    public interface InSchedulingLock {
+        void run(Context ctx);
     }
 
     private void submitTasksWithConfig(Configuration inner, List<TaskWithConfig> jobsToSubmit) {
