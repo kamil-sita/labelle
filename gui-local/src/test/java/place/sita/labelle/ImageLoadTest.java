@@ -90,8 +90,11 @@ public class ImageLoadTest extends GuiTest {
 		// schedule adding an image
 		Node schedulerExecutorTab = TabActions.getMainTab("Scheduler Executor");
 
-		robot.clickOn(schedulerExecutorTab);
-		robot.sleep(1, TimeUnit.SECONDS);
+		withAction(() -> {
+			robot.clickOn(schedulerExecutorTab);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 
 		SchedulerExecutorActions.filterBy(robot, "add-image-v1");
 		FxAssert.verifyThat(SchedulerExecutorActions.taskList(), ListViewMatchers.hasItems(1));
