@@ -8,8 +8,11 @@ import javafx.scene.layout.Region;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import place.sita.labelle.gui.local.fx.LazyLoadable;
+import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
 import place.sita.labelle.gui.local.tab.ApplicationTab;
 import place.sita.labelle.gui.local.tab.UnloadAware;
+
+import java.util.UUID;
 
 
 public class UnloadingTab<T extends LazyLoadable> implements ApplicationTab, UnloadAware {
@@ -20,13 +23,20 @@ public class UnloadingTab<T extends LazyLoadable> implements ApplicationTab, Unl
     private final T lazyLoadable;
     private final int order;
     private boolean loaded = false;
+    private final UnstableSceneReporter unstableSceneReporter;
 
-    public UnloadingTab(String internalClassName, T lazyLoadable, String title, int order) {
+    public UnloadingTab(
+            String internalClassName,
+            T lazyLoadable,
+            String title,
+            int order,
+            UnstableSceneReporter unstableSceneReporter) {
         this.internalClassName = internalClassName;
         this.lazyLoadable = lazyLoadable;
         this.order = order;
         internalTab = new Tab(title);
-        internalTab.setClosable(false);
+	    this.unstableSceneReporter = unstableSceneReporter;
+	    internalTab.setClosable(false);
     }
 
     @Override
@@ -35,6 +45,8 @@ public class UnloadingTab<T extends LazyLoadable> implements ApplicationTab, Unl
     }
 
     public void load() {
+        UUID id = UUID.randomUUID();
+        unstableSceneReporter.markUnstable(id, "Loading tab: " + internalClassName);
         log.debug("Loading class {}", internalClassName);
         if (loaded) {
             log.debug("Unloading previous version of this ({}) interface", internalClassName);
@@ -60,6 +72,7 @@ public class UnloadingTab<T extends LazyLoadable> implements ApplicationTab, Unl
             internalTab.setContent(anchorPane);
             log.debug("New interface done for {}", internalClassName);
             loaded = true;
+            unstableSceneReporter.markStable(id);
         });
     }
 

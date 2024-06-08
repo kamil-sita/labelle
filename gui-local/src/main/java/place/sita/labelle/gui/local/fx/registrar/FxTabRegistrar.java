@@ -7,6 +7,7 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.gui.local.fx.FxControllerLoader;
 import place.sita.labelle.gui.local.fx.LazyLoadable;
+import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
 import place.sita.labelle.gui.local.menu.UnloadingTab;
 import place.sita.labelle.gui.local.tab.ApplicationTab;
 import place.sita.labelle.gui.local.tab.TabRegistrar;
@@ -20,10 +21,15 @@ public class FxTabRegistrar implements TabRegistrar {
 
     private final ApplicationContext applicationContext;
     private final FxControllerLoader fxControllerLoader;
+    private final UnstableSceneReporter unstableSceneReporter;
 
-    public FxTabRegistrar(ApplicationContext applicationContext, FxControllerLoader fxControllerLoader) {
+    public FxTabRegistrar(
+            ApplicationContext applicationContext,
+            FxControllerLoader fxControllerLoader,
+            UnstableSceneReporter unstableSceneReporter) {
         this.applicationContext = applicationContext;
 	    this.fxControllerLoader = fxControllerLoader;
+	    this.unstableSceneReporter = unstableSceneReporter;
     }
 
     @Override
@@ -57,7 +63,7 @@ public class FxTabRegistrar implements TabRegistrar {
                     return fxControllerLoader.setupForController(controller, annotation.resourceFile());
                 };
 
-                return new UnloadingTab<>(className, tabSupplier, annotation.tabName(), annotation.order());
+                return new UnloadingTab<>(className, tabSupplier, annotation.tabName(), annotation.order(), unstableSceneReporter);
             } else {
                 throw new RuntimeException("No FxTab annotation present in a situation where it should: " + clazz);
             }
