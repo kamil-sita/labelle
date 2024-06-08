@@ -15,6 +15,7 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.ListViewMatchers;
 import place.sita.labelle.actions.RepositoriesActions;
 import place.sita.labelle.actions.TabActions;
+import place.sita.labelle.core.cache.CacheRegistry;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
 import place.sita.labelle.jooq.Tables;
@@ -33,6 +34,9 @@ public class RepositoryTabTest extends TestContainersTest {
 
 	@Autowired
 	private DSLContext context;
+
+	@Autowired
+	private CacheRegistry cacheRegistry;
 
 	@Start
 	public void start(Stage stage) {
@@ -55,6 +59,7 @@ public class RepositoryTabTest extends TestContainersTest {
 
 		context.delete(Tables.IMAGE_FILE).execute();
 		context.delete(Tables.ROOT).execute();
+		cacheRegistry.invalidate();
 	}
 
 	@Test

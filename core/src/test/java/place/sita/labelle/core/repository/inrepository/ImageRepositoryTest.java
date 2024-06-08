@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
+import place.sita.labelle.core.cache.CacheRegistry;
 import place.sita.labelle.core.images.imagelocator.ImageLocatorService;
 import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
@@ -40,6 +41,9 @@ public class ImageRepositoryTest extends TestContainersTest {
 	@Autowired
 	private ImageLocatorService imageLocatorService;
 
+	@Autowired
+	private CacheRegistry cacheRegistry;
+
 	@AfterEach
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
@@ -53,6 +57,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 
 		context.delete(Tables.IMAGE_FILE).execute();
 		context.delete(Tables.ROOT).execute();
+		cacheRegistry.invalidate();
 	}
 
 	@Test
