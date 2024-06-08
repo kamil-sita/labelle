@@ -18,15 +18,11 @@ import place.sita.magicscheduler.scheduler.task.StringTestTask;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 public class MagicSchedulerTest extends TestContainersTest {
-
-	@Autowired
-	private MagicScheduler magicScheduler;
 
 	@Autowired
 	private StringTestTask stringTestTask;
@@ -53,10 +49,9 @@ public class MagicSchedulerTest extends TestContainersTest {
 		when(stringTaskTestValueProcessor.process(any(), any())).thenReturn(TaskResult.success("Success: test"));
 
 		// when
-		runTasksAsTest(stringTestTask, "test", 0, callback);
+		runTasksAsTest(stringTestTask, "test");
 
 		// then
-		verify(callback, never()).onExecutionFinished();
 		var tasksBefore = executionsService.getScheduledTasks(Integer.MAX_VALUE, 0, null);
 		assertThat(tasksBefore).hasSize(1);
 		assertThat(tasksBefore.get(0).taskCode()).isEqualTo(stringTestTask.code());
@@ -71,7 +66,6 @@ public class MagicSchedulerTest extends TestContainersTest {
 		argumentCaptor.getValue().run();
 
 		// then
-		verify(callback).onExecutionFinished();
 		var tasksAfter = executionsService.getScheduledTasks(Integer.MAX_VALUE, 0, null);
 		assertThat(tasksAfter).hasSize(1);
 		assertThat(tasksAfter.get(0).taskCode()).isEqualTo(stringTestTask.code());
@@ -88,17 +82,12 @@ public class MagicSchedulerTest extends TestContainersTest {
 		// todo test return value
 	}
 
-	private <ParameterT> void runTasksAsTest(TaskType<ParameterT, ?, ?> taskType,
-	                                         ParameterT parameter,
-	                                         int executionCount,
-	                                         MagicScheduler.ExecutionFinishedCallback callback) {
-		UUID id;
+	private <ParameterT> void runTasksAsTest(TaskType<ParameterT, ?, ?> taskType, ParameterT parameter) {
 		try {
-			id = internalTaskSubmitter.submitTaskForLater(taskType.code(), new ObjectMapper().writeValueAsString(parameter), InternalTaskSubmitter.UUID_FOR_USER_SUBMITTED_TASKS);
+			internalTaskSubmitter.submitTaskForLater(taskType.code(), new ObjectMapper().writeValueAsString(parameter), InternalTaskSubmitter.UUID_FOR_USER_SUBMITTED_TASKS);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
-		magicScheduler.schedule(id, taskType, parameter, executionCount, callback);
 	}
 
 }
