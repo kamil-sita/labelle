@@ -187,7 +187,11 @@ public class RepositoryTab {
             if (result.isSuccess()) {
                 toolkit.onFxThread(() -> {
                     try {
-                        scalableImageDisplayController.set(result.getSuccess());
+                        BufferedImage bufferedImage = result.getSuccess();
+                        scalableImageDisplayController.set(bufferedImage);
+                        if (bufferedImage != null) {
+                            context.publishEvent(new ImageLoadedEvent());
+                        }
                     } catch (Exception e) {
                         log.error("Couldn't set image", e);
                     }

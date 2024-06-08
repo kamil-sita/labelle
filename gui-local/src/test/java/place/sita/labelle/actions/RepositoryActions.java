@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import org.testfx.api.FxAssert;
 import org.testfx.service.query.NodeQuery;
 
@@ -47,5 +48,9 @@ public class RepositoryActions {
 
 	public static Button calculateTagsDeltaButton() {
 		return FxAssert.assertContext().getNodeFinder().lookup("#calculateTagsDeltaButton").query();
+	}
+
+	public static ImageView imageView() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#imageView").query();
 	}
 }
