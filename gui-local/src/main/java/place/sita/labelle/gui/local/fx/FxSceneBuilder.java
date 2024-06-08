@@ -31,7 +31,7 @@ public class FxSceneBuilder {
         FXMLLoader loader = new FXMLLoader(clazz.getResource(resource));
         Parent root = null;
         try {
-            log.info("[{}] Loading data", clazz);
+            log.debug("[{}] Loading data", clazz);
             loader.setController(controller);
             root = loader.load();
             log.debug("[{}] Parent loaded", clazz);

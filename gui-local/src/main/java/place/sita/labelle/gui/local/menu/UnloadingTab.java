@@ -35,7 +35,7 @@ public class UnloadingTab<T extends LazyLoadable> implements ApplicationTab, Unl
     }
 
     public void load() {
-        log.info("Loading class {}", internalClassName);
+        log.debug("Loading class {}", internalClassName);
         if (loaded) {
             log.debug("Unloading previous version of this ({}) interface", internalClassName);
             unloadLoaded();

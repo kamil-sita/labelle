@@ -12,18 +12,27 @@ import place.sita.modulefx.annotations.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.UUID;
 
 @Component
 public class FxControllerLoader {
 
 	private final ApplicationContext context;
+	private final UnstableSceneReporter unstableSceneReporter;
 
-	public FxControllerLoader(ApplicationContext context) {
+	public FxControllerLoader(ApplicationContext context, UnstableSceneReporter unstableSceneReporter) {
 		this.context = context;
+		this.unstableSceneReporter = unstableSceneReporter;
 	}
 
 	public Node setupForController(Object controller, String resource) {
-		return setupForController(controller, null, null, resource);
+		UUID loadId = UUID.randomUUID();
+		try {
+			unstableSceneReporter.markUnstable(loadId, "Loading of controller: " + controller.getClass().getName());
+			return setupForController(controller, null, null, resource);
+		} finally {
+			unstableSceneReporter.markStable(loadId);
+		}
 	}
 
 	private Node setupForController(Object controller, Object parent, Node parentNode, String resource) {

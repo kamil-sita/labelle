@@ -10,15 +10,21 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import place.sita.labelle.gui.local.StageConfiguration;
+import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
 
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+
+import static place.sita.labelle.state.StateChange.withAction;
+import static place.sita.labelle.state.assertions.SimpleChangeAssertion.toBeTrueAfterAction;
 
 @ExtendWith(ApplicationExtension.class)
 public class MainMenuTest extends TestContainersTest {
 
 	@Autowired
 	private StageConfiguration stageConfiguration;
+
+	@Autowired
+	private UnstableSceneReporter unstableSceneReporter;
 
 	@Start
 	public void start(Stage stage) {
@@ -30,9 +36,12 @@ public class MainMenuTest extends TestContainersTest {
 		Set<Node> nodes = FxAssert.assertContext().getNodeFinder().lookup("#mainTabPane").lookup(".tab-header-area > .headers-region > .tab").queryAll();
 
 		for (Node node : nodes) {
-			robot.sleep(300, TimeUnit.MILLISECONDS);
-			robot.clickOn(node);
-			robot.sleep(300, TimeUnit.MILLISECONDS);
+			withAction(() -> {
+				robot.clickOn(node);
+			})
+				.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+				.test();
+
 		}
 	}
 }

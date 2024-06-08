@@ -53,4 +53,26 @@ public class SimpleChangeAssertion {
 			}
 		};
 	}
+
+	public static StateAssertion toBeTrueAfterAction(Supplier<Boolean> supplier) {
+
+		return new StateAssertion() {
+			private boolean firstRun = true;
+			@Override
+			public boolean test() {
+				if (firstRun) {
+					// ignore
+					firstRun = false;
+					return false;
+				} else {
+					return supplier.get();
+				}
+			}
+
+			@Override
+			public String description() {
+				return "supplier value to be true after action";
+			}
+		};
+	}
 }
