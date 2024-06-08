@@ -163,6 +163,7 @@ public class JooqUnderlyingDataSourceBuilder {
 		protected abstract SelectJoinStep<Record> applyFiltering(SelectSelectStep<Record> step, List<AcceptedPreprocessingType> preprocessing);
 
 		@Override
+		@SuppressWarnings("squid:S2095") // Resource lives longer than method
 		public CloseableIterator<Type> get(List<AcceptedPreprocessingType> preprocessing, int pageSize) {
 			SelectSelectStep<Record> preFrom = contextProvider.getContext()
 				.select(queryBuilder.select(preprocessing));

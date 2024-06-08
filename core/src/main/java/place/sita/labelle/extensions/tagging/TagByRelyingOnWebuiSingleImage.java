@@ -77,41 +77,45 @@ public class TagByRelyingOnWebuiSingleImage implements TaskType<TagByRelyingOnWe
 
 			String jsonPayload = String.format("{\"image\":\"%s\",\"model\":\"%s\"}", imageString, parameter.tagger);
 
-			CloseableHttpClient client = HttpClients.createDefault();
-			HttpPost post = new HttpPost("http://localhost:7861/sdapi/v1/interrogate");
-			post.setHeader("Content-Type", "application/json");
-			try {
-				post.setEntity(new StringEntity(jsonPayload));
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException(e);
-			}
+			try (CloseableHttpClient client = HttpClients.createDefault()) {
 
-			taskContext.log("About to send query...");
-			HttpResponse response = null;
-			try {
-				response = client.execute(post);
+				HttpPost post = new HttpPost("http://localhost:7861/sdapi/v1/interrogate");
+				post.setHeader("Content-Type", "application/json");
+				try {
+					post.setEntity(new StringEntity(jsonPayload));
+				} catch (UnsupportedEncodingException e) {
+					throw new RuntimeException(e);
+				}
+
+				taskContext.log("About to send query...");
+				HttpResponse response = null;
+				try {
+					response = client.execute(post);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				HttpEntity entity = response.getEntity();
+				taskContext.log("Received a response");
+
+				String a = null;
+				try {
+					a = EntityUtils.toString(entity);
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				Response resp = null;
+				try {
+					resp = new ObjectMapper().readValue(a, Response.class);
+				} catch (JsonProcessingException e) {
+					throw new RuntimeException(e);
+				}
+
+				List<String> tags = applyTags(taskContext.getApi(), resp, parameter.imageId, parameter.tagger, taskContext);
+
+				return TaskResult.success(new TaggingResult(parameter.tagger, parameter.imageId, tags));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-			HttpEntity entity = response.getEntity();
-			taskContext.log("Received a response");
-
-			String a = null;
-			try {
-				a = EntityUtils.toString(entity);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-			Response resp = null;
-			try {
-				resp = new ObjectMapper().readValue(a, Response.class);
-			} catch (JsonProcessingException e) {
-				throw new RuntimeException(e);
-			}
-
-			List<String> tags = applyTags(taskContext.getApi(), resp, parameter.imageId, parameter.tagger, taskContext);
-
-			return TaskResult.success(new TaggingResult(parameter.tagger, parameter.imageId, tags));
 		} else {
 			throw (RuntimeException) results.getFailure();
 		}
