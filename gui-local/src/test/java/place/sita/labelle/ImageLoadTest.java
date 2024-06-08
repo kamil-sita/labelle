@@ -123,6 +123,8 @@ public class ImageLoadTest extends GuiTest {
 		})
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
 			.test();
+		// todo the check above likes to fail.
+		robot.sleep(1, TimeUnit.SECONDS);
 
 		robot.clickOn(RepositoryActions.repositoryChoiceBox());
 		robot.type(KeyCode.DOWN);
