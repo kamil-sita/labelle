@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.persistence.JqRepo;
 import place.sita.labelle.jooq.enums.TaskStatus;
+import place.sita.magicscheduler.scheduler.TypeSpecificQueueRegistry;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,9 +17,12 @@ import static place.sita.labelle.jooq.Tables.*;
 public class InternalTaskSubmitterImpl implements InternalTaskSubmitter {
 
 	private final DSLContext dslContext;
+    private final TypeSpecificQueueRegistry registry;
 
-    public InternalTaskSubmitterImpl(DSLContext dslContext) {
+    public InternalTaskSubmitterImpl(DSLContext dslContext,
+                                     TypeSpecificQueueRegistry registry) {
         this.dslContext = dslContext;
+	    this.registry = registry;
     }
 
     @Override
@@ -53,6 +57,10 @@ public class InternalTaskSubmitterImpl implements InternalTaskSubmitter {
                         .values(id, requirement)
                         .execute()
             );
+        }
+
+        if (UUID_FOR_USER_SUBMITTED_TASKS.equals(parent)) {
+            registry.get(code).scheduleWithoutQueue(id, parameter);
         }
     }
 }

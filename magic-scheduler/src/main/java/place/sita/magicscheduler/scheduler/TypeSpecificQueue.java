@@ -109,10 +109,10 @@ public class TypeSpecificQueue {
         long delay = minDelay + (long) ((maxDelay - minDelay) * (1.0 * fetch/inSystemTargetCount));
 
         Instant nextExecution = Instant.now().plus(delay, ChronoUnit.MILLIS);
-        scheduleLater.schedule(this::fetch, nextExecution);
+        scheduleLater.schedule(this::scheduledFetch, nextExecution);
     }
 
-    public void fetch() {
+    private void scheduledFetch() {
         int fetch = getTaskCountToFetch();
 
         if (schedulerProperties.isQueueEnabled()) {
@@ -122,22 +122,26 @@ public class TypeSpecificQueue {
             } else {
                 log.debug("Fetching for {}", taskType.code());
 
-                fetchActual();
+                scheduledFetchActual();
             }
         }
 
         scheduleNextExecution(fetch);
     }
 
-    private void fetchActual() {
-        int toFetchCount = getTaskCountToFetch();
+    private void scheduledFetchActual() {
+        synchronized (schedulingLock) {
+            int toFetchCount = getTaskCountToFetch();
 
-        dslContext.transaction(inner -> {
-            fetchInTransaction(inner, toFetchCount);
-        });
+            dslContext.transaction(inner -> {
+                scheduledFetchInTransaction(inner, toFetchCount);
+            });
+        }
     }
 
-    private void fetchInTransaction(Configuration inner, int toFetchCount) {
+    private final Object schedulingLock = new Object();
+
+    private void scheduledFetchInTransaction(Configuration inner, int toFetchCount) {
         var jobsToSubmit = inner.dsl()
             .select(TASK_PLANNING.ID, TASK_PLANNING.CONFIG)
             .from(TASK_PLANNING)
@@ -149,6 +153,18 @@ public class TypeSpecificQueue {
                 return new TaskWithConfig(rr.value1(), rr.value2());
             });
 
+        submitTasksWithConfig(inner, jobsToSubmit);
+    }
+
+    public void scheduleWithoutQueue(UUID id, String config) {
+        synchronized (schedulingLock) {
+            dslContext.transaction(inner -> {
+                submitTasksWithConfig(inner, List.of(new TaskWithConfig(id, config)));
+            });
+        }
+    }
+
+    private void submitTasksWithConfig(Configuration inner, List<TaskWithConfig> jobsToSubmit) {
         var jobsToSubmitId = jobsToSubmit.stream().map(TaskWithConfig::id).collect(Collectors.toSet());
 
         if (jobsToSubmitId.isEmpty()) {

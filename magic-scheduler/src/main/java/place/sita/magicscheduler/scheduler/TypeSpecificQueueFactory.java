@@ -13,10 +13,16 @@ public class TypeSpecificQueueFactory {
 
     private final ApplicationContext applicationContext;
     private final TaskTypeRepository taskTypeRepository;
+    private final TypeSpecificQueueRegistry typeSpecificQueueRegistry;
 
-    public TypeSpecificQueueFactory(ApplicationContext applicationContext, TaskTypeRepository taskTypeRepository) {
+    public TypeSpecificQueueFactory(
+            ApplicationContext applicationContext,
+            TaskTypeRepository taskTypeRepository,
+            TypeSpecificQueueRegistry typeSpecificQueueRegistry) {
+
         this.applicationContext = applicationContext;
         this.taskTypeRepository = taskTypeRepository;
+	    this.typeSpecificQueueRegistry = typeSpecificQueueRegistry;
     }
 
     @PostConstruct
@@ -26,6 +32,7 @@ public class TypeSpecificQueueFactory {
             typeSpecificQueue.setType(type);
             log.info("Registering a TypeSpecificQueue for {}", type.code());
             typeSpecificQueue.scheduleFirstExecution();
+            typeSpecificQueueRegistry.register(type.code(), typeSpecificQueue);
         }
     }
 
