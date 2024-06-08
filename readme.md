@@ -4,7 +4,8 @@ This is a **WORK IN PROGRESS** project, that aims to provide a framework applica
 
 ## Modules
 
-Labelle's architecture is modular, and consists of several modules:
+Labelle's architecture is modular (a modular monolith), and consists of several modules, that might be split to different
+projects (although, ultimately, it's unlikely):
 
 1. db-changesets, db-codegen, dd-precodegen, db-spring: these modules are responsible for database schema management and generation of code to support it. JOOQ and Liquibase are used here.
 2. module-fx, module-fx-spring-boot: support library that help modularize JavaFX screens
@@ -16,6 +17,10 @@ Labelle's architecture is modular, and consists of several modules:
 
 ## Stack
 
-Labelle is written in Java, uses JavaFX, Spring, JOOQ, Liquibase and it's default database is Postgres. It's build with Maven.
+Labelle is written in Java, uses JavaFX, Spring, JOOQ, Liquibase and it's default database is Postgres. It's build with Maven. Tests use JUnit and TestFX.
 
 Later, other databases might be supported (especially SQLite).
+
+## Tests
+
+Currently, Labelle has below-average test coverage. There are some integration tests, and pseudo E2E using TestFX.
