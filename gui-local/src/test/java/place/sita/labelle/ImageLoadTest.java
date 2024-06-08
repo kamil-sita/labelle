@@ -2,7 +2,6 @@ package place.sita.labelle;
 
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
@@ -20,8 +19,6 @@ import place.sita.labelle.actions.*;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
 import place.sita.labelle.jooq.Tables;
-import place.sita.labelle.state.StateChange;
-import place.sita.labelle.state.assertions.SimpleChangeAssertion;
 import place.sita.magicscheduler.scheduler.SchedulerStatistics;
 
 import java.io.File;

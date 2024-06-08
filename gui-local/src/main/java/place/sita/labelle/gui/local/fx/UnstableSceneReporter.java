@@ -3,14 +3,13 @@ package place.sita.labelle.gui.local.fx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.shutdown.ShutdownRegistry;
 
 import java.util.*;
 
 @Component
 public class UnstableSceneReporter {
 
-	private static final Logger log = LoggerFactory.getLogger(ShutdownRegistry.class);
+	private static final Logger log = LoggerFactory.getLogger(UnstableSceneReporter.class);
 	private final Set<UUID> locksOnStableScene = new HashSet<>();
 	private final Map<UUID, String> correlationMap = new HashMap<>();
 
