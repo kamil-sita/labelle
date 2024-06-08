@@ -110,6 +110,8 @@ public class TaskExecutionEnvironment {
 			log.trace("Exception when executing {}", internalExecutionId, e);
 			exception = ExceptionUtil.exceptionToString(e);
 			taskExecutionResult = type.resolveThrowableIntoResult(e);
+		} finally {
+			log.info("Execution finished for {}", internalExecutionId);
 		}
 		if (exception != null) {
 			sb.append("\r\n").append(exception);
