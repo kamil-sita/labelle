@@ -22,11 +22,6 @@ public class TagRepository {
 	}
 
 	@Transactional
-	public void invalidateCaches() {
-		// todo due to transactionality issues caching was removed; re-add it
-	}
-
-	@Transactional
 	public void addTags(PersistableImagesTags persistableImagesTags) {
 		Set<UUID> images = persistableImagesTags.images();
 		if (images.isEmpty()) {

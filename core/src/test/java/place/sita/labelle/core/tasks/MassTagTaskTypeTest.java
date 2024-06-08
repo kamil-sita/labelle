@@ -46,8 +46,6 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 
 		context.delete(Tables.REPOSITORY_RELATIONSHIP).execute();
 		context.delete(Tables.REPOSITORY).execute();
-
-		tagRepository.invalidateCaches();
 	}
 
 	@Test

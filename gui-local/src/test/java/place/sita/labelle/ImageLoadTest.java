@@ -6,6 +6,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import org.jooq.DSLContext;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.testfx.matcher.control.ListViewMatchers;
 import place.sita.labelle.actions.*;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
+import place.sita.labelle.jooq.Tables;
 import place.sita.labelle.state.StateChange;
 import place.sita.labelle.state.assertions.SimpleChangeAssertion;
 import place.sita.magicscheduler.scheduler.SchedulerStatistics;
@@ -41,6 +44,27 @@ public class ImageLoadTest extends TestContainersTest {
 
 	@Autowired
 	private SchedulerStatistics schedulerStatistics;
+
+	@Autowired
+	private DSLContext context;
+
+	@AfterEach
+	public void cleanup() {
+		context.delete(Tables.TAG_DELTA).execute();
+
+		context.delete(Tables.TAG_IMAGE).execute();
+		context.delete(Tables.TAG).execute();
+		context.delete(Tables.TAG_SRC).execute();
+
+		context.delete(Tables.IMAGE).execute();
+		context.delete(Tables.IMAGE_RESOLVABLE).execute();
+
+		context.delete(Tables.REPOSITORY_RELATIONSHIP).execute();
+		context.delete(Tables.REPOSITORY).execute();
+
+		context.delete(Tables.IMAGE_FILE).execute();
+		context.delete(Tables.ROOT).execute();
+	}
 
 	@Start
 	public void start(Stage stage) {

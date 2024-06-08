@@ -37,8 +37,6 @@ public class TagRepositoryTest extends TestContainersTest {
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
 
 		context.delete(Tables.REPOSITORY).execute();
-
-		tagRepository.invalidateCaches();
 	}
 
 	@Test

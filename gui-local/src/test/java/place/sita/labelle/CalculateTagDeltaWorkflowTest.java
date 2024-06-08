@@ -17,7 +17,6 @@ import org.testfx.matcher.control.ListViewMatchers;
 import place.sita.labelle.actions.*;
 import place.sita.labelle.core.repository.RootRepository;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
-import place.sita.labelle.core.repository.inrepository.TagRepository;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaResponse;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaType;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
@@ -35,9 +34,6 @@ public class CalculateTagDeltaWorkflowTest extends TestContainersTest {
 
 	@Autowired
 	private DSLContext context;
-
-	@Autowired
-	private TagRepository tagRepository;
 
 	@Autowired
 	private StageConfiguration stageConfiguration;
@@ -72,8 +68,6 @@ public class CalculateTagDeltaWorkflowTest extends TestContainersTest {
 
 		context.delete(Tables.IMAGE_FILE).execute();
 		context.delete(Tables.ROOT).execute();
-
-		tagRepository.invalidateCaches();
 	}
 
 	@Test

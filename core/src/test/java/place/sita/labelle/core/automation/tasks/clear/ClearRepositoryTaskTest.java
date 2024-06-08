@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
-import place.sita.labelle.core.repository.inrepository.TagRepository;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.magicscheduler.scheduler.TaskStateContext;
@@ -21,9 +20,6 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 
 	@Autowired
 	private DSLContext context;
-
-	@Autowired
-	private TagRepository tagRepository;
 
 	@Autowired
 	private RepositoryService repositoryService;
@@ -44,8 +40,6 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
 
 		context.delete(Tables.REPOSITORY).execute();
-
-		tagRepository.invalidateCaches();
 	}
 
 	@Test

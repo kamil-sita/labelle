@@ -32,9 +32,6 @@ public class ImageRepositoryTest extends TestContainersTest {
 	private DSLContext context;
 
 	@Autowired
-	private TagRepository tagRepository;
-
-	@Autowired
 	private RepositoryService repositoryService;
 
 	@Autowired
@@ -56,8 +53,6 @@ public class ImageRepositoryTest extends TestContainersTest {
 
 		context.delete(Tables.IMAGE_FILE).execute();
 		context.delete(Tables.ROOT).execute();
-
-		tagRepository.invalidateCaches();
 	}
 
 	@Test
