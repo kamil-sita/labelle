@@ -18,7 +18,7 @@ import static place.sita.labelle.state.StateChange.withAction;
 import static place.sita.labelle.state.assertions.SimpleChangeAssertion.toBeTrueAfterAction;
 
 @ExtendWith(ApplicationExtension.class)
-public class MainMenuTest extends TestContainersTest {
+public class MainMenuTest extends GuiTest {
 
 	@Autowired
 	private StageConfiguration stageConfiguration;

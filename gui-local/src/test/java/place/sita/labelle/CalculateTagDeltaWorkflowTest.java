@@ -4,8 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
-import org.jooq.DSLContext;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +13,12 @@ import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import org.testfx.matcher.control.ListViewMatchers;
 import place.sita.labelle.actions.*;
-import place.sita.labelle.core.cache.CacheRegistry;
 import place.sita.labelle.core.repository.RootRepository;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaResponse;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaType;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.StageConfiguration;
-import place.sita.labelle.jooq.Tables;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,10 +27,7 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(ApplicationExtension.class)
-public class CalculateTagDeltaWorkflowTest extends TestContainersTest {
-
-	@Autowired
-	private DSLContext context;
+public class CalculateTagDeltaWorkflowTest extends GuiTest {
 
 	@Autowired
 	private StageConfiguration stageConfiguration;
@@ -48,31 +41,9 @@ public class CalculateTagDeltaWorkflowTest extends TestContainersTest {
 	@Autowired
 	private InRepositoryService inRepositoryService;
 
-	@Autowired
-	private CacheRegistry cacheRegistry;
-
 	@Start
 	public void start(Stage stage) {
 		stageConfiguration.configureStage(stage);
-	}
-
-	@AfterEach
-	public void cleanup() {
-		context.delete(Tables.TAG_DELTA).execute();
-
-		context.delete(Tables.TAG_IMAGE).execute();
-		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
-
-		context.delete(Tables.IMAGE).execute();
-		context.delete(Tables.IMAGE_RESOLVABLE).execute();
-
-		context.delete(Tables.REPOSITORY_RELATIONSHIP).execute();
-		context.delete(Tables.REPOSITORY).execute();
-
-		context.delete(Tables.IMAGE_FILE).execute();
-		context.delete(Tables.ROOT).execute();
-		cacheRegistry.invalidate();
 	}
 
 	@Test

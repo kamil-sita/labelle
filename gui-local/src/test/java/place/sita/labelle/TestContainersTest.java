@@ -8,7 +8,7 @@ import org.testcontainers.utility.DockerImageName;
 import place.sita.labelle.gui.local.GuiConfig;
 
 @SpringBootTest(classes = GuiConfig.class)
-public class TestContainersTest {
+public abstract class TestContainersTest {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>( DockerImageName.parse("postgres").withTag("13.14-bullseye"));
 
 
