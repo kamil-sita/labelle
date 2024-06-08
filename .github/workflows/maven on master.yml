@@ -37,10 +37,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven, analyze
-      run: xvfb-run mvn -Pcoverage -B package --file pom.xml sonar:sonar \
-        -Dsonar.projectKey=labelle \
-        -Dsonar.organization=kamil-sita \
-        -Dsonar.host.url=https://sonarcloud.io \
-        -Dsonar.maven.scanAll=true
+      run: xvfb-run mvn -Pcoverage -B package --file pom.xml sonar:sonar -Dsonar.projectKey=labelle -Dsonar.organization=kamil-sita -Dsonar.host.url=https://sonarcloud.io -Dsonar.maven.scanAll=true
     - name: Update dependency graph
       uses: advanced-security/maven-dependency-submission-action@v3
