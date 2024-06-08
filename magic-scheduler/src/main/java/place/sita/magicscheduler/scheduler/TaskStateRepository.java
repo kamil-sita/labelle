@@ -1,6 +1,8 @@
 package place.sita.magicscheduler.scheduler;
 
 import org.jooq.DSLContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import place.sita.labelle.core.persistence.ex.UnexpectedDatabaseReplyException;
 import place.sita.labelle.jooq.enums.TaskExecutionResult;
@@ -15,6 +17,8 @@ import static place.sita.labelle.jooq.Tables.TASK_EXECUTION;
 
 @Repository
 public class TaskStateRepository {
+
+    private static final Logger log = LoggerFactory.getLogger(TaskStateRepository.class);
 
     private final DSLContext dslContext;
 
@@ -33,6 +37,18 @@ public class TaskStateRepository {
             .where(TASK.ID.eq(id))
             .execute();
         if (u != 1) {
+            boolean exists = dslContext
+                .fetchExists(TASK, TASK.ID.eq(id));
+            if (exists) {
+                TaskStatus currentStatus = dslContext
+                    .select(TASK.STATUS)
+                    .from(TASK)
+                    .where(TASK.ID.eq(id))
+                    .fetchOne(TASK.STATUS);
+                log.error("Failed to update task status for task {} with status {} to status {}", id, currentStatus, status);
+            } else {
+                log.error("Failed to update task status for task {} to status {} - it does not exist", id, status);
+            }
             throw new UnexpectedDatabaseReplyException();
         }
     }

@@ -1,5 +1,6 @@
 package place.sita.magicscheduler.scheduler.environment;
 
+import org.jooq.DSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,8 @@ import place.sita.magicscheduler.scheduler.*;
 import java.time.Instant;
 import java.util.UUID;
 
+import static place.sita.labelle.jooq.Tables.TASK;
+
 @Component
 public class SchedulerAwareTaskExecutionEnvironment {
     private static final Logger log = LoggerFactory.getLogger(SchedulerAwareTaskExecutionEnvironment.class);
@@ -24,6 +27,7 @@ public class SchedulerAwareTaskExecutionEnvironment {
     private final PlatformTransactionManager platformTransactionManager;
     private final ExecutionResultsSubmitter executionResultsSubmitter;
     private final TaskExecutionEnvironment taskExecutionEnvironment;
+    private final DSLContext dslContext;
 
     public SchedulerAwareTaskExecutionEnvironment(
 	    InternalTaskSubmitter internalTaskSubmitter,
@@ -31,16 +35,23 @@ public class SchedulerAwareTaskExecutionEnvironment {
 	    SoftToHardFailPolicy softToHardFailPolicy,
 	    PlatformTransactionManager platformTransactionManager,
 	    ExecutionResultsSubmitter executionResultsSubmitter,
-        TaskExecutionEnvironment taskExecutionEnvironment) {
+	    TaskExecutionEnvironment taskExecutionEnvironment,
+        DSLContext dslContext) {
         this.internalTaskSubmitter = internalTaskSubmitter;
         this.taskStateRepository = taskStateRepository;
         this.softToHardFailPolicy = softToHardFailPolicy;
         this.platformTransactionManager = platformTransactionManager;
         this.executionResultsSubmitter = executionResultsSubmitter;
 	    this.taskExecutionEnvironment = taskExecutionEnvironment;
+	    this.dslContext = dslContext;
     }
 
     public <ParameterT, AcceptedContextT, ResultT> ApiTaskExecutionResult executeTask(UUID taskId, TaskType<ParameterT, AcceptedContextT, ResultT> type, ParameterT parameter, int failsSoFar) {
+        boolean exists = dslContext
+            .fetchExists(TASK, TASK.ID.eq(taskId));
+        if (!exists) {
+            log.error("Task {} does not exist in the database", taskId);
+        }
         taskStateRepository.assignState(taskId, TaskStatus.IN_PROGRESS);
 
         Instant start = Instant.now();
