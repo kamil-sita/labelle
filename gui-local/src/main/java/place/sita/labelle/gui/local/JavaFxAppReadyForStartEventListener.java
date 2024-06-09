@@ -23,6 +23,6 @@ public class JavaFxAppReadyForStartEventListener implements ApplicationListener<
 		}
 
 		Stage stage = event.getStage();
-		stageConfiguration.configureStage(stage);
+		stageConfiguration.configureStage(stage, StageConfiguration.StageType.FIRST);
 	}
 }

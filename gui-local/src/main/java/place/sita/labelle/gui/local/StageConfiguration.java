@@ -19,9 +19,7 @@ import place.sita.labelle.gui.local.tab.ApplicationTab;
 import place.sita.labelle.gui.local.tab.TabRegistrar;
 import place.sita.labelle.gui.local.tab.UnloadAware;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class StageConfiguration {
@@ -32,6 +30,8 @@ public class StageConfiguration {
 	private final FxControllerLoader fxControllerLoader;
 	private final ConfigurableApplicationContext applicationContext;
 	private final ShutdownRegistry shutdownRegistry;
+
+	private final List<ExistingStage> stages = new ArrayList<>();
 
 	public StageConfiguration(List<ApplicationTab> applicationTabs,
 	                          List<TabRegistrar> tabRegistrars,
@@ -47,8 +47,14 @@ public class StageConfiguration {
 		this.shutdownRegistry = shutdownRegistry;
 	}
 
-	public void configureStage(Stage stage) {
-		System.setProperty("java.awt.headless", "false");
+	public void configureTestStage(Stage stage) {
+		configureStage(stage, StageType.TEST);
+	}
+
+	public void configureStage(Stage stage, StageType stageType) {
+		if (stageType != StageType.ADDITIONAL) {
+			System.setProperty("java.awt.headless", "false");
+		}
 
 		stage.setTitle("Labelle");
 		//TransitTheme transitTheme = new TransitTheme(com.pixelduke.transit.Style.LIGHT);
@@ -91,17 +97,48 @@ public class StageConfiguration {
 			menu.mainTabPane.getTabs().add(applicationTab.tab());
 		});
 
+		UUID id = UUID.randomUUID();
+		ExistingStage thisStage = new ExistingStage(id, stage);
+		stages.add(thisStage);
 		stage.show();
 
-		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-			@Override
-			public void handle(WindowEvent t) {
-				ThreadingSupportSupplier.shutdown();
-				Platform.exit();
-				shutdownRegistry.shutdown();
-				applicationContext.close();
-			}
-		});
+		if (stageType != StageType.TEST) {
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				@Override
+				public void handle(WindowEvent t) {
+					stages.remove(thisStage);
+					if (stages.isEmpty()) {
+						ThreadingSupportSupplier.shutdown();
+						Platform.exit();
+						shutdownRegistry.shutdown();
+						applicationContext.close();
+					}
+				}
+			});
+		}
+	}
+
+	public enum StageType {
+		FIRST,
+		ADDITIONAL,
+		TEST,
+		;
+	}
+
+	private record ExistingStage(UUID id, Stage stage) {
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			ExistingStage that = (ExistingStage) o;
+			return Objects.equals(id, that.id);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(id);
+		}
 	}
 
 }

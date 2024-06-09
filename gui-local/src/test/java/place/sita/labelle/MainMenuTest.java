@@ -28,7 +28,7 @@ public class MainMenuTest extends GuiTest {
 
 	@Start
 	public void start(Stage stage) {
-		stageConfiguration.configureStage(stage);
+		stageConfiguration.configureTestStage(stage);
 	}
 
 	@Test
