@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.gui.local.fx.FxControllerLoader;
+import place.sita.labelle.gui.local.fx.modulefx.FxControllerLoader;
 import place.sita.labelle.gui.local.fx.LazyLoadable;
 import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
 import place.sita.labelle.gui.local.menu.UnloadingTab;

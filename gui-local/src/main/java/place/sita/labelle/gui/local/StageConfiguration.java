@@ -12,7 +12,7 @@ import jfxtras.styles.jmetro.Style;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.shutdown.ShutdownRegistry;
-import place.sita.labelle.gui.local.fx.FxControllerLoader;
+import place.sita.labelle.gui.local.fx.modulefx.FxControllerLoader;
 import place.sita.labelle.gui.local.fx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
 import place.sita.labelle.gui.local.tab.ApplicationTab;

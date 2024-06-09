@@ -1,4 +1,4 @@
-package place.sita.labelle.gui.local.fx;
+package place.sita.labelle.gui.local.fx.modulefx;
 
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
@@ -7,6 +7,7 @@ import javafx.scene.layout.Region;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
+import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
 import place.sita.modulefx.annotations.*;
 
 import java.lang.reflect.Field;

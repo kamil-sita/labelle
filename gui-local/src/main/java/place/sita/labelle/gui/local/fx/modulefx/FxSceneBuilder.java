@@ -1,4 +1,4 @@
-package place.sita.labelle.gui.local.fx;
+package place.sita.labelle.gui.local.fx.modulefx;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
