@@ -11,7 +11,7 @@ import java.io.IOException;
 public class FxSceneBuilder {
     private static final Logger log = LoggerFactory.getLogger(FxSceneBuilder.class);
 
-    public static Node setupFxView(Object controller, String resource) {
+    public static Node loadNodeForController(Object controller, String resource) {
         try {
             return getParent(controller, resource);
         } catch (Exception e) {

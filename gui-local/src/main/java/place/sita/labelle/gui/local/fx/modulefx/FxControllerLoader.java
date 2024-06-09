@@ -37,7 +37,7 @@ public class FxControllerLoader {
 	}
 
 	private Node setupForController(Object controller, Object parent, Node parentNode, String resource) {
-	    Node results = FxSceneBuilder.setupFxView(controller, resource);
+	    Node results = FxSceneBuilder.loadNodeForController(controller, resource);
 
 		setupParent(controller, parent, parentNode, results);
 		injectChildren(controller);
