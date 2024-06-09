@@ -12,7 +12,10 @@ import jfxtras.styles.jmetro.Style;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.shutdown.ShutdownRegistry;
+import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
+import place.sita.labelle.gui.local.fx.modulefx.ChildrenFactory;
 import place.sita.labelle.gui.local.fx.modulefx.FxControllerLoader;
+import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessors;
 import place.sita.labelle.gui.local.fx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
 import place.sita.labelle.gui.local.tab.ApplicationTab;
@@ -27,24 +30,25 @@ public class StageConfiguration {
 	private final List<ApplicationTab> applicationTabs;
 	private final List<TabRegistrar> tabRegistrars;
 	private final Menu menu;
-	private final FxControllerLoader fxControllerLoader;
 	private final ConfigurableApplicationContext applicationContext;
 	private final ShutdownRegistry shutdownRegistry;
 
 	private final List<ExistingStage> stages = new ArrayList<>();
+	private final ChildrenFactory childrenFactory;
+	private final UnstableSceneReporter unstableSceneReporter;
 
 	public StageConfiguration(List<ApplicationTab> applicationTabs,
 	                          List<TabRegistrar> tabRegistrars,
 	                          Menu menu,
-	                          FxControllerLoader fxControllerLoader,
 	                          ConfigurableApplicationContext applicationContext,
-	                          ShutdownRegistry shutdownRegistry) {
+	                          ShutdownRegistry shutdownRegistry, ChildrenFactory childrenFactory, UnstableSceneReporter unstableSceneReporter) {
 		this.applicationTabs = applicationTabs;
 		this.tabRegistrars = tabRegistrars;
 		this.menu = menu;
-		this.fxControllerLoader = fxControllerLoader;
 		this.applicationContext = applicationContext;
 		this.shutdownRegistry = shutdownRegistry;
+		this.childrenFactory = childrenFactory;
+		this.unstableSceneReporter = unstableSceneReporter;
 	}
 
 	public void configureTestStage(Stage stage) {
@@ -59,7 +63,15 @@ public class StageConfiguration {
 		stage.setTitle("Labelle");
 		//TransitTheme transitTheme = new TransitTheme(com.pixelduke.transit.Style.LIGHT);
 		JMetro jMetro = new JMetro(Style.DARK);
-		Node node = fxControllerLoader.setupForController(menu, "/fx/mainmenu.fxml");
+		FxSceneBuilderProcessors processors = new FxSceneBuilderProcessors(childrenFactory);
+		UUID loadId = UUID.randomUUID();
+		unstableSceneReporter.markUnstable(loadId, "Loading new stage");
+		Node node;
+		try {
+			node = FxControllerLoader.setupForController(menu, "/fx/mainmenu.fxml", processors);
+		} finally {
+			unstableSceneReporter.markStable(loadId);
+		}
 
 		Scene scene = new Scene((Parent) node, 1200, 800);
 		//transitTheme.setScene(scene);

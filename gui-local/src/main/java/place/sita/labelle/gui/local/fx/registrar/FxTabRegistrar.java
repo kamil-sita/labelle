@@ -5,9 +5,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.gui.local.fx.modulefx.ChildrenFactory;
 import place.sita.labelle.gui.local.fx.modulefx.FxControllerLoader;
 import place.sita.labelle.gui.local.fx.LazyLoadable;
 import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
+import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessors;
 import place.sita.labelle.gui.local.menu.UnloadingTab;
 import place.sita.labelle.gui.local.tab.ApplicationTab;
 import place.sita.labelle.gui.local.tab.TabRegistrar;
@@ -15,21 +17,22 @@ import place.sita.modulefx.annotations.FxTab;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class FxTabRegistrar implements TabRegistrar {
 
     private final ApplicationContext applicationContext;
-    private final FxControllerLoader fxControllerLoader;
     private final UnstableSceneReporter unstableSceneReporter;
+    private final ChildrenFactory childrenFactory;
 
     public FxTabRegistrar(
             ApplicationContext applicationContext,
-            FxControllerLoader fxControllerLoader,
-            UnstableSceneReporter unstableSceneReporter) {
+            UnstableSceneReporter unstableSceneReporter,
+            ChildrenFactory childrenFactory) {
         this.applicationContext = applicationContext;
-	    this.fxControllerLoader = fxControllerLoader;
 	    this.unstableSceneReporter = unstableSceneReporter;
+	    this.childrenFactory = childrenFactory;
     }
 
     @Override
@@ -60,7 +63,14 @@ public class FxTabRegistrar implements TabRegistrar {
                 LazyLoadable tabSupplier = () -> {
                     Object controller = applicationContext.getBean(clazz);
 
-                    return fxControllerLoader.setupForController(controller, annotation.resourceFile());
+                    UUID loadId = UUID.randomUUID();
+                    try {
+                        unstableSceneReporter.markUnstable(loadId, "Loading tab " + annotation.tabName());
+                        FxSceneBuilderProcessors processors = new FxSceneBuilderProcessors(childrenFactory);
+                        return FxControllerLoader.setupForController(controller, annotation.resourceFile(), processors);
+                    } finally {
+                        unstableSceneReporter.markStable(loadId);
+                    }
                 };
 
                 return new UnloadingTab<>(className, tabSupplier, annotation.tabName(), annotation.order(), unstableSceneReporter);
