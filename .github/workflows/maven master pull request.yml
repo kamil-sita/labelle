@@ -36,4 +36,4 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: xvfb-run mvn -Pcoverage -B package --file pom.xml sonar:sonar -Dsonar.projectKey=kamil-sita_labelle -Dsonar.organization=kamil-sita -Dsonar.host.url=https://sonarcloud.io -Dsonar.maven.scanAll=true
+      run: xvfb-run mvn -Pcoverage -B package --file pom.xml sonar:sonar -Dsonar.projectKey=kamil-sita_labelle -Dsonar.organization=kamil-sita -Dsonar.host.url=https://sonarcloud.io -Dsonar.maven.scanAll=true  -Dsonar.coverage.jacoco.xmlReportPaths=../report-aggregate/target/site/jacoco-aggregate/jacoco.xml
