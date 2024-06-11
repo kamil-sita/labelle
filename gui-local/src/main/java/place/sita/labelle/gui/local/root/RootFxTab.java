@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
 
@@ -23,7 +24,7 @@ import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelect
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxTab(resourceFile = "/fx/root.fxml", order = 2, tabName = "Data roots")
-public class RootFxTab {
+public class RootFxTab implements MainMenuTab {
 
     private final ImageLocatorService imageLocatorService;
 

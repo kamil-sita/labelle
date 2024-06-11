@@ -2,11 +2,9 @@ package place.sita.labelle.gui.local.fx;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-@Component
 public class UnstableSceneReporter {
 
 	private static final Logger log = LoggerFactory.getLogger(UnstableSceneReporter.class);

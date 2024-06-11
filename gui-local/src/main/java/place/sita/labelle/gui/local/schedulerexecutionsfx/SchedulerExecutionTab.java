@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
+import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.magicscheduler.ExecutionsService;
 import place.sita.magicscheduler.ExecutionsService.ScheduledTaskResponse;
 import place.sita.magicscheduler.TaskTypeRepository;
@@ -25,7 +26,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxTab(resourceFile = "/fx/schedulerexecutions/scheduler_executions.fxml", order = 1, tabName = "Scheduler Executions")
-public class SchedulerExecutionTab {
+public class SchedulerExecutionTab implements MainMenuTab {
 
     private final TaskTypeRepository taskTypeRepository;
     private final ExecutionsService executionsService;

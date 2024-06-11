@@ -32,6 +32,7 @@ import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.gui.local.fx.threading.Threading.KeyStone;
+import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
@@ -50,7 +51,7 @@ import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelect
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxTab(order = 3, tabName = "Repository", resourceFile = "/fx/repository/repository.fxml")
-public class RepositoryTab {
+public class RepositoryTab implements MainMenuTab {
 
     private static final Logger log = LoggerFactory.getLogger(RepositoryTab.class);
 

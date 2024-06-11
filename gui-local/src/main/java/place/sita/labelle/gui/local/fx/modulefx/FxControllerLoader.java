@@ -1,11 +1,6 @@
 package place.sita.labelle.gui.local.fx.modulefx;
 
 import javafx.scene.Node;
-import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
-
-import java.util.UUID;
 
 public class FxControllerLoader {
 
@@ -43,8 +38,8 @@ public class FxControllerLoader {
 			}
 
 			@Override
-			public Node setupForController(Object bean, Object parentController, Node parentNode, String resource, FxSetupContext context) {
-				return internalSetupForController(bean, parentController, parentNode, resource, context.processors());
+			public Node setupForController(Object bean, String resource, FxSetupContext context) {
+				return internalSetupForController(bean, controller, results, resource, context.processors());
 			}
 		});
 

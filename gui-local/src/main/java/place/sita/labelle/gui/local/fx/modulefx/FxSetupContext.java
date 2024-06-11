@@ -14,5 +14,5 @@ public interface FxSetupContext {
 
 	FxSceneBuilderProcessors processors();
 
-	Node setupForController(Object bean, Object parentController, Node parentNode, String resource, FxSetupContext context);
+	Node setupForController(Object bean, String resource, FxSetupContext context);
 }

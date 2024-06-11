@@ -15,6 +15,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
 
@@ -24,7 +25,7 @@ import java.util.Objects;
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxTab(resourceFile = "/fx/repositories.fxml", order = 1, tabName = "Repositories")
-public class RepositoriesFxTab {
+public class RepositoriesFxTab implements MainMenuTab {
 
     private final RepositoryService repositoryService;
     public RepositoriesFxTab(RepositoryService repositoryService) {

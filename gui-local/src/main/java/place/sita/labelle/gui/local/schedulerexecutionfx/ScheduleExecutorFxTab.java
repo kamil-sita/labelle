@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.magicscheduler.TasksService;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
@@ -19,7 +20,7 @@ import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelect
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxTab(resourceFile = "/fx/scheduler_executor.fxml", order = 0, tabName = "Scheduler Executor")
-public class ScheduleExecutorFxTab {
+public class ScheduleExecutorFxTab implements MainMenuTab {
     private final TasksService tasksService;
 
     public ScheduleExecutorFxTab(TasksService tasksService) {

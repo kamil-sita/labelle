@@ -18,44 +18,30 @@ import place.sita.labelle.gui.local.fx.modulefx.FxControllerLoader;
 import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessors;
 import place.sita.labelle.gui.local.fx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
-import place.sita.labelle.gui.local.tab.ApplicationTab;
-import place.sita.labelle.gui.local.tab.TabRegistrar;
-import place.sita.labelle.gui.local.tab.UnloadAware;
 
 import java.util.*;
 
 @Component
 public class StageConfiguration {
 
-	private final List<ApplicationTab> applicationTabs;
-	private final List<TabRegistrar> tabRegistrars;
-	private final Menu menu;
 	private final ConfigurableApplicationContext applicationContext;
 	private final ShutdownRegistry shutdownRegistry;
 
 	private final List<ExistingStage> stages = new ArrayList<>();
 	private final ChildrenFactory childrenFactory;
-	private final UnstableSceneReporter unstableSceneReporter;
 
-	public StageConfiguration(List<ApplicationTab> applicationTabs,
-	                          List<TabRegistrar> tabRegistrars,
-	                          Menu menu,
-	                          ConfigurableApplicationContext applicationContext,
-	                          ShutdownRegistry shutdownRegistry, ChildrenFactory childrenFactory, UnstableSceneReporter unstableSceneReporter) {
-		this.applicationTabs = applicationTabs;
-		this.tabRegistrars = tabRegistrars;
-		this.menu = menu;
+	public StageConfiguration(ConfigurableApplicationContext applicationContext,
+	                          ShutdownRegistry shutdownRegistry, ChildrenFactory childrenFactory) {
 		this.applicationContext = applicationContext;
 		this.shutdownRegistry = shutdownRegistry;
 		this.childrenFactory = childrenFactory;
-		this.unstableSceneReporter = unstableSceneReporter;
 	}
 
-	public void configureTestStage(Stage stage) {
-		configureStage(stage, StageType.TEST);
+	public UnstableSceneReporter configureTestStage(Stage stage) {
+		return configureStage(stage, StageType.TEST);
 	}
 
-	public void configureStage(Stage stage, StageType stageType) {
+	public UnstableSceneReporter configureStage(Stage stage, StageType stageType) {
 		if (stageType != StageType.ADDITIONAL) {
 			System.setProperty("java.awt.headless", "false");
 		}
@@ -63,9 +49,12 @@ public class StageConfiguration {
 		stage.setTitle("Labelle");
 		//TransitTheme transitTheme = new TransitTheme(com.pixelduke.transit.Style.LIGHT);
 		JMetro jMetro = new JMetro(Style.DARK);
-		FxSceneBuilderProcessors processors = new FxSceneBuilderProcessors(childrenFactory);
+		UnstableSceneReporter unstableSceneReporter = new UnstableSceneReporter();
+
+		FxSceneBuilderProcessors processors = new FxSceneBuilderProcessors(childrenFactory, unstableSceneReporter);
 		UUID loadId = UUID.randomUUID();
 		unstableSceneReporter.markUnstable(loadId, "Loading new stage");
+		Menu menu = applicationContext.getBean(Menu.class);
 		Node node;
 		try {
 			node = FxControllerLoader.setupForController(menu, "/fx/mainmenu.fxml", processors);
@@ -78,36 +67,6 @@ public class StageConfiguration {
 		jMetro.setScene(scene);
 		stage.setScene(scene);
 		scene.getStylesheets().add("dark_metro_labelle.css");
-
-		List<ApplicationTab> allTabs = new ArrayList<>();
-		for (var registrar : tabRegistrars) {
-			allTabs.addAll(registrar.tabs());
-		}
-		allTabs.addAll(applicationTabs);
-
-		allTabs.sort(Comparator.comparingInt(ApplicationTab::getOrder));
-
-		menu.mainTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			new Thread(() -> {
-				for (var applicationTab : allTabs) {
-					if (applicationTab instanceof UnloadAware unloadAware) {
-						if (newValue != applicationTab.tab()) {
-							unloadAware.unload();
-						}
-					}
-				}
-				for (var applicationTab : allTabs) {
-					if (applicationTab instanceof UnloadAware unloadAware) {
-						if (newValue == applicationTab.tab()) {
-							unloadAware.load();
-						}
-					}
-				}
-			}).start();
-		});
-		allTabs.forEach(applicationTab -> {
-			menu.mainTabPane.getTabs().add(applicationTab.tab());
-		});
 
 		UUID id = UUID.randomUUID();
 		ExistingStage thisStage = new ExistingStage(id, stage);
@@ -128,6 +87,8 @@ public class StageConfiguration {
 				}
 			});
 		}
+
+		return unstableSceneReporter;
 	}
 
 	public enum StageType {
