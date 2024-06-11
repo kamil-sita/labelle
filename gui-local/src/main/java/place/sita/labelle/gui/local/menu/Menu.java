@@ -36,14 +36,14 @@ public class Menu {
 	private AtomicInteger scheduled = new AtomicInteger(0);
 	private AtomicInteger done = new AtomicInteger(0);
 
-	@EventListener
+	// todo 43 @EventListener
 	public void onScheduled(TaskPickedUpEvent event) {
 		possiblyRestartProgressBar();
 		scheduled.incrementAndGet();
 		updateProgressBar();
 	}
 
-	@EventListener
+	// todo 43 @EventListener
 	public void onDone(TaskExecutionCompleteEvent event) {
 		possiblyRestartProgressBar();
 		done.incrementAndGet();
