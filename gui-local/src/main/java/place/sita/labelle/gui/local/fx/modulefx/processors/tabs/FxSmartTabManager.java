@@ -5,12 +5,12 @@ import javafx.scene.control.TabPane;
 import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
 import place.sita.labelle.gui.local.fx.threading.Threading;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FxSmartTabManager {
 
-	private final Map<String, FxSmartTab> tabs = new HashMap<>();
+	private final Map<String, FxSmartTab> tabs = new LinkedHashMap<>();
 
 	private final UnstableSceneReporter unstableSceneReporter;
 

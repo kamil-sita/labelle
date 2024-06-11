@@ -10,6 +10,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
 
@@ -18,7 +19,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
 @FxTab(resourceFile = "/fx/automation.fxml", order = 5, tabName = "Automation")
-public class AutomationTab {
+public class AutomationTab implements MainMenuTab {
 
 
 	@FXML
