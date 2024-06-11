@@ -50,7 +50,7 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 
 	@Start
 	public void start(Stage stage) {
-		stageConfiguration.configureTestStage(stage);
+		setUnstableSceneReporter(stageConfiguration.configureTestStage(stage));
 	}
 
 	@Test

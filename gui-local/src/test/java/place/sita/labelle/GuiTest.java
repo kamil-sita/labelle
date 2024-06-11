@@ -12,8 +12,11 @@ import place.sita.labelle.jooq.Tables;
 @ExtendWith(ApplicationExtension.class)
 public abstract class GuiTest extends TestContainersTest {
 
-	@Autowired
 	protected UnstableSceneReporter unstableSceneReporter;
+
+	public void setUnstableSceneReporter(UnstableSceneReporter unstableSceneReporter) {
+		this.unstableSceneReporter = unstableSceneReporter;
+	}
 
 	@Autowired
 	private DSLContext context;

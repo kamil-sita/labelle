@@ -10,7 +10,6 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 import place.sita.labelle.gui.local.StageConfiguration;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
 
 import java.util.Set;
 
@@ -23,12 +22,9 @@ public class MainMenuTest extends GuiTest {
 	@Autowired
 	private StageConfiguration stageConfiguration;
 
-	@Autowired
-	private UnstableSceneReporter unstableSceneReporter;
-
 	@Start
 	public void start(Stage stage) {
-		stageConfiguration.configureTestStage(stage);
+		setUnstableSceneReporter(stageConfiguration.configureTestStage(stage));
 	}
 
 	@Test
