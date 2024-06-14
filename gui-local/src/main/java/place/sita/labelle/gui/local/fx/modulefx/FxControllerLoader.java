@@ -41,6 +41,11 @@ public class FxControllerLoader {
 			public Node setupForController(Object bean, String resource, FxSetupContext context) {
 				return internalSetupForController(bean, controller, results, resource, context.processors());
 			}
+
+			@Override
+			public Node setupForController(Object bean, String resource, FxSetupContext context, Object parent, Node parentNode) {
+				return internalSetupForController(bean, parent, parentNode, resource, context.processors());
+			}
 		});
 
 	    return results;

@@ -42,7 +42,7 @@ public class InjectChildrenProcessor implements FxSceneBuilderProcessor {
 
 				String resource = classType.getAnnotation(FxNode.class).resourceFile();
 				Object bean = childrenFactory.create(classType);
-				Node node = context.setupForController(bean, resource, context);
+				Node node = context.setupForController(bean, resource, context, parentController, parentNode);
 				fieldWithAnnotation.setAccessible(true);
 				fieldWithAnnotation.set(parentController, bean);
 

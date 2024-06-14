@@ -14,5 +14,8 @@ public interface FxSetupContext {
 
 	FxSceneBuilderProcessors processors();
 
+	@Deprecated
 	Node setupForController(Object bean, String resource, FxSetupContext context);
+
+	Node setupForController(Object bean, String resource, FxSetupContext context, Object parent, Node parentNode);
 }
