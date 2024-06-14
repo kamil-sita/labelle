@@ -7,6 +7,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.StackPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import place.sita.modulefx.threading.Threading;
 import place.sita.modulefx.threading.Threading.KeyStone;
 
@@ -19,6 +21,8 @@ import static place.sita.labelle.gui.local.fx.PaginationUtil.getNumberOfPages;
 
 // todo: does this component has too much logic? Not enough logic? Is the logic separation here good?
 public class LabPaginatorFactory {
+
+    private static final Logger logger = LoggerFactory.getLogger(LabPaginatorFactory.class);
 
 
     public static <T, CtxT> LabPaginator<T, CtxT> factory(Pagination pagination,
@@ -83,7 +87,7 @@ public class LabPaginatorFactory {
                                 spinner.setVisible(false);
                             });
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            logger.error("Error loading data", e);
                         }
                         return null;
                     }
