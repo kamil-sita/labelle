@@ -1,14 +1,16 @@
 package place.sita.modulefx;
 
 import javafx.scene.Node;
+import place.sita.modulefx.vtg.VirtualTreeGroup;
 
 public class FxControllerLoader {
 
-	public static Node setupForController(Object controller, String resource, FxSceneBuilderProcessors processors) {
-		return internalSetupForController(controller, null, null, resource, processors);
+	public static Node setupForController(Object controller, String resource, FxSceneBuilderProcessors processors, VirtualTreeGroup virtualTreeGroup) {
+		return internalSetupForController(controller, null, null, resource, processors, virtualTreeGroup);
 	}
 
-	private static Node internalSetupForController(Object controller, Object parent, Node parentNode, String resource, FxSceneBuilderProcessors fxSceneBuilderProcessors) {
+
+	private static Node internalSetupForController(Object controller, Object parent, Node parentNode, String resource, FxSceneBuilderProcessors fxSceneBuilderProcessors, VirtualTreeGroup virtualTreeGroup) {
 	    Node results = FxSceneBuilder.loadNodeForController(controller, resource);
 
 		fxSceneBuilderProcessors.runAll(new FxSetupContext() {
@@ -38,13 +40,18 @@ public class FxControllerLoader {
 			}
 
 			@Override
-			public Node setupForController(Object bean, String resource, FxSetupContext context) {
-				return internalSetupForController(bean, controller, results, resource, context.processors());
+			public Node setupForController(Object bean, String resource, FxSetupContext context, VirtualTreeGroup virtualTreeGroup) {
+				return internalSetupForController(bean, controller, results, resource, context.processors(), virtualTreeGroup);
 			}
 
 			@Override
-			public Node setupForController(Object bean, String resource, FxSetupContext context, Object parent, Node parentNode) {
-				return internalSetupForController(bean, parent, parentNode, resource, context.processors());
+			public Node setupForController(Object bean, String resource, FxSetupContext context, Object parent, Node parentNode, VirtualTreeGroup virtualTreeGroup) {
+				return internalSetupForController(bean, parent, parentNode, resource, context.processors(), virtualTreeGroup);
+			}
+
+			@Override
+			public VirtualTreeGroup virtualTreeGroup() {
+				return null;
 			}
 		});
 

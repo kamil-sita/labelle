@@ -8,6 +8,7 @@ import place.sita.modulefx.FxSceneBuilderProcessor;
 import place.sita.modulefx.FxSetupContext;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxNode;
+import place.sita.modulefx.vtg.VirtualTreeGroup;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -41,7 +42,9 @@ public class InjectChildrenProcessor implements FxSceneBuilderProcessor {
 
 				String resource = classType.getAnnotation(FxNode.class).resourceFile();
 				Object bean = childrenFactory.create(classType);
-				Node node = context.setupForController(bean, resource, context, parentController, parentNode);
+				VirtualTreeGroup virtualTreeGroup = new VirtualTreeGroup();
+				context.virtualTreeGroup().addChild(virtualTreeGroup);
+				Node node = context.setupForController(bean, resource, context, parentController, parentNode, virtualTreeGroup);
 				fieldWithAnnotation.setAccessible(true);
 				fieldWithAnnotation.set(parentController, bean);
 

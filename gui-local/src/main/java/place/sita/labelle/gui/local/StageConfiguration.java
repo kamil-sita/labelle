@@ -18,6 +18,7 @@ import place.sita.modulefx.FxControllerLoader;
 import place.sita.modulefx.FxSceneBuilderProcessors;
 import place.sita.modulefx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
+import place.sita.modulefx.vtg.VirtualTreeGroup;
 
 import java.util.*;
 
@@ -54,10 +55,13 @@ public class StageConfiguration {
 		FxSceneBuilderProcessors processors = new FxSceneBuilderProcessors(childrenFactory, unstableSceneReporter);
 		UUID loadId = UUID.randomUUID();
 		unstableSceneReporter.markUnstable(loadId, "Loading new stage");
+
+		VirtualTreeGroup virtualTreeGroup = new VirtualTreeGroup();
+
 		Menu menu = applicationContext.getBean(Menu.class);
 		Node node;
 		try {
-			node = FxControllerLoader.setupForController(menu, "/fx/mainmenu.fxml", processors);
+			node = FxControllerLoader.setupForController(menu, "/fx/mainmenu.fxml", processors, virtualTreeGroup);
 		} finally {
 			unstableSceneReporter.markStable(loadId);
 		}

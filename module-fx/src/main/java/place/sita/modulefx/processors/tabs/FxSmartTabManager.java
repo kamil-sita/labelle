@@ -4,17 +4,22 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import place.sita.modulefx.UnstableSceneReporter;
 import place.sita.modulefx.threading.Threading;
+import place.sita.modulefx.vtg.VirtualTreeGroup;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FxSmartTabManager {
 
 	private final Map<String, FxSmartTab> tabs = new LinkedHashMap<>();
+	private final Map<String, VirtualTreeGroup> virtualTreeGroups = new HashMap<>();
 
+	private final VirtualTreeGroup parentVtg;
 	private final UnstableSceneReporter unstableSceneReporter;
 
-	public FxSmartTabManager(UnstableSceneReporter unstableSceneReporter) {
+	public FxSmartTabManager(VirtualTreeGroup parentVtg, UnstableSceneReporter unstableSceneReporter) {
+		this.parentVtg = parentVtg;
 		this.unstableSceneReporter = unstableSceneReporter;
 	}
 
@@ -35,16 +40,23 @@ public class FxSmartTabManager {
 				if (oldValue != null) {
 					FxSmartTab oldTab = tabs.get(oldValue.getId());
 					oldTab.unload();
+					VirtualTreeGroup group = virtualTreeGroups.get(oldValue.getId());
+					parentVtg.removeChild(group.id());
 				}
 				if (newValue != null) {
 					FxSmartTab newTab = tabs.get(newValue.getId());
-					newTab.load(unstableSceneReporter);
+					VirtualTreeGroup group = newTab.load(unstableSceneReporter);
+					virtualTreeGroups.put(newValue.getId(), group);
+					parentVtg.addChild(group);
 				}
 			});
 		});
 
 		Tab firstTab = tabPane.getTabs().get(0);
-		FxSmartTab firstFxTab = tabs.get(firstTab.getId());
-		firstFxTab.load(unstableSceneReporter);
+		String firstTabId = firstTab.getId();
+		FxSmartTab firstFxTab = tabs.get(firstTabId);
+		VirtualTreeGroup group = firstFxTab.load(unstableSceneReporter);
+		virtualTreeGroups.put(firstTabId, group);
+		parentVtg.addChild(group);
 	}
 }

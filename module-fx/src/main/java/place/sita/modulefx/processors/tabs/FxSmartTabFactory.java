@@ -6,10 +6,12 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import place.sita.modulefx.BadApiUsageException;
 import place.sita.modulefx.ChildrenFactory;
 import place.sita.modulefx.FxSetupContext;
 import place.sita.modulefx.UnstableSceneReporter;
 import place.sita.modulefx.annotations.FxTab;
+import place.sita.modulefx.vtg.VirtualTreeGroup;
 
 import java.util.UUID;
 
@@ -44,16 +46,18 @@ public class FxSmartTabFactory {
 			}
 
 			@Override
-			public void load(UnstableSceneReporter unstableSceneReporter) {
+			public VirtualTreeGroup load(UnstableSceneReporter unstableSceneReporter) {
 				if (loaded) {
-					return;
+					throw new BadApiUsageException("Cannot load a tab that is already loaded");
 				}
+
+				VirtualTreeGroup virtualTreeGroup = new VirtualTreeGroup();
 
 				UUID loadId = UUID.randomUUID();
 				unstableSceneReporter.markUnstable(loadId, "Loading tab: " + tabClass.getName());
 
 				Object bean = factory.create(tabClass);
-				Node component = setupContext.setupForController(bean, fxTab.resourceFile(), setupContext);
+				Node component = setupContext.setupForController(bean, fxTab.resourceFile(), setupContext, virtualTreeGroup);
 
 				AnchorPane anchorPane = new AnchorPane();
 				if (component instanceof Region region) {
@@ -70,6 +74,7 @@ public class FxSmartTabFactory {
 					unstableSceneReporter.markStable(loadId);
 				});
 				loaded = true;
+				return virtualTreeGroup;
 			}
 
 			@Override

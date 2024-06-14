@@ -16,6 +16,7 @@ public class FxSceneBuilderProcessors {
 		processors.add(new InjectChildrenProcessor(childrenFactory));
 		processors.add(new InjectTabsProcessor(childrenFactory, unstableSceneReporter));
 		processors.add(new PostFxInjectProcessor());
+		processors.add(new MessageBusSupportProcessor());
 	}
 
 	public void add(FxSceneBuilderProcessor processor) {

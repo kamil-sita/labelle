@@ -43,7 +43,7 @@ public class InjectTabsProcessor implements FxSceneBuilderProcessor {
 		List<TabInfo> tabInfos = fetchTabInfoOrder(classes);
 
 		TabPane tabPane = getTabPane(controller, field);
-		FxSmartTabManager manager = new FxSmartTabManager(unstableSceneReporter);
+		FxSmartTabManager manager = new FxSmartTabManager(context.virtualTreeGroup(), unstableSceneReporter);
 
 		for (TabInfo tabInfo : tabInfos) {
 			FxTab fxTab = tabInfo.clazz.getAnnotation(FxTab.class);
