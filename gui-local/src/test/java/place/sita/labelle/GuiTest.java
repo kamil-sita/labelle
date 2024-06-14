@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testfx.framework.junit5.ApplicationExtension;
 import place.sita.labelle.core.cache.CacheRegistry;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
+import place.sita.modulefx.UnstableSceneReporter;
 import place.sita.labelle.jooq.Tables;
 
 @ExtendWith(ApplicationExtension.class)

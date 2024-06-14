@@ -217,6 +217,17 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>place.sita.labelle</groupId>
+            <artifactId>module-fx</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>place.sita.labelle</groupId>
+            <artifactId>module-fx-spring-boot</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

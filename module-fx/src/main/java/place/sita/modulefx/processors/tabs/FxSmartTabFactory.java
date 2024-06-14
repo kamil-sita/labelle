@@ -1,4 +1,4 @@
-package place.sita.labelle.gui.local.fx.modulefx.processors.tabs;
+package place.sita.modulefx.processors.tabs;
 
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -6,9 +6,9 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
-import place.sita.labelle.gui.local.fx.modulefx.ChildrenFactory;
-import place.sita.labelle.gui.local.fx.modulefx.FxSetupContext;
+import place.sita.modulefx.ChildrenFactory;
+import place.sita.modulefx.FxSetupContext;
+import place.sita.modulefx.UnstableSceneReporter;
 import place.sita.modulefx.annotations.FxTab;
 
 import java.util.UUID;

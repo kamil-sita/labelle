@@ -1,7 +1,7 @@
-package place.sita.labelle.gui.local.fx.modulefx.processors.tabs;
+package place.sita.modulefx.processors.tabs;
 
 import javafx.scene.control.Tab;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
+import place.sita.modulefx.UnstableSceneReporter;
 
 public interface FxSmartTab {
 

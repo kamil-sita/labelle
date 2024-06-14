@@ -1,12 +1,11 @@
-package place.sita.labelle.gui.local.fx.modulefx.processors;
+package place.sita.modulefx.processors;
 
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import org.springframework.util.ReflectionUtils;
-import place.sita.labelle.gui.local.fx.modulefx.ChildrenFactory;
-import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessor;
-import place.sita.labelle.gui.local.fx.modulefx.FxSetupContext;
+import place.sita.modulefx.ChildrenFactory;
+import place.sita.modulefx.FxSceneBuilderProcessor;
+import place.sita.modulefx.FxSetupContext;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxNode;
 
@@ -61,7 +60,10 @@ public class InjectChildrenProcessor implements FxSceneBuilderProcessor {
 		//  should hold many children, we should throw an exception
 
 		String fieldToPatchName = childConfig.patchNode();
-		Field fieldToPatch = ReflectionUtils.findField(parentControllerClass, fieldToPatchName);
+		Field fieldToPatch = Arrays.stream(parentControllerClass.getDeclaredFields())
+			.filter(field -> field.getName().equals(fieldToPatchName))
+			.findFirst()
+			.orElse(null);
 		if (fieldToPatch == null) {
 			throw new RuntimeException("Cannot find field to patch: " + fieldToPatchName + " in " + classType.getName());
 		}

@@ -22,7 +22,7 @@ import place.sita.labelle.datasource.Page;
 import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
-import place.sita.labelle.gui.local.fx.threading.Threading;
+import place.sita.modulefx.threading.Threading;
 import place.sita.labelle.core.filtering.LogicalExpr;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
@@ -31,7 +31,7 @@ import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagRe
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.core.utils.Result2;
-import place.sita.labelle.gui.local.fx.threading.Threading.KeyStone;
+import place.sita.modulefx.threading.Threading.KeyStone;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;

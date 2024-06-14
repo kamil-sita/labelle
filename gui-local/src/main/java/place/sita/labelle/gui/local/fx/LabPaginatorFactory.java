@@ -7,8 +7,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.StackPane;
-import place.sita.labelle.gui.local.fx.threading.Threading;
-import place.sita.labelle.gui.local.fx.threading.Threading.KeyStone;
+import place.sita.modulefx.threading.Threading;
+import place.sita.modulefx.threading.Threading.KeyStone;
 
 import java.util.List;
 import java.util.function.BiFunction;

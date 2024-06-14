@@ -12,11 +12,11 @@ import jfxtras.styles.jmetro.Style;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.shutdown.ShutdownRegistry;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
-import place.sita.labelle.gui.local.fx.modulefx.ChildrenFactory;
-import place.sita.labelle.gui.local.fx.modulefx.FxControllerLoader;
-import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessors;
-import place.sita.labelle.gui.local.fx.threading.ThreadingSupportSupplier;
+import place.sita.modulefx.UnstableSceneReporter;
+import place.sita.modulefx.ChildrenFactory;
+import place.sita.modulefx.FxControllerLoader;
+import place.sita.modulefx.FxSceneBuilderProcessors;
+import place.sita.modulefx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
 
 import java.util.*;

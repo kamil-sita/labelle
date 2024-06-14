@@ -1,4 +1,4 @@
-package place.sita.labelle.gui.local.fx.modulefx;
+package place.sita.modulefx;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -13,9 +13,11 @@ import java.util.List;
 public class SpringChildrenFactory implements ChildrenFactory {
 
 	private final ApplicationContext context;
+	private final ModuleFxConfig moduleFxConfig;
 
-	public SpringChildrenFactory(ApplicationContext context) {
+	public SpringChildrenFactory(ApplicationContext context, ModuleFxConfig moduleFxConfig) {
 		this.context = context;
+		this.moduleFxConfig = moduleFxConfig;
 	}
 
 	@Override
@@ -31,7 +33,7 @@ public class SpringChildrenFactory implements ChildrenFactory {
 
 		List<Class<?>> classes = new ArrayList<>();
 
-		for (BeanDefinition beanDef : provider.findCandidateComponents("place.sita.labelle")) {
+		for (BeanDefinition beanDef : provider.findCandidateComponents(moduleFxConfig.getPackage())) {
 			try {
 				// let's hope that this is the actual class, and not something else.
 				// as it doesn't have to be, see javadoc

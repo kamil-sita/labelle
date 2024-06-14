@@ -1,9 +1,9 @@
-package place.sita.labelle.gui.local.fx.modulefx.processors;
+package place.sita.modulefx.processors;
 
 import javafx.scene.Node;
 import javafx.scene.layout.Region;
-import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessor;
-import place.sita.labelle.gui.local.fx.modulefx.FxSetupContext;
+import place.sita.modulefx.FxSceneBuilderProcessor;
+import place.sita.modulefx.FxSetupContext;
 import place.sita.modulefx.annotations.FxDictatesHeight;
 
 public class CheckSetHeightCorrelationProcessor implements FxSceneBuilderProcessor {

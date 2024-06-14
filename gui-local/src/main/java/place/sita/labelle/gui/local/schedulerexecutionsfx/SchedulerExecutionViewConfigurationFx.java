@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.gui.local.fx.Alerts;
-import place.sita.labelle.gui.local.fx.threading.Threading;
+import place.sita.modulefx.threading.Threading;
 import place.sita.magicscheduler.ExecutionsService;
 import place.sita.modulefx.annotations.FxNode;
 import place.sita.modulefx.annotations.PostFxConstruct;

@@ -1,7 +1,7 @@
-package place.sita.labelle.gui.local.fx.modulefx.processors;
+package place.sita.modulefx.processors;
 
-import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessor;
-import place.sita.labelle.gui.local.fx.modulefx.FxSetupContext;
+import place.sita.modulefx.FxSceneBuilderProcessor;
+import place.sita.modulefx.FxSetupContext;
 import place.sita.modulefx.annotations.PostFxConstruct;
 
 import java.lang.reflect.InvocationTargetException;

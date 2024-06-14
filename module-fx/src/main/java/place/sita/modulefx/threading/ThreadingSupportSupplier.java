@@ -1,4 +1,4 @@
-package place.sita.labelle.gui.local.fx.threading;
+package place.sita.modulefx.threading;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

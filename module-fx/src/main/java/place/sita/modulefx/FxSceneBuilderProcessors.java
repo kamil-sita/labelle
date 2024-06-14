@@ -1,8 +1,7 @@
-package place.sita.labelle.gui.local.fx.modulefx;
+package place.sita.modulefx;
 
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
-import place.sita.labelle.gui.local.fx.modulefx.processors.*;
-import place.sita.labelle.gui.local.fx.modulefx.processors.tabs.InjectTabsProcessor;
+import place.sita.modulefx.processors.*;
+import place.sita.modulefx.processors.tabs.InjectTabsProcessor;
 
 import java.util.ArrayList;
 import java.util.List;

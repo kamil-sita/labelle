@@ -1,4 +1,4 @@
-package place.sita.labelle.core.utils;
+package place.sita.modulefx.util;
 
 import java.util.Objects;
 

@@ -7,11 +7,10 @@ import javafx.scene.control.TabPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import place.sita.magicscheduler.scheduler.events.TaskExecutionCompleteEvent;
 import place.sita.magicscheduler.scheduler.events.TaskPickedUpEvent;
-import place.sita.labelle.gui.local.fx.threading.Threading;
+import place.sita.modulefx.threading.Threading;
 import place.sita.modulefx.annotations.FxInjectTabs;
 
 import java.util.concurrent.atomic.AtomicInteger;

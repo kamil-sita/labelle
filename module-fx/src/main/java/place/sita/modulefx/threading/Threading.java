@@ -1,7 +1,7 @@
-package place.sita.labelle.gui.local.fx.threading;
+package place.sita.modulefx.threading;
 
 import javafx.application.Platform;
-import place.sita.labelle.core.utils.Either;
+import place.sita.modulefx.util.Either;
 
 public class Threading {
 

@@ -1,10 +1,10 @@
-package place.sita.labelle.gui.local.fx.modulefx.processors.tabs;
+package place.sita.modulefx.processors.tabs;
 
 import javafx.scene.control.TabPane;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
-import place.sita.labelle.gui.local.fx.modulefx.ChildrenFactory;
-import place.sita.labelle.gui.local.fx.modulefx.FxSceneBuilderProcessor;
-import place.sita.labelle.gui.local.fx.modulefx.FxSetupContext;
+import place.sita.modulefx.ChildrenFactory;
+import place.sita.modulefx.FxSceneBuilderProcessor;
+import place.sita.modulefx.FxSetupContext;
+import place.sita.modulefx.UnstableSceneReporter;
 import place.sita.modulefx.annotations.FxInjectTabs;
 import place.sita.modulefx.annotations.FxTab;
 

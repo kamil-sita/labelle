@@ -1,9 +1,9 @@
-package place.sita.labelle.gui.local.fx.modulefx.processors.tabs;
+package place.sita.modulefx.processors.tabs;
 
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import place.sita.labelle.gui.local.fx.UnstableSceneReporter;
-import place.sita.labelle.gui.local.fx.threading.Threading;
+import place.sita.modulefx.UnstableSceneReporter;
+import place.sita.modulefx.threading.Threading;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

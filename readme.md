@@ -10,7 +10,7 @@ Labelle's architecture is modular (a modular monolith), and consists of several 
 projects (although, ultimately, it's unlikely):
 
 1. db-changesets, db-codegen, dd-precodegen, db-spring: these modules are responsible for database schema management and generation of code to support it. JOOQ and Liquibase are used here.
-2. module-fx, module-fx-spring-boot: support library that help modularize JavaFX screens
+2. module-fx, module-fx-spring-boot: support modules that help modularize JavaFX screens, provide additional utilities
 3. tflang will be a querying language used in Labelle
 4. core-common: common classes used in 'common' modules
 5. magic-scheduler: a module that helps define and run jobs that will be run in the future. In particular those jobs can depend on each other, and might run later
