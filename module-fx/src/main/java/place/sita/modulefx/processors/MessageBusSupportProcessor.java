@@ -1,5 +1,7 @@
 package place.sita.modulefx.processors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import place.sita.modulefx.FxSceneBuilderProcessor;
 import place.sita.modulefx.FxSetupContext;
 import place.sita.modulefx.annotations.FxMessageListener;
@@ -13,6 +15,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MessageBusSupportProcessor implements FxSceneBuilderProcessor {
+	private static final Logger logger = LoggerFactory.getLogger(MessageBusSupportProcessor.class);
 	@Override
 	public void process(FxSetupContext context) {
 		VirtualTreeGroupElement element = new VirtualTreeGroupElement();
@@ -45,15 +48,19 @@ public class MessageBusSupportProcessor implements FxSceneBuilderProcessor {
 
 		Arrays.stream(controllerClass.getMethods())
 			.filter(method -> method.isAnnotationPresent(FxMessageListener.class))
+			.filter(method -> method.getParameterCount() == 1)
 			.forEach(method -> {
 				addedToAnyVirtualTreeGroup.set(true);
 				element.addListener(new MessageListener() {
 					@Override
 					public void receive(Object message) {
-						try {
-							method.invoke(controller, message);
-						} catch (Exception e) {
-							throw new RuntimeException(e);
+						// check if message instanceof whatever we're listening for
+						if (message.getClass().isAssignableFrom(method.getParameterTypes()[0])) {
+							try {
+								method.invoke(controller, message);
+							} catch (Exception e) {
+								logger.error("Exception in message listener", e);
+							}
 						}
 					}
 				});

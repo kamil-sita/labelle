@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.magicscheduler.scheduler.events.TaskExecutionCompleteEvent;
 import place.sita.magicscheduler.scheduler.events.TaskPickedUpEvent;
+import place.sita.modulefx.annotations.FxMessageListener;
 import place.sita.modulefx.threading.Threading;
 import place.sita.modulefx.annotations.FxInjectTabs;
 
@@ -35,14 +36,14 @@ public class Menu {
 	private AtomicInteger scheduled = new AtomicInteger(0);
 	private AtomicInteger done = new AtomicInteger(0);
 
-	// todo 43 @EventListener
+	@FxMessageListener
 	public void onScheduled(TaskPickedUpEvent event) {
 		possiblyRestartProgressBar();
 		scheduled.incrementAndGet();
 		updateProgressBar();
 	}
 
-	// todo 43 @EventListener
+	@FxMessageListener
 	public void onDone(TaskExecutionCompleteEvent event) {
 		possiblyRestartProgressBar();
 		done.incrementAndGet();

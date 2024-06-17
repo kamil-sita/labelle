@@ -10,6 +10,7 @@ import javafx.stage.WindowEvent;
 import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.shutdown.ShutdownRegistry;
 import place.sita.modulefx.UnstableSceneReporter;
@@ -19,6 +20,7 @@ import place.sita.modulefx.FxSceneBuilderProcessors;
 import place.sita.modulefx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
 import place.sita.modulefx.vtg.VirtualTreeGroup;
+import place.sita.modulefx.vtg.VirtualTreeGroupElement;
 
 import java.util.*;
 
@@ -36,6 +38,13 @@ public class StageConfiguration {
 		this.applicationContext = applicationContext;
 		this.shutdownRegistry = shutdownRegistry;
 		this.childrenFactory = childrenFactory;
+	}
+
+	@EventListener
+	public void handleEvent(Object event) {
+		for (ExistingStage stage : stages) {
+			stage.eventListener().handle(event);
+		}
 	}
 
 	public UnstableSceneReporter configureTestStage(Stage stage) {
@@ -72,8 +81,18 @@ public class StageConfiguration {
 		stage.setScene(scene);
 		scene.getStylesheets().add("dark_metro_labelle.css");
 
+		VirtualTreeGroupElement el = new VirtualTreeGroupElement();
+		virtualTreeGroup.addElement(el);
+
+		StageEventListener eventListener = new StageEventListener() {
+			@Override
+			public void handle(Object event) {
+				virtualTreeGroup.message(el.getId(), event);
+			}
+		};
+
 		UUID id = UUID.randomUUID();
-		ExistingStage thisStage = new ExistingStage(id, stage);
+		ExistingStage thisStage = new ExistingStage(id, stage, eventListener);
 		stages.add(thisStage);
 		stage.show();
 
@@ -102,7 +121,11 @@ public class StageConfiguration {
 		;
 	}
 
-	private record ExistingStage(UUID id, Stage stage) {
+	private interface StageEventListener {
+		void handle(Object event);
+	}
+
+	private record ExistingStage(UUID id, Stage stage, StageEventListener eventListener) {
 
 		@Override
 		public boolean equals(Object o) {
