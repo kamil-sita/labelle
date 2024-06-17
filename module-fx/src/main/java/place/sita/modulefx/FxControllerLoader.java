@@ -51,7 +51,7 @@ public class FxControllerLoader {
 
 			@Override
 			public VirtualTreeGroup virtualTreeGroup() {
-				return null;
+				return virtualTreeGroup;
 			}
 		});
 
