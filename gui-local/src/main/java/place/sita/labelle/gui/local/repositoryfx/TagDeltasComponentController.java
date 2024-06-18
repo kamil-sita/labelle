@@ -44,7 +44,13 @@ public class TagDeltasComponentController {
 	@FXML
 	private TextField deltaFamilyTextField;
 
-	/**
+	public void onImageSelected(ImageResponse selected) {
+		this.selected = selected;
+		reloadDeltas();
+		reloadParentTags();
+	}
+
+	/*
 	 * Current delta table
 	 */
 
@@ -67,16 +73,18 @@ public class TagDeltasComponentController {
 
 	private ImageResponse selected;
 
-	public void onImageSelected(ImageResponse selected) {
-		this.selected = selected;
-		reloadDeltas();
-	}
+	private final Threading.KeyStone reloadDeltasKeyStone = Threading.keyStone();
 
 	private void reloadDeltas() {
 		tagsTableData.clear();
 
-		inRepositoryService.tagDeltas().process().filterByImageId(selected.id()).forEach(tr -> {
-			tagsTableData.add(new DeltaResponse(map(tr.type()), tr.tag(), tr.family()));
+		Threading.onSeparateThread(reloadDeltasKeyStone, toolkit -> {
+			var tdrs = inRepositoryService.tagDeltas().process().filterByImageId(selected.id()).getAll();
+			toolkit.onFxThread(() -> {
+				for (var tr : tdrs) {
+					tagsTableData.add(new DeltaResponse(map(tr.type()), tr.tag(), tr.family()));
+				}
+			});
 		});
 	}
 
@@ -95,7 +103,7 @@ public class TagDeltasComponentController {
 	}
 
 	@PostFxConstruct
-	public void init() {
+	public void initDeltas() {
 		deltaTagsTableView.setItems(tagsTableData);
 
 		deltaEntryTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().tag()));
@@ -112,24 +120,6 @@ public class TagDeltasComponentController {
 			});
 		});
 	}
-
-	/*
-	 * End of: Current delta table
-	 */
-
-
-	@FXML
-	private CheckBox enableTagDeltaCheckBox;
-
-	@FXML
-	private TableColumn<?, ?> parentTagsEntryColumn;
-
-	@FXML
-	private TableView<?> parentTagsTableView;
-
-	@FXML
-	private TableColumn<?, ?> parentsTagsFamilyColumn;
-
 
 	private record DeltaResponse(DeltaType type, String tag, String family) {
 
@@ -158,6 +148,60 @@ public class TagDeltasComponentController {
 	}
 
 	@FXML
+	void removeDeltaButtonPress(ActionEvent event) {
+
+	}
+
+	/*
+	 * End of: Current delta table
+	 */
+
+	/*
+	 * Parents table
+	 */
+
+	@FXML
+	private TableView<ParentTags> parentTagsTableView;
+
+	@FXML
+	private TableColumn<ParentTags, String> parentsTagsEntryColumn;
+
+
+	@FXML
+	private TableColumn<ParentTags, String> parentsTagsFamilyColumn;
+
+	private ObservableList<ParentTags> parentTagsData = FXCollections.observableArrayList();
+
+	@PostFxConstruct
+	public void initParents() {
+		parentTagsTableView.setItems(parentTagsData);
+
+		parentsTagsFamilyColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().family()));
+		parentsTagsEntryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().value()));
+	}
+
+	private record ParentTags(String family, String value) {
+
+	}
+
+
+
+	private final Threading.KeyStone reloadParentTagsKeyStone = Threading.keyStone();
+
+	private void reloadParentTags() {
+		parentTagsData.clear();
+
+		//Threading.onSeparateThread(reloadParentTagsKeyStone, toolkit -> {
+		//	var tdrs = inRepositoryService.tagDeltas().process().filterByImageId(selected.id()).getAll();
+		//	toolkit.onFxThread(() -> {
+		//		for (var tr : tdrs) {
+		//			tagsTableData.add(new DeltaResponse(map(tr.type()), tr.tag(), tr.family()));
+		//		}
+		//	});
+		//});
+	}
+
+	@FXML
 	void applyTagsDeltaButtonPress(ActionEvent event) {
 
 	}
@@ -174,7 +218,5 @@ public class TagDeltasComponentController {
 	}
 
 	@FXML
-	void removeDeltaButtonPress(ActionEvent event) {
-
-	}
+	private CheckBox enableTagDeltaCheckBox;
 }
