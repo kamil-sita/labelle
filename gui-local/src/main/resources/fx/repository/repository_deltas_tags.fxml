@@ -22,7 +22,7 @@
                                 <TableView fx:id="parentTagsTableView" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <columns>
                                         <TableColumn fx:id="parentsTagsFamilyColumn" prefWidth="160.0" text="Family" />
-                                        <TableColumn fx:id="parentTagsEntryColumn" prefWidth="134.0" text="Entry" />
+                                        <TableColumn fx:id="parentsTagsEntryColumn" prefWidth="134.0" text="Entry" />
                                     </columns>
                                 </TableView>
                             </children>

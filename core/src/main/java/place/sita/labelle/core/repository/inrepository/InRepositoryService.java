@@ -18,10 +18,9 @@ import place.sita.labelle.jooq.Tables;
 
 import javax.annotation.Nullable;
 import java.io.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
+import static place.sita.labelle.jooq.Tables.*;
 import static place.sita.labelle.jooq.tables.Image.IMAGE;
 
 @Component
@@ -325,6 +324,22 @@ public class InRepositoryService {
     @Transactional(readOnly = true)
     public Optional<ImageResponse> getImageDelta(UUID imageId) {
         return deltaRepository.getImageDelta(imageId);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<TagResponse> parentTags(UUID imageId) {
+        Set<UUID> parents = dslContext.select(PARENT_CHILD_IMAGE.PARENT_IMAGE_ID)
+            .from(PARENT_CHILD_IMAGE)
+            .where(PARENT_CHILD_IMAGE.CHILD_IMAGE_ID.eq(imageId))
+            .fetchSet(PARENT_CHILD_IMAGE.PARENT_IMAGE_ID);
+
+        List<TagResponse> tags = dslContext.select(IMAGE_TAGS.TAG_VALUE, IMAGE_TAGS.TAG_FAMILY)
+            .from(IMAGE_TAGS)
+            .where(IMAGE_TAGS.IMAGE_ID.in(parents))
+            .fetch()
+            .map(rr -> new TagResponse(rr.value1(), rr.value2()));
+
+        return new LinkedHashSet<>(tags);
     }
 
     private String subtr(String fileDir, String directory) {
