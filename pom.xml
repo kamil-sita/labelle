@@ -42,6 +42,18 @@
             ${project.basedir}/report-aggregate/target/site/
             jacoco-aggregate/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
+
+        <!-- dependencies -->
+        <labelle.version>0.0.1-SNAPSHOT</labelle.version>
+
+        <org.openjfx.version>22</org.openjfx.version>
+        <org.openjfx.javafx-maven-plugin.version>0.0.8</org.openjfx.javafx-maven-plugin.version>
+        <jackson.version>2.16.0</jackson.version>
+        <org.apache.httpclient.version>4.5.14</org.apache.httpclient.version>
+        <com.google.guava.version>32.0.0-jre</com.google.guava.version>
+        <org.imgscalr.imgscalr-lib.version>4.2</org.imgscalr.imgscalr-lib.version>
+        <rsyntaxtextarea.version>3.3.4</rsyntaxtextarea.version>
+        <testfx-core.version>4.0.18</testfx-core.version>
     </properties>
 
     <profiles>
@@ -77,4 +89,150 @@
             </build>
         </profile>
     </profiles>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- OpenJFX -->
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx</artifactId>
+                <version>${org.openjfx.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-base</artifactId>
+                <version>${org.openjfx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-graphics</artifactId>
+                <version>${org.openjfx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-fxml</artifactId>
+                <version>${org.openjfx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-controls</artifactId>
+                <version>${org.openjfx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-swing</artifactId>
+                <version>${org.openjfx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${org.apache.httpclient.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${com.google.guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.imgscalr</groupId>
+                <artifactId>imgscalr-lib</artifactId>
+                <version>${org.imgscalr.imgscalr-lib.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fifesoft</groupId>
+                <artifactId>rsyntaxtextarea</artifactId>
+                <version>${rsyntaxtextarea.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.testfx</groupId>
+                <artifactId>testfx-core</artifactId>
+                <version>${testfx-core.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.testfx</groupId>
+                <artifactId>testfx-junit5</artifactId>
+                <version>${testfx-core.version}</version>
+            </dependency>
+
+            <!-- labelle -->
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>db-codegen</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>tflang</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>core</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>core-common</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>gui-local</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>magic-scheduler</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>module-fx</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>module-fx-spring-boot</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>db-changesets</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>place.sita.labelle</groupId>
+                <artifactId>db-pre-codegen</artifactId>
+                <version>${labelle.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>

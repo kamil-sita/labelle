@@ -21,37 +21,30 @@
         <dependency>
             <groupId>place.sita.labelle</groupId>
             <artifactId>core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>place.sita.labelle</groupId>
             <artifactId>core-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>place.sita.labelle</groupId>
             <artifactId>gui-local</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>place.sita.labelle</groupId>
             <artifactId>magic-scheduler</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>place.sita.labelle</groupId>
             <artifactId>module-fx</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>place.sita.labelle</groupId>
             <artifactId>module-fx-spring-boot</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>place.sita.labelle</groupId>
             <artifactId>tflang</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
