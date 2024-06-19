@@ -8,7 +8,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>magic-scheduler</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>magic-scheduler</name>
     <description>magic-scheduler</description>
     <properties>
