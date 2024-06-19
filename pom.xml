@@ -54,6 +54,10 @@
         <org.imgscalr.imgscalr-lib.version>4.2</org.imgscalr.imgscalr-lib.version>
         <rsyntaxtextarea.version>3.3.4</rsyntaxtextarea.version>
         <testfx-core.version>4.0.18</testfx-core.version>
+        <org.jfxtras.jmetro.version>11.6.15</org.jfxtras.jmetro.version>
+        <org.controlsfx.controlsfx.version>11.2.1</org.controlsfx.controlsfx.version>
+        <org.antlr.antlr4.version>4.13.1</org.antlr.antlr4.version>
+        <org.jooq.jooq-codegen-maven.version>3.15.3</org.jooq.jooq-codegen-maven.version>
     </properties>
 
     <profiles>
@@ -92,7 +96,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- OpenJFX -->
             <dependency>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx</artifactId>
@@ -175,13 +178,19 @@
             <dependency>
                 <groupId>org.jfxtras</groupId>
                 <artifactId>jmetro</artifactId>
-                <version>11.6.15</version>
+                <version>${org.jfxtras.jmetro.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.controlsfx</groupId>
                 <artifactId>controlsfx</artifactId>
-                <version>11.2.1</version>
+                <version>${org.controlsfx.controlsfx.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>${org.antlr.antlr4.version}</version>
             </dependency>
 
             <!-- labelle -->
@@ -247,4 +256,28 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.antlr</groupId>
+                    <artifactId>antlr4-maven-plugin</artifactId>
+                    <version>${org.antlr.antlr4.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-maven-plugin</artifactId>
+                    <version>${org.openjfx.javafx-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>${org.jooq.jooq-codegen-maven.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 </project>

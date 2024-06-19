@@ -33,24 +33,9 @@
     <build>
         <plugins>
 
-            <!-- JOOQ -->
-
             <plugin>
-
-                <!-- Specify the maven code generator plugin -->
-                <!-- Use org.jooq                for the Open Source Edition
-                         org.jooq.pro            for commercial editions with Java 17 support,
-                         org.jooq.pro-java-11    for commercial editions with Java 11 support,
-                         org.jooq.pro-java-8     for commercial editions with Java 8 support,
-                         org.jooq.trial          for the free trial edition with Java 17 support,
-                         org.jooq.trial-java-11  for the free trial edition with Java 11 support,
-                         org.jooq.trial-java-8   for the free trial edition with Java 8 support
-
-                     Note: Only the Open Source Edition is hosted on Maven Central.
-                           Import the others manually from your distribution -->
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
-                <version>3.15.3</version>
 
                 <executions>
                     <execution>
@@ -68,8 +53,6 @@
                     </dependency>
                 </dependencies>
 
-                <!-- Specify the plugin configuration.
-                     The configuration format is the same as for the standalone code generator -->
                 <configuration>
 
                     <jdbc>
@@ -88,9 +71,6 @@
                                 DATABASECHANGELOG
                                 | DATABASECHANGELOGLOCK
                             </excludes>
-                            <!-- In case your database supports catalogs, e.g. SQL Server:
-                            <inputCatalog>public</inputCatalog>
-                              -->
                             <inputSchema>public</inputSchema>
                         </database>
 
