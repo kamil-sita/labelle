@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * This class represents minimal, stateless (apart from dependencies) environment for task execution.
+ */
 @Component
 public class TaskExecutionEnvironment {
 
@@ -38,7 +41,7 @@ public class TaskExecutionEnvironment {
 		return executeTask(internalExecutionId, type, parameter, taskStateContext, apiRegistrar, resourceHub);
 	}
 
-	public static <ParameterT, AcceptedContextT, ResultT> TaskExecutionResults executeTask(
+	public static <ParameterT, AcceptedContextT, ResultT> TaskExecutionResults<ResultT> executeTask(
 		UUID internalExecutionId,
 		TaskType<ParameterT, AcceptedContextT, ResultT> type,
 		ParameterT parameter,
@@ -125,7 +128,7 @@ public class TaskExecutionEnvironment {
 			taskExecutionResult == ApiTaskExecutionResult.DONE
 		);
 
-		return new TaskExecutionResults(
+		return new TaskExecutionResults<>(
 			taskExecutionResult,
 			failedDueToException,
 			resultT,
