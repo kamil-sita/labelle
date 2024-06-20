@@ -50,7 +50,7 @@ public class InternalTaskSubmitterImpl implements InternalTaskSubmitter {
         queue.doInSchedulingLock(context -> {
             databaseSubmitter.submitTaskForLater(id, code, parameter, parent, requirements);
 
-            boolean userSubmitted = !UUID_FOR_USER_SUBMITTED_TASKS.equals(parent);
+            boolean userSubmitted = UUID_FOR_USER_SUBMITTED_TASKS.equals(parent);
             boolean inTransaction = TransactionSynchronizationManager.isActualTransactionActive();
 
             if (userSubmitted && !inTransaction) {
