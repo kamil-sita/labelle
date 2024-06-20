@@ -22,21 +22,11 @@ public interface RunPolicy {
     }
 
     static RunPolicy always() {
-        return new RunPolicy() {
-            @Override
-            public boolean shouldRun(ExecutionEnvironmentResult executionEnvironmentResult) {
-                return true;
-            }
-        };
+        return executionEnvironmentResult -> true;
     }
 
     static RunPolicy ifJobSucceeded() {
-        return new RunPolicy() {
-            @Override
-            public boolean shouldRun(ExecutionEnvironmentResult executionEnvironmentResult) {
-                return executionEnvironmentResult.success();
-            }
-        };
+        return executionEnvironmentResult -> executionEnvironmentResult.success();
     }
 
 }
