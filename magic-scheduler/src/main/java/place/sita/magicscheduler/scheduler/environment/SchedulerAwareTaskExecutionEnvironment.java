@@ -1,8 +1,6 @@
 package place.sita.magicscheduler.scheduler.environment;
 
 import org.jooq.DSLContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -18,8 +16,6 @@ import static place.sita.labelle.jooq.Tables.TASK;
 
 @Component
 public class SchedulerAwareTaskExecutionEnvironment {
-    private static final Logger log = LoggerFactory.getLogger(SchedulerAwareTaskExecutionEnvironment.class);
-
 
     private final InternalTaskSubmitter internalTaskSubmitter;
     private final TaskStateRepository taskStateRepository;
@@ -50,7 +46,7 @@ public class SchedulerAwareTaskExecutionEnvironment {
         boolean exists = dslContext
             .fetchExists(TASK, TASK.ID.eq(taskId));
         if (!exists) {
-            log.error("Task {} does not exist in the database", taskId);
+            throw new InvalidStateException("Task \"" + taskId + "\" does not exist in the database");
         }
         taskStateRepository.assignState(taskId, TaskStatus.IN_PROGRESS);
 
@@ -112,5 +108,11 @@ public class SchedulerAwareTaskExecutionEnvironment {
         }
 
         return finalTaskExecutionResult;
+    }
+
+    private static class InvalidStateException extends RuntimeException {
+        public InvalidStateException(String message) {
+            super(message);
+        }
     }
 }
