@@ -31,18 +31,30 @@ public class InternalTaskSubmitterImpl implements InternalTaskSubmitter {
     public void submitTaskForLater(UUID id, String code, String parameter, UUID parent, List<UUID> requirements) {
         TypeSpecificQueue queue = registry.get(code);
 
-        // we need to borrow the exclusive rights to schedule tasks of this type...
+        scheduleInternal(id, code, parameter, parent, requirements, queue);
+    }
+
+    /**
+     * This is a somewhat hacky implementation - generally, it does not matter if a job is scheduled now or in a few
+     * seconds. However, users, and tests like scheduling to be snappy - and by scheduling directly,
+     * it is very fast! <br/>
+     *
+     * However, there's a small problem down there in the implementation. First of all, this method is
+     * used to schedule tasks both from user and from the system. We do not need to prioritize the system ones,
+     * so we don't. <br/>
+     *
+     * We also do not want skipping of queue to happen in a transaction - what would happen if the transaction
+     * is rolled back? The task might have execution started, but it would not be registered in the system.
+     */
+    private void scheduleInternal(UUID id, String code, String parameter, UUID parent, List<UUID> requirements, TypeSpecificQueue queue) {
         queue.doInSchedulingLock(context -> {
             databaseSubmitter.submitTaskForLater(id, code, parameter, parent, requirements);
 
-            if (UUID_FOR_USER_SUBMITTED_TASKS.equals(parent)) {
-                if (TransactionSynchronizationManager.isActualTransactionActive()) {
-                    // we cannot optimize skipping queue easily, as we are in transaction. If this gets rolled back,
-                    // then we'd have to rip away the job from the scheduler itself. Let's... not do that. Maybe some
-                    // other time.
-                } else {
-                    context.scheduleWithoutQueue(id, parameter);
-                }
+            boolean userSubmitted = !UUID_FOR_USER_SUBMITTED_TASKS.equals(parent);
+            boolean inTransaction = TransactionSynchronizationManager.isActualTransactionActive();
+
+            if (userSubmitted && !inTransaction) {
+                context.scheduleWithoutQueue(id, parameter);
             }
         });
     }

@@ -132,7 +132,7 @@ public class TaskExecutionEnvironment {
 			taskExecutionResult,
 			failedDueToException,
 			resultT,
-			executionResultValue, // todo should we do serialization in this layer? What if serialization fails?
+			executionResultValue,
 			tasksToSubmit.stream().filter(t -> t.runPolicy().shouldRun(executionEnvironmentResult)).map(t -> new TaskToSubmit(t.id, t.code, t.parameter)).toList(),
 			exc,
 			sb.toString()
