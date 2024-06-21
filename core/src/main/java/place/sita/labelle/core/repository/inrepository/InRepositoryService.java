@@ -103,16 +103,6 @@ public class InRepositoryService {
         return Result3.success(image);
     }
 
-    public Ids getIds(UUID imageId) {
-        return dslContext
-            .select(IMAGE.ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE)
-            .from(IMAGE)
-            .where(IMAGE.ID.equal(imageId))
-            .fetchOne(rr -> {
-                return new Ids(rr.value1(), rr.value2(), rr.value3());
-            });
-    }
-
     /**
      * Copies this image definition to another repository.
      *
@@ -142,6 +132,17 @@ public class InRepositoryService {
             .set(IMAGE.PARENT_REFERENCE, parentPersistentId)
             .where(IMAGE.ID.eq(imageId))
             .execute();
+    }
+
+    @Transactional(readOnly = true)
+    public Ids getIds(UUID imageId) {
+        return dslContext
+            .select(IMAGE.ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE, IMAGE.VISIBLE_TO_CHILDREN)
+            .from(IMAGE)
+            .where(IMAGE.ID.equal(imageId))
+            .fetchOne(rr -> {
+                return new Ids(rr.value1(), rr.value2(), rr.value3(), rr.value4());
+            });
     }
 
     @Transactional

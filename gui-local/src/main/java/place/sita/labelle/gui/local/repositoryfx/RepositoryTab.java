@@ -22,6 +22,8 @@ import place.sita.labelle.datasource.Page;
 import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
+import place.sita.modulefx.annotations.ModuleFx;
+import place.sita.modulefx.messagebus.MessageSender;
 import place.sita.modulefx.threading.Threading;
 import place.sita.labelle.core.filtering.LogicalExpr;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
@@ -42,6 +44,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -147,6 +150,7 @@ public class RepositoryTab implements MainMenuTab {
             (paging, filtering) ->  inRepositoryService.images().process().filterByRepository(getRepositoryId(filtering)).getPage(new Page(paging.offset(), paging.pageSize())).getAll(),
             selected -> {
                 this.selectedImage = selected;
+                broadcastSelected(selected);
                 loadImage(selected);
                 loadTags(selected);
                 pass(selected);
@@ -160,6 +164,17 @@ public class RepositoryTab implements MainMenuTab {
                 labPaginator.hardReload(new FilteringParameters(newValue.id()));
             }
         });
+    }
+
+    @ModuleFx
+    private MessageSender messageSender;
+
+    private void broadcastSelected(ImageResponse selected) {
+        if (selected == null) {
+            messageSender.send(new ImageSelectedEvent(null));
+        } else {
+            messageSender.send(new ImageSelectedEvent(selected.id()));
+        }
     }
 
     private void pass(ImageResponse selected) {
@@ -176,9 +191,14 @@ public class RepositoryTab implements MainMenuTab {
         }
         currentFutureImage = imageCachingLoader.load(selected.toPtr());
         Threading.onSeparateThread(loadImageKeyStone, toolkit -> {
+            if (currentFutureImage.isCancelled()) {
+                return;
+            }
             Result2<BufferedImage, Exception> result;
             try {
                 result = currentFutureImage.get();
+            } catch (CancellationException e) {
+                return;
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
