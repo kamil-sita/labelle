@@ -24,6 +24,7 @@ public class StatisticsService {
 			.from(Tables.IMAGE_TAGS)
 			.where(Tables.IMAGE_TAGS.REPOSITORY_ID.eq(repositoryId))
 			.groupBy(Tables.IMAGE_TAGS.TAG_FAMILY, Tables.IMAGE_TAGS.TAG_VALUE)
+			.orderBy(count().desc())
 			.fetch()
 			.map(record -> new TagWithCountResponse(new TagValue(record.value1(), record.value2()), record.value3()));
 	}
