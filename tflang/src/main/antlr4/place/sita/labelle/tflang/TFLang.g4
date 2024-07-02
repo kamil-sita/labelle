@@ -1,14 +1,14 @@
 grammar TFLang;
 
-parse
-    : expression EOF
+parseMatchExpression
+    : matchExpression EOF
     ;
 
-expression
-    : expression binaryOp expression
-    | unaryOp expression
-    | '(' expression ')'
-    | singleExpression
+matchExpression
+    : matchExpression binaryOp matchExpression
+    | unaryOp matchExpression
+    | '(' matchExpression ')'
+    | singleMatchExpression
     ;
 
 binaryOp
@@ -22,14 +22,12 @@ unaryOp
 
 // code to OddBuild mentions a workaround needed if labels used - I'm not sure if that's the case, but let's not
 // risk it yet. Can be fixed later TODO
-singleExpression
-    :   singleExpressionRaw
+singleMatchExpression
+    :   singleMatchExpressionRaw
     ;
 
-singleExpressionRaw
+singleMatchExpressionRaw
     : NAME '=' StringLiteral #eqComparison
-    | NAME 'startsWith' StringLiteral #startsWithComparison
-    | NAME 'endsWith' StringLiteral #endsWithComparison
     | NAME 'like' StringLiteral #likeComparison
     | NAME 'in' '(' StringLiteral (',' StringLiteral)* ')' #inComparison
     | nameTuple '=' valueTuple #tupleEqComparison
