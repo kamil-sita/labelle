@@ -1,5 +1,56 @@
 grammar TFLang;
 
+
+parseConditionalChangeExpression
+    : conditionalChangeExpression EOF
+    ;
+
+conditionalChangeExpression
+    : 'IF' matchExpression 'THEN' changeManyExpression
+    | changeManyExpression
+    ;
+
+// modification subset
+
+changeManyExpression
+    : changeExpression (',' changeExpression)*
+    ;
+
+changeExpression
+    : addManyExpression
+    | justRemoveExpression
+    | transformManyExpression
+    ;
+
+addManyExpression
+    : 'ADD' matchedOrStringTupleExpression (',' matchedOrStringTupleExpression)*
+    | 'ADD' matchedOrStringTupleExpression (',' 'ADD' matchedOrStringTupleExpression)*
+    ;
+
+justRemoveExpression
+    : 'REMOVE'
+    ;
+
+transformManyExpression
+    : 'REPLACE' 'WITH' matchedOrStringTupleExpression (',' matchedOrStringTupleExpression)*
+    | 'REPLACE' 'WITH' matchedOrStringTupleExpression (',' 'REPLACE' 'WITH' matchedOrStringTupleExpression)*
+    ;
+
+matchedOrStringTupleExpression
+    : matchedOrStringTuple
+    | matchedOrString
+    ;
+
+matchedOrStringTuple
+    : '(' matchedOrString ( ',' matchedOrString )* ')'
+    ;
+
+matchedOrString
+    : 'MATCHED' #copy
+    | StringLiteral #string
+    ;
+
+// searching subset
 parseMatchExpression
     : matchExpression EOF
     ;
@@ -9,6 +60,11 @@ matchExpression
     | unaryOp matchExpression
     | '(' matchExpression ')'
     | singleMatchExpression
+    | anyExpresion
+    ;
+
+anyExpresion
+    : 'ANY' #any
     ;
 
 binaryOp
