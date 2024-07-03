@@ -28,7 +28,7 @@ public class TFilteringParser {
         TFLangParser parser = new TFLangParser(tokenStream);
         // todo error handling
 
-        ParseTree parseTree = parser.parse();
+        ParseTree parseTree = parser.parseMatchExpression();
 
         Map<String, Field<String>> fields = new HashMap<>();
         //fields.put("tag", )
