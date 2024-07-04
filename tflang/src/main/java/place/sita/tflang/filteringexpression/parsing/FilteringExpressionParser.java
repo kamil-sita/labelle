@@ -3,19 +3,22 @@ package place.sita.tflang.filteringexpression.parsing;
 import place.sita.tflang.SemanticException;
 import place.sita.tflang.TFLangBaseVisitor;
 import place.sita.tflang.TFLangParser;
+import place.sita.tflang.filteringexpression.AndExpression;
 import place.sita.tflang.filteringexpression.FilteringExpression;
 import place.sita.tflang.filteringexpression.NotExpression;
+import place.sita.tflang.filteringexpression.OrExpression;
 import place.sita.tflang.filteringexpression.impl.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static place.sita.tflang.TFlangUtil.stripQuotes;
+
 public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpression> {
 
 	@Override
 	public FilteringExpression visitParseMatchExpression(TFLangParser.ParseMatchExpressionContext ctx) {
-		// fallthrough
-		return super.visitParseMatchExpression(ctx);
+		return visit(ctx.matchExpression());
 	}
 
 	@Override
@@ -24,9 +27,19 @@ public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpres
 		FilteringExpression left = this.visit(ctx.matchExpression(0));
 		FilteringExpression right = this.visit(ctx.matchExpression(1));
 		if (type == BinaryOpType.AND) {
-			return new AndExpressionImpl(List.of(left, right));
+			if (left instanceof AndExpression andExpression) {
+				List<FilteringExpression> expressions = new ArrayList<>(andExpression.expressions());
+				expressions.add(right);
+				return visitAnd(expressions);
+			}
+			return visitAnd(List.of(left, right));
 		} else {
-			return new OrExpressionImpl(List.of(left, right));
+			if (left instanceof OrExpression orExpression) {
+				List<FilteringExpression> expressions = new ArrayList<>(orExpression.expressions());
+				expressions.add(right);
+				return visitOr(expressions);
+			}
+			return visitOr(List.of(left, right));
 		}
 	}
 
@@ -62,18 +75,16 @@ public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpres
 		return FilteringExpression.MATCH_EVERYTHING;
 	}
 
-	@Override
-	public FilteringExpression visitAnd(TFLangParser.AndContext ctx) {
+	private FilteringExpression visitAnd(List<FilteringExpression> filteringExpressions) {
 		List<FilteringExpression> expressions = new ArrayList<>();
-		for (var child : ctx.children) {
-			FilteringExpression filteringExpression = this.visit(child);
-			if (filteringExpression.equals(FilteringExpression.MATCH_NOTHING)) {
+		for (var child : filteringExpressions) {
+			if (child.equals(FilteringExpression.MATCH_NOTHING)) {
 				return FilteringExpression.MATCH_NOTHING;
 			}
-			if (filteringExpression.equals(FilteringExpression.MATCH_EVERYTHING)) {
+			if (child.equals(FilteringExpression.MATCH_EVERYTHING)) {
 				continue;
 			}
-			expressions.add(filteringExpression);
+			expressions.add(child);
 		}
 		if (expressions.isEmpty()) {
 			return FilteringExpression.MATCH_EVERYTHING;
@@ -81,24 +92,22 @@ public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpres
 		if (expressions.size() == 1) {
 			return expressions.get(0);
 		}
-		return new OrExpressionImpl(expressions);
+		return new AndExpressionImpl(expressions);
 	}
 
-	@Override
-	public FilteringExpression visitOr(TFLangParser.OrContext ctx) {
+	private FilteringExpression visitOr(List<FilteringExpression> filteringExpressions) {
 		List<FilteringExpression> expressions = new ArrayList<>();
-		for (var child : ctx.children) {
-			FilteringExpression filteringExpression = this.visit(child);
-			if (filteringExpression.equals(FilteringExpression.MATCH_EVERYTHING)) {
+		for (var child : filteringExpressions) {
+			if (child.equals(FilteringExpression.MATCH_EVERYTHING)) {
 				return FilteringExpression.MATCH_EVERYTHING;
 			}
-			if (filteringExpression.equals(FilteringExpression.MATCH_NOTHING)) {
+			if (child.equals(FilteringExpression.MATCH_NOTHING)) {
 				continue;
 			}
-			expressions.add(filteringExpression);
+			expressions.add(child);
 		}
 		if (expressions.isEmpty()) {
-			return FilteringExpression.MATCH_EVERYTHING;
+			return FilteringExpression.MATCH_NOTHING;
 		}
 		if (expressions.size() == 1) {
 			return expressions.get(0);
@@ -116,7 +125,7 @@ public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpres
 	public FilteringExpression visitEqComparison(TFLangParser.EqComparisonContext ctx) {
 		return new EqualExpressionImpl(
 			ctx.NAME().getText(),
-			ctx.StringLiteral().getText()
+			stripQuotes(ctx.StringLiteral().getText())
 		);
 	}
 
@@ -124,7 +133,7 @@ public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpres
 	public FilteringExpression visitLikeComparison(TFLangParser.LikeComparisonContext ctx) {
 		return new LikeExpressionImpl(
 			ctx.NAME().getText(),
-			ctx.StringLiteral().getText()
+			stripQuotes(ctx.StringLiteral().getText())
 		);
 	}
 
@@ -172,6 +181,14 @@ public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpres
 			}
 			values.add(lValues);
 		}
-		return new InTupleExpressionImpl(keys, values);
+		if (keys.size() == 1) {
+			List<FilteringExpression> expressions = new ArrayList<>();
+			for (var value : values) {
+				expressions.add(new EqualExpressionImpl(keys.get(0), value.get(0)));
+			}
+			return visitOr(expressions);
+		} else {
+			return new InTupleExpressionImpl(keys, values);
+		}
 	}
 }

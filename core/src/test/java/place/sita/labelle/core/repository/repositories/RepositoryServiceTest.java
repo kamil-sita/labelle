@@ -28,7 +28,7 @@ public class RepositoryServiceTest extends TestContainersTest {
     public void shouldByDefaultListNoRepositories() {
         // given
         // when
-        var results = service.getRepositories(null);
+        var results = service.getRepositories();
 
         // then
         assertThat(results).isEmpty();
@@ -42,7 +42,7 @@ public class RepositoryServiceTest extends TestContainersTest {
         service.addRepository("My test repo");
 
         // then
-        var results = service.getRepositories(null);
+        var results = service.getRepositories();
         assertThat(results).hasSize(1);
         assertThat(results.get(0).name()).isEqualTo("My test repo");
         assertThat(results.get(0).id()).isNotNull();
@@ -57,7 +57,7 @@ public class RepositoryServiceTest extends TestContainersTest {
         service.addRepository("My test repo 2");
 
         // then
-        var results = service.getRepositories(null);
+        var results = service.getRepositories();
         assertThat(results).hasSize(2);
         assertThat(results.get(0).name()).isEqualTo("My test repo");
         assertThat(results.get(0).id()).isNotNull();
@@ -73,7 +73,7 @@ public class RepositoryServiceTest extends TestContainersTest {
         service.addRepository(UUID.fromString("00000000-0000-0000-0000-000000000001"), "My test repo");
 
         // then
-        var results = service.getRepositories(null);
+        var results = service.getRepositories();
         assertThat(results).hasSize(1);
         assertThat(results.get(0).name()).isEqualTo("My test repo");
         assertThat(results.get(0).id()).isEqualTo(UUID.fromString("00000000-0000-0000-0000-000000000001"));

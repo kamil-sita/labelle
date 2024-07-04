@@ -84,16 +84,16 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 		ListView repositoryList = RepositoriesActions.getRepositoryList();
 
 		FxAssert.verifyThat(repositoryList, ListViewMatchers.isEmpty());
-		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(0);
+		assertThat(repositoryService.getRepositories().size()).isEqualTo(0);
 
 		// add repository
 		RepositoriesActions.createNewRepository(robot, "My test repository");
 
 		FxAssert.verifyThat(repositoryList, ListViewMatchers.hasItems(1));
-		assertThat(repositoryService.getRepositories(null).size()).isEqualTo(1);
-		assertThat(repositoryService.getRepositories(null).get(0).name()).isEqualTo("My test repository");
+		assertThat(repositoryService.getRepositories().size()).isEqualTo(1);
+		assertThat(repositoryService.getRepositories().get(0).name()).isEqualTo("My test repository");
 
-		UUID repositoryId = repositoryService.getRepositories(null).get(0).id();
+		UUID repositoryId = repositoryService.getRepositories().get(0).id();
 		// todo make the below work
 		//FxAssert.verifyThat(RepositoryActions.uuidField(), TextInputControlMatchers.hasText(repositoryId.toString()));
 

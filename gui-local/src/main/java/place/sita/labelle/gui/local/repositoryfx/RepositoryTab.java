@@ -25,7 +25,6 @@ import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
 import place.sita.modulefx.annotations.ModuleFx;
 import place.sita.modulefx.messagebus.MessageSender;
 import place.sita.modulefx.threading.Threading;
-import place.sita.labelle.core.filtering.LogicalExpr;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
@@ -125,7 +124,7 @@ public class RepositoryTab implements MainMenuTab {
     @PostFxConstruct
     public void setupRepositories() {
         ObservableList<Repository> repositories = FXCollections.observableArrayList();
-        repositories.addAll(repositoryService.getRepositories(LogicalExpr.all()));
+        repositories.addAll(repositoryService.getRepositories());
         Platform.runLater(() -> {
             repositoryChoiceBox.setItems(repositories);
         });

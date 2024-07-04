@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.filtering.LogicalExpr;
 import place.sita.labelle.core.repository.inrepository.statistics.StatisticsService;
 import place.sita.labelle.core.repository.inrepository.statistics.TagWithCountResponse;
 import place.sita.labelle.core.repository.repositories.Repository;
@@ -55,7 +54,7 @@ public class StatisticsTab implements MainMenuTab {
     @PostFxConstruct
     public void setupRepositories() {
         ObservableList<Repository> repositories = FXCollections.observableArrayList();
-        repositories.addAll(repositoryService.getRepositories(LogicalExpr.all()));
+        repositories.addAll(repositoryService.getRepositories());
         Platform.runLater(() -> {
             repositoryChoiceBox.setItems(repositories);
         });

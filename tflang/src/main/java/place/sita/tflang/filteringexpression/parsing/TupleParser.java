@@ -9,6 +9,8 @@ import place.sita.tflang.filteringexpression.impl.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static place.sita.tflang.TFlangUtil.stripQuotes;
+
 public class TupleParser extends TFLangBaseVisitor<List<String>> {
 
 	@Override
@@ -29,7 +31,7 @@ public class TupleParser extends TFLangBaseVisitor<List<String>> {
 	public List<String> visitStringList(TFLangParser.StringListContext ctx) {
 		return ctx.StringLiteral()
 			.stream()
-			.map(v -> v.getText())
+			.map(v -> stripQuotes(v.getText()))
 			.toList();
 	}
 }

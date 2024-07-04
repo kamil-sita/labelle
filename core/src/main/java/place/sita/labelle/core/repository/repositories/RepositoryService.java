@@ -5,7 +5,6 @@ import org.jooq.Record2;
 import org.jooq.RecordMapper;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.persistence.JqRepo;
-import place.sita.labelle.core.filtering.LogicalExpr;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +21,7 @@ public class RepositoryService {
         this.context = context;
     }
 
-    public List<Repository> getRepositories(LogicalExpr filter) {
+    public List<Repository> getRepositories() {
         var results = context
             .select(REPOSITORY.ID, REPOSITORY.NAME)
             .from(REPOSITORY)

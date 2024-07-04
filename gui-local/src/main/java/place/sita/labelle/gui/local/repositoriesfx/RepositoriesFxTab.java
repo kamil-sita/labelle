@@ -4,7 +4,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.filtering.LogicalExpr;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 
@@ -39,7 +38,7 @@ public class RepositoriesFxTab implements MainMenuTab {
 
     @PostFxConstruct
     public void setupList() {
-        List<Repository> repositories = repositoryService.getRepositories(LogicalExpr.all());
+        List<Repository> repositories = repositoryService.getRepositories();
         observableRepositories = FXCollections.observableArrayList(repositories);
         repositoryList.setItems(observableRepositories);
 

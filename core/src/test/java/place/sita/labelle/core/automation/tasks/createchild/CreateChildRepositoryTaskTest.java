@@ -5,8 +5,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
-import place.sita.labelle.core.automation.tasks.clone.CloneRepositoryTask;
-import place.sita.labelle.core.automation.tasks.clone.CloneRepositoryTaskInput;
 import place.sita.labelle.core.repository.inrepository.Ids;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.TagRepository;
@@ -17,7 +15,6 @@ import place.sita.magicscheduler.scheduler.TaskStateContext;
 import place.sita.magicscheduler.scheduler.environment.TaskExecutionEnvironment;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,7 +71,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		List<Repository> repos = repositoryService.getRepositories(null);
+		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(2);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
 		var images = inRepositoryService.images(results.result(), 0, Integer.MAX_VALUE, "");
@@ -114,7 +111,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		List<Repository> repos = repositoryService.getRepositories(null);
+		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(3);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
 		var images = inRepositoryService.images(results.result(), 0, Integer.MAX_VALUE, "");
@@ -149,7 +146,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		List<Repository> repos = repositoryService.getRepositories(null);
+		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(2);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
 		var images = inRepositoryService.images(results.result(), 0, Integer.MAX_VALUE, "");
