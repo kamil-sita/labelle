@@ -2,8 +2,8 @@ package place.sita.labelle.core.filtering.tflang;
 
 import org.jooq.Condition;
 import org.jooq.Field;
-import place.sita.labelle.tflang.TFLangBaseVisitor;
-import place.sita.labelle.tflang.TFLangParser;
+import place.sita.tflang.TFLangBaseVisitor;
+import place.sita.tflang.TFLangParser;
 
 import java.util.Map;
 

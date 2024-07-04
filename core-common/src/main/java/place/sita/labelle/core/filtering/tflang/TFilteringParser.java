@@ -7,8 +7,8 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.jooq.Condition;
 import org.jooq.Field;
-import place.sita.labelle.tflang.TFLangLexer;
-import place.sita.labelle.tflang.TFLangParser;
+import place.sita.tflang.TFLangLexer;
+import place.sita.tflang.TFLangParser;
 
 import java.util.HashMap;
 import java.util.Map;
