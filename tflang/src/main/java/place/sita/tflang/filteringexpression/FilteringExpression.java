@@ -7,6 +7,8 @@ public sealed interface FilteringExpression permits
 	AndExpression,
 	EqualExpression,
 	EverythingExpression,
+	InExpression,
+	InTupleExpression,
 	LikeExpression,
 	NotExpression,
 	OrExpression {

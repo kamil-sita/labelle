@@ -95,11 +95,11 @@ parseMatchExpression
     ;
 
 matchExpression
-    : matchExpression binaryOp matchExpression
-    | unaryOp matchExpression
-    | '(' matchExpression ')'
-    | singleMatchExpression
-    | anyExpresion
+    : matchExpression binaryOp matchExpression #binaryOpMatchExpression
+    | unaryOp matchExpression #unaryOpMatchExpression
+    | '(' matchExpression ')' #parenthesesMatchExpression
+    | singleMatchExpression #singleMatchMatchExpression
+    | anyExpresion #anyMatchExpression
     ;
 
 anyExpresion
@@ -124,7 +124,7 @@ singleMatchExpression
 singleMatchExpressionRaw
     : NAME '=' StringLiteral #eqComparison
     | NAME 'like' StringLiteral #likeComparison
-    | NAME 'in' '(' StringLiteral (',' StringLiteral)* ')' #inComparison
+    | NAME 'in' stringList #inComparison
     | nameTuple '=' valueTuple #tupleEqComparison
     | nameTuple 'in' '(' valueTuple (',' valueTuple)* ')' #inEqComparison
     ;
@@ -134,6 +134,10 @@ nameTuple
     ;
 
 valueTuple
+    : stringList
+    ;
+
+stringList
     : '(' StringLiteral ( ',' StringLiteral )* ')'
     ;
 
