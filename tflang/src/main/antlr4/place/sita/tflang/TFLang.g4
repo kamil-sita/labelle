@@ -100,6 +100,11 @@ matchExpression
     | '(' matchExpression ')' #parenthesesMatchExpression
     | singleMatchExpression #singleMatchMatchExpression
     | anyExpresion #anyMatchExpression
+    | matchInnerExpression #innerMatchExpression
+    ;
+
+matchInnerExpression
+    : 'IN' NAME 'EXISTS' '(' matchExpression ')'
     ;
 
 anyExpresion
