@@ -167,3 +167,7 @@ fragment
 EscapeSequence
 	:	'\\' [btnfr"'\\]
 	;
+
+Comment
+  :  '//' ~( '\r' | '\n' )* -> skip
+  ;
