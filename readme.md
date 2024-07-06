@@ -80,4 +80,32 @@ Let's say, today you're really adamant on finding out whether this repository ha
 IN tags EXISTS (tag = "foo") and IN tags EXISTS (tag = "bar")
 ```
 
+### TFLang modification context
+
+You're looking through your photos, exploring tags, and you see that you've made a mistake. You've tagged a photo with ``foo`` instead of ``bar``. You want to fix it:
+
+```sql
+IF category="category" AND tag = "foo" THEN REMOVE, ADD ("category", "bar")
+```
+
+But you can do it in a better way:
+
+```sql
+IF category="category" AND tag = "foo" THEN REPLACE WITH ("category", "bar")
+```
+
+But wait, the category can be also anything, not just ``category``. Let's fix that:
+
+```sql
+IF tag = "foo" THEN REPLACE WITH (MATCHED, "bar")
+```
+
+Sometimes you have to admit, the logic gets too hard. You can reference functions as well:
+
+```sql
+IF tag = "foo" THEN REMOVE USING foobar;
+IF tag = "bar" THEN ADD USING foobar;
+IF tag = "baz" THEN REPLACE USING foobar;
+```
+
 
