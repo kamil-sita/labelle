@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="743.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="800.0" minWidth="10.0" prefWidth="800.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <AnchorPane GridPane.columnIndex="1">
+               <children>
+                  <ChoiceBox fx:id="repositoryChoiceBox" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="201.0" />
+                  <TextArea fx:id="testTagsBeforeTextArea" layoutX="15.0" layoutY="82.0" prefHeight="95.0" prefWidth="167.0" text="Category 1;Tag 1">
+                     <font>
+                        <Font name="Consolas" size="12.0" />
+                     </font>
+                  </TextArea>
+                  <Label layoutX="15.0" layoutY="57.0" text="Test tags, separate by semicolon" />
+                  <TextArea fx:id="testTagsAfterTextArea" layoutX="311.0" layoutY="82.0" prefHeight="95.0" prefWidth="167.0" text="Category 1; Tag 1">
+                     <font>
+                        <Font name="Consolas" size="12.0" />
+                     </font>
+                  </TextArea>
+                  <Label layoutX="309.0" layoutY="57.0" text="Test tags transformation result" />
+                  <SplitPane dividerPositions="0.5" layoutY="231.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="231.0">
+                    <items>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <TextArea fx:id="tagLevelRulesTextArea" prefHeight="167.0" prefWidth="693.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
+                                 <font>
+                                    <Font name="Consolas" size="12.0" />
+                                 </font>
+                              </TextArea>
+                              <Label layoutX="7.0" layoutY="5.0" text="Tag-level rules" />
+                           </children>
+                        </AnchorPane>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                           <children>
+                              <Label layoutX="14.0" layoutY="5.0" text="Tag container-level rules" />
+                              <TextArea layoutX="-62.0" layoutY="41.0" prefHeight="167.0" prefWidth="693.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
+                                 <font>
+                                    <Font name="Consolas" size="12.0" />
+                                 </font>
+                              </TextArea>
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
+                  <Button layoutX="227.0" layoutY="117.0" mnemonicParsing="false" onAction="#doConversion" text="&gt;&gt;" />
+                  <Button layoutX="15.0" layoutY="195.0" mnemonicParsing="false" text="Validate" />
+                  <Button layoutX="92.0" layoutY="195.0" mnemonicParsing="false" text="Save" />
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
