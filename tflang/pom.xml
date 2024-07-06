@@ -43,6 +43,7 @@
                 <version>4.13.1</version>
                 <configuration>
                     <visitor>true</visitor>
+                    <libDirectory>${basedir}/src/main/antlr4/place/sita/tflang</libDirectory>
                 </configuration>
                 <executions>
                     <execution>

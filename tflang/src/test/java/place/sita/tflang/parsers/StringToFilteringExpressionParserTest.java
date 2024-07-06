@@ -3,7 +3,6 @@ package place.sita.tflang.parsers;
 import org.junit.Test;
 import place.sita.tflang.SemanticException;
 import place.sita.tflang.filteringexpression.*;
-import place.sita.tflang.filteringexpression.impl.EverythingExpressionImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
