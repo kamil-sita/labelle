@@ -1,4 +1,9 @@
 package place.sita.tflang.modificationexpression;
 
-public interface MultiChangeExpression {
+import java.util.List;
+
+public non-sealed interface MultiChangeExpression extends ChangeExpression {
+
+	List<ChangeExpression> changes();
+
 }

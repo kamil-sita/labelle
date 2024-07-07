@@ -1,4 +1,4 @@
 package place.sita.tflang.modificationexpression;
 
-public interface ChangeExpression {
+public sealed interface ChangeExpression permits AddExpression, AddUsingFunctionExpression, ChangeInEntityExpression, JustRemoveExpression, ModifyExpression, ModifyUsingFunctionExpression, MultiChangeExpression, RemoveExpression {
 }

@@ -1,4 +1,7 @@
 package place.sita.tflang.modificationexpression;
 
-public interface RemoveExpression {
+public non-sealed interface RemoveExpression extends ChangeExpression {
+
+	Tuple remove();
+
 }

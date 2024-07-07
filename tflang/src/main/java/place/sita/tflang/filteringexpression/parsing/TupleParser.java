@@ -2,11 +2,7 @@ package place.sita.tflang.filteringexpression.parsing;
 
 import place.sita.tflang.TFLangBaseVisitor;
 import place.sita.tflang.TFLangParser;
-import place.sita.tflang.filteringexpression.FilteringExpression;
-import place.sita.tflang.filteringexpression.NotExpression;
-import place.sita.tflang.filteringexpression.impl.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static place.sita.tflang.TFlangUtil.stripQuotes;

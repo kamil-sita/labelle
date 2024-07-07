@@ -1,6 +1,6 @@
 package place.sita.tflang.modificationexpression;
 
-public interface ModifyExpression {
+public non-sealed interface ModifyExpression extends ChangeExpression {
 
 	Tuple modify();
 
