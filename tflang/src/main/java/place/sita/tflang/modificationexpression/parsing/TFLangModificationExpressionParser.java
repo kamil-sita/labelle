@@ -95,26 +95,15 @@ public class TFLangModificationExpressionParser extends TFLangBaseVisitor<Change
 	}
 
 	@Override
-	public ChangeExpression visitTransformManyExpressionCalculated(TFLangParser.TransformManyExpressionCalculatedContext ctx) {
-		List<ChangeExpression> changeExpressions = new ArrayList<>();
+	public ChangeExpression visitTransformExpressionCalculated(TFLangParser.TransformExpressionCalculatedContext ctx) {
+		return new ModifyExpressionImpl(
+			new MatchedTupleParser().visit(ctx.matchedOrStringTupleExpression())
+		);
 
-		for (TFLangParser.MatchedOrStringTupleExpressionContext tupleExpr : ctx.matchedOrStringTupleExpression()) {
-			changeExpressions.add(
-				new ModifyExpressionImpl(
-					new MatchedTupleParser().visit(tupleExpr)
-				)
-			);
-		}
-
-		if (changeExpressions.size() == 1) {
-			return changeExpressions.get(0);
-		}
-
-		return new MultiChangeExpressionImpl(changeExpressions);
 	}
 
 	@Override
-	public ChangeExpression visitTransformManyExpressionSpecial(TFLangParser.TransformManyExpressionSpecialContext ctx) {
+	public ChangeExpression visitTransformExpressionSpecial(TFLangParser.TransformExpressionSpecialContext ctx) {
 		return new ModifyUsingFunctionExpressionImpl(ctx.NAME().getText());
 	}
 }

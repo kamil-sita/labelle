@@ -13,7 +13,7 @@ changeManyExpression
 changeExpression
     : addManyExpression
     | removeComplexExpression
-    | transformManyExpression
+    | transformExpression
     | changeInEntityExpression
     ;
 
@@ -59,17 +59,16 @@ removeManyExpressionSpecial
     : 'REMOVE' 'USING' NAME
     ;
 
-transformManyExpression
-    : transformManyExpressionCalculated
-    | transformManyExpressionSpecial
+transformExpression
+    : transformExpressionCalculated
+    | transformExpressionSpecial
     ;
 
-transformManyExpressionCalculated
-    : 'REPLACE' 'WITH' matchedOrStringTupleExpression (',' matchedOrStringTupleExpression)*
-    | 'REPLACE' 'WITH' matchedOrStringTupleExpression (',' 'REPLACE' 'WITH' matchedOrStringTupleExpression)*
+transformExpressionCalculated
+    : 'REPLACE' 'WITH' matchedOrStringTupleExpression
     ;
 
-transformManyExpressionSpecial
+transformExpressionSpecial
     : 'REPLACE' 'USING' NAME
     ;
 

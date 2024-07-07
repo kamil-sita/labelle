@@ -143,4 +143,143 @@ public class StringToChangeExpressionParserTest {
 		assertThat(removeExpression3.remove().valueAt(0).isString()).isTrue();
 		assertThat(removeExpression3.remove().valueAt(0).stringValue()).isEqualTo("value3");
 	}
+
+	@Test
+	public void shouldParseAddExpression() {
+		// given
+		String query = "ADD (\"value\")";
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(AddExpression.class);
+		var addExpression = (AddExpression) expression;
+		assertThat(addExpression.add().dimensionality()).isEqualTo(1);
+		assertThat(addExpression.add().valueAt(0).isString()).isTrue();
+		assertThat(addExpression.add().valueAt(0).stringValue()).isEqualTo("value");
+	}
+
+	@Test
+	public void shouldParseAddMatchedExpression() {
+		// given
+		String query = "ADD (MATCHED, \"value\")";
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(AddExpression.class);
+		var addExpression = (AddExpression) expression;
+		assertThat(addExpression.add().dimensionality()).isEqualTo(2);
+		assertThat(addExpression.add().valueAt(0).isString()).isFalse();
+		assertThat(addExpression.add().valueAt(1).isString()).isTrue();
+		assertThat(addExpression.add().valueAt(1).stringValue()).isEqualTo("value");
+	}
+
+	@Test
+	public void shouldParseMultipleAddExpressions() {
+		// given
+		String query = "ADD (\"value1\"), (\"value2\")";
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(MultiChangeExpression.class);
+		var multiChangeExpression = (MultiChangeExpression) expression;
+		assertThat(multiChangeExpression.changes().size()).isEqualTo(2);
+		assertThat(multiChangeExpression.changes().get(0)).isInstanceOf(AddExpression.class);
+		assertThat(multiChangeExpression.changes().get(1)).isInstanceOf(AddExpression.class);
+		var addExpression1 = (AddExpression) multiChangeExpression.changes().get(0);
+		assertThat(addExpression1.add().dimensionality()).isEqualTo(1);
+		assertThat(addExpression1.add().valueAt(0).isString()).isTrue();
+		assertThat(addExpression1.add().valueAt(0).stringValue()).isEqualTo("value1");
+		var addExpression2 = (AddExpression) multiChangeExpression.changes().get(1);
+		assertThat(addExpression2.add().dimensionality()).isEqualTo(1);
+		assertThat(addExpression2.add().valueAt(0).isString()).isTrue();
+		assertThat(addExpression2.add().valueAt(0).stringValue()).isEqualTo("value2");
+	}
+
+	@Test
+	public void shouldParseAddUsingFunction() {
+		// given
+		String query = "ADD USING foobar";
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(AddUsingFunctionExpression.class);
+		var addExpression = (AddUsingFunctionExpression) expression;
+		assertThat(addExpression.functionName()).isEqualTo("foobar");
+	}
+
+	@Test
+	public void shouldParseTransformExpression() {
+		// given
+		String query = "REPLACE WITH (\"value\")";
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(ModifyExpression.class);
+		var modifyExpression = (ModifyExpression) expression;
+		assertThat(modifyExpression.modify().dimensionality()).isEqualTo(1);
+		assertThat(modifyExpression.modify().valueAt(0).isString()).isTrue();
+		assertThat(modifyExpression.modify().valueAt(0).stringValue()).isEqualTo("value");
+	}
+
+	@Test
+	public void shouldParseTransformMatchedExpression() {
+		// given
+		String query = "REPLACE WITH (MATCHED, \"value\")";
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(ModifyExpression.class);
+		var modifyExpression = (ModifyExpression) expression;
+		assertThat(modifyExpression.modify().dimensionality()).isEqualTo(2);
+		assertThat(modifyExpression.modify().valueAt(0).isString()).isFalse();
+		assertThat(modifyExpression.modify().valueAt(1).isString()).isTrue();
+		assertThat(modifyExpression.modify().valueAt(1).stringValue()).isEqualTo("value");
+	}
+
+	@Test
+	public void shouldReplaceWithFunction() {
+		// given
+		String query = "REPLACE USING foobar";
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(ModifyUsingFunctionExpression.class);
+		var modifyExpression = (ModifyUsingFunctionExpression) expression;
+		assertThat(modifyExpression.functionName()).isEqualTo("foobar");
+	}
+
+	@Test
+	public void shouldParseChangeInEntityExpression() {
+		// given
+		String query = "IN entity DO (ADD (\"value\"))";
+		// todo test also IN entity DO (ADD "value") - it probably should be illegal
+
+		// when
+		ChangeExpression expression = StringToChangeExpressionParser.parse(query);
+
+		// then
+		assertThat(expression).isInstanceOf(ChangeInEntityExpression.class);
+		var changeInEntityExpression = (ChangeInEntityExpression) expression;
+		assertThat(changeInEntityExpression.entityName()).isEqualTo("entity");
+		assertThat(changeInEntityExpression.change()).isInstanceOf(AddExpression.class);
+		var addExpression = (AddExpression) changeInEntityExpression.change();
+		assertThat(addExpression.add().dimensionality()).isEqualTo(1);
+		assertThat(addExpression.add().valueAt(0).isString()).isTrue();
+		assertThat(addExpression.add().valueAt(0).stringValue()).isEqualTo("value");
+	}
+
 }
