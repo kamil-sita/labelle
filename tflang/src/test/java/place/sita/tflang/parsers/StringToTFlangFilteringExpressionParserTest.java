@@ -7,7 +7,7 @@ import place.sita.tflang.filteringexpression.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class StringToFilteringExpressionParserTest {
+public class StringToTFlangFilteringExpressionParserTest {
 
 	@Test
 	public void shouldParseSimpleExpression() {

@@ -14,7 +14,7 @@ import java.util.List;
 
 import static place.sita.tflang.TFlangUtil.stripQuotes;
 
-public class FilteringExpressionParser extends TFLangBaseVisitor<FilteringExpression> {
+public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<FilteringExpression> {
 
 	@Override
 	public FilteringExpression visitParseMatchExpression(TFLangParser.ParseMatchExpressionContext ctx) {
