@@ -10,6 +10,11 @@ changeExpression
     : addManyExpression
     | removeComplexExpression
     | transformManyExpression
+    | changeInEntityExpression
+    ;
+
+changeInEntityExpression
+    : 'IN' NAME 'DO' '(' changeManyExpression ')'
     ;
 
 addManyExpression

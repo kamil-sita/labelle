@@ -108,4 +108,16 @@ IF tag = "bar" THEN ADD USING foobar;
 IF tag = "baz" THEN REPLACE USING foobar;
 ```
 
+### TFLang sub-entity modification context
 
+You can also modify a sub-entity:
+```sql
+IF IN tags EXISTS (tag = "foo") THEN IN tags DO (IF tag="foo" THEN REMOVE)
+```
+
+Which might be more useful if you're trying to do something based on multiple tags:
+```sql
+IF IN tags EXISTS (tag = "foo") AND IN tags EXISTS (tag = "bar") THEN IN tags DO (ADD "baz")
+```
+
+Since ``MATCHED`` keyword only refers to the current level, using it in sub-entity context will not work.
