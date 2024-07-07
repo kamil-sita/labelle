@@ -7,12 +7,12 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import place.sita.tflang.TFLangLexer;
 import place.sita.tflang.TFLangParser;
-import place.sita.tflang.filteringexpression.FilteringExpression;
-import place.sita.tflang.filteringexpression.parsing.TFlangFilteringExpressionParser;
+import place.sita.tflang.modificationexpression.ChangeExpression;
+import place.sita.tflang.modificationexpression.parsing.TFLangModificationExpressionParser;
 
-public class StringToFilteringExpressionParser {
+public class StringToChangeExpressionParser {
 
-	public static FilteringExpression parse(String query) {
+	public static ChangeExpression parse(String query) {
 		CharStream charStream = CharStreams.fromString(query);
 
 		TFLangLexer lexer = new TFLangLexer(charStream);
@@ -23,9 +23,9 @@ public class StringToFilteringExpressionParser {
 		TFLangParser parser = new TFLangParser(tokenStream);
 		// todo error handling
 
-		ParseTree parseTree = parser.parseMatchExpression();
+		ParseTree parseTree = parser.changeManyExpressionParse();
 
-		return new TFlangFilteringExpressionParser().visit(parseTree);
+		return new TFLangModificationExpressionParser().visit(parseTree);
 	}
 
 }

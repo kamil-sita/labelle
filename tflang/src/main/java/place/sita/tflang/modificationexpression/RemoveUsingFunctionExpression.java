@@ -1,5 +1,5 @@
 package place.sita.tflang.modificationexpression;
 
-public interface RemoveUsingFunctionExpression {
+public non-sealed interface RemoveUsingFunctionExpression extends ChangeExpression {
 	String functionName();
 }

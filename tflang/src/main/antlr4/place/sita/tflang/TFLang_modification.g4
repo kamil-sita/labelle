@@ -2,6 +2,10 @@ grammar TFLang_modification;
 import TFLang_lexing;
 
 
+changeManyExpressionParse
+    : changeManyExpression EOF
+    ;
+
 changeManyExpression
     : changeExpression (',' changeExpression)*
     ;

@@ -1,13 +1,13 @@
 package place.sita.tflang.parsers;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import place.sita.tflang.SemanticException;
 import place.sita.tflang.filteringexpression.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class StringToTFlangFilteringExpressionParserTest {
+public class StringToFilteringExpressionParserTest {
 
 	@Test
 	public void shouldParseSimpleExpression() {

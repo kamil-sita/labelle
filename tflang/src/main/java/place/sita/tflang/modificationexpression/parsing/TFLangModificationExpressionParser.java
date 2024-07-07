@@ -11,12 +11,21 @@ import java.util.List;
 public class TFLangModificationExpressionParser extends TFLangBaseVisitor<ChangeExpression> {
 
 	@Override
+	public ChangeExpression visitChangeManyExpressionParse(TFLangParser.ChangeManyExpressionParseContext ctx) {
+		return visit(ctx.changeManyExpression());
+	}
+
+	@Override
 	public ChangeExpression visitChangeManyExpression(TFLangParser.ChangeManyExpressionContext ctx) {
 
 		List<ChangeExpression> expressions = new ArrayList<>();
 
 		for (TFLangParser.ChangeExpressionContext expression : ctx.changeExpression()) {
 			expressions.add(new TFLangModificationExpressionParser().visit(expression));
+		}
+
+		if (expressions.size() == 1) {
+			return expressions.get(0);
 		}
 
 		return new MultiChangeExpressionImpl(expressions);
@@ -78,7 +87,11 @@ public class TFLangModificationExpressionParser extends TFLangBaseVisitor<Change
 		}
 
 		return new MultiChangeExpressionImpl(changeExpressions);
+	}
 
+	@Override
+	public ChangeExpression visitRemoveManyExpressionSpecial(TFLangParser.RemoveManyExpressionSpecialContext ctx) {
+		return new RemoveUsingFunctionExpressionImpl(ctx.NAME().getText());
 	}
 
 	@Override
