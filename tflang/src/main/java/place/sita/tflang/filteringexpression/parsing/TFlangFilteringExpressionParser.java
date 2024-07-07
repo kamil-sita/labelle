@@ -1,8 +1,6 @@
 package place.sita.tflang.filteringexpression.parsing;
 
-import place.sita.tflang.SemanticException;
-import place.sita.tflang.TFLangBaseVisitor;
-import place.sita.tflang.TFLangParser;
+import place.sita.tflang.*;
 import place.sita.tflang.filteringexpression.AndExpression;
 import place.sita.tflang.filteringexpression.FilteringExpression;
 import place.sita.tflang.filteringexpression.NotExpression;
@@ -14,15 +12,15 @@ import java.util.List;
 
 import static place.sita.tflang.TFlangUtil.stripQuotes;
 
-public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<FilteringExpression> {
+public class TFlangFilteringExpressionParser extends TFLang_searchingBaseVisitor<FilteringExpression> {
 
 	@Override
-	public FilteringExpression visitParseMatchExpression(TFLangParser.ParseMatchExpressionContext ctx) {
+	public FilteringExpression visitParseMatchExpression(TFLang_searchingParser.ParseMatchExpressionContext ctx) {
 		return visit(ctx.matchExpression());
 	}
 
 	@Override
-	public FilteringExpression visitBinaryOpMatchExpression(TFLangParser.BinaryOpMatchExpressionContext ctx) {
+	public FilteringExpression visitBinaryOpMatchExpression(TFLang_searchingParser.BinaryOpMatchExpressionContext ctx) {
 		BinaryOpType type = new BinaryOpParser().visit(ctx.binaryOp());
 		FilteringExpression left = this.visit(ctx.matchExpression(0));
 		FilteringExpression right = this.visit(ctx.matchExpression(1));
@@ -44,7 +42,7 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	}
 
 	@Override
-	public FilteringExpression visitUnaryOpMatchExpression(TFLangParser.UnaryOpMatchExpressionContext ctx) {
+	public FilteringExpression visitUnaryOpMatchExpression(TFLang_searchingParser.UnaryOpMatchExpressionContext ctx) {
 		FilteringExpression underlying = this.visit(ctx.matchExpression());
 		if (underlying instanceof NotExpression notExpression) {
 			return notExpression.expression();
@@ -53,25 +51,25 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	}
 
 	@Override
-	public FilteringExpression visitParenthesesMatchExpression(TFLangParser.ParenthesesMatchExpressionContext ctx) {
+	public FilteringExpression visitParenthesesMatchExpression(TFLang_searchingParser.ParenthesesMatchExpressionContext ctx) {
 		// fallthrough
 		return super.visitParenthesesMatchExpression(ctx);
 	}
 
 	@Override
-	public FilteringExpression visitSingleMatchMatchExpression(TFLangParser.SingleMatchMatchExpressionContext ctx) {
+	public FilteringExpression visitSingleMatchMatchExpression(TFLang_searchingParser.SingleMatchMatchExpressionContext ctx) {
 		// fallthrough
 		return super.visitSingleMatchMatchExpression(ctx);
 	}
 
 	@Override
-	public FilteringExpression visitAnyMatchExpression(TFLangParser.AnyMatchExpressionContext ctx) {
+	public FilteringExpression visitAnyMatchExpression(TFLang_searchingParser.AnyMatchExpressionContext ctx) {
 		// fallthrough
 		return super.visitAnyMatchExpression(ctx);
 	}
 
 	@Override
-	public FilteringExpression visitAny(TFLangParser.AnyContext ctx) {
+	public FilteringExpression visitAny(TFLang_searchingParser.AnyContext ctx) {
 		return FilteringExpression.MATCH_EVERYTHING;
 	}
 
@@ -116,13 +114,13 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	}
 
 	@Override
-	public FilteringExpression visitSingleMatchExpression(TFLangParser.SingleMatchExpressionContext ctx) {
+	public FilteringExpression visitSingleMatchExpression(TFLang_searchingParser.SingleMatchExpressionContext ctx) {
 		// fallthrough
 		return super.visitSingleMatchExpression(ctx);
 	}
 
 	@Override
-	public FilteringExpression visitEqComparison(TFLangParser.EqComparisonContext ctx) {
+	public FilteringExpression visitEqComparison(TFLang_searchingParser.EqComparisonContext ctx) {
 		return new EqualExpressionImpl(
 			ctx.NAME().getText(),
 			stripQuotes(ctx.StringLiteral().getText())
@@ -130,7 +128,7 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	}
 
 	@Override
-	public FilteringExpression visitLikeComparison(TFLangParser.LikeComparisonContext ctx) {
+	public FilteringExpression visitLikeComparison(TFLang_searchingParser.LikeComparisonContext ctx) {
 		return new LikeExpressionImpl(
 			ctx.NAME().getText(),
 			stripQuotes(ctx.StringLiteral().getText())
@@ -138,7 +136,7 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	}
 
 	@Override
-	public FilteringExpression visitInComparison(TFLangParser.InComparisonContext ctx) {
+	public FilteringExpression visitInComparison(TFLang_searchingParser.InComparisonContext ctx) {
 		String key = ctx.NAME().getText();
 
 		List<String> in = new TupleParser().visit(ctx.stringList());
@@ -151,7 +149,7 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	}
 
 	@Override
-	public FilteringExpression visitTupleEqComparison(TFLangParser.TupleEqComparisonContext ctx) {
+	public FilteringExpression visitTupleEqComparison(TFLang_searchingParser.TupleEqComparisonContext ctx) {
 		List<String> keys = new TupleParser().visit(ctx.nameTuple());
 		List<String> values = new TupleParser().visit(ctx.valueTuple());
 
@@ -171,7 +169,7 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	}
 
 	@Override
-	public FilteringExpression visitInEqComparison(TFLangParser.InEqComparisonContext ctx) {
+	public FilteringExpression visitInEqComparison(TFLang_searchingParser.InEqComparisonContext ctx) {
 		List<String> keys = new TupleParser().visit(ctx.nameTuple());
 		List<List<String>> values = new ArrayList<>();
 		for (var valueTuple : ctx.valueTuple()) {
