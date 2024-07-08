@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.automation.tasks.AutomationTasksCommon;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
-import place.sita.labelle.core.repository.inrepository.PersistableImagesTags;
+import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.magicscheduler.TaskContext;

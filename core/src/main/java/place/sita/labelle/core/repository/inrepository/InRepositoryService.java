@@ -11,6 +11,8 @@ import place.sita.labelle.core.repository.inrepository.delta.DeltaRepository;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaResponse;
 import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
+import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
 import place.sita.labelle.core.utils.Result3;
 import place.sita.labelle.datasource.cross.PreprocessableDataSourceWithRemoval;
 import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;

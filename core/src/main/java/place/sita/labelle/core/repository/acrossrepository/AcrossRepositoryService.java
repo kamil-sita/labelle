@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import place.sita.labelle.core.repository.inrepository.TagValue;
+import place.sita.labelle.core.repository.inrepository.tags.TagValue;
 import place.sita.labelle.jooq.Tables;
 
 @Service

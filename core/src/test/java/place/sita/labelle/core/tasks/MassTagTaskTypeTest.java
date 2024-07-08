@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagResponse;
-import place.sita.labelle.core.repository.inrepository.TagRepository;
+import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.jooq.Tables;

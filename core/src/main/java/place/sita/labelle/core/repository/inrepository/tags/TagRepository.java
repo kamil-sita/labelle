@@ -1,4 +1,4 @@
-package place.sita.labelle.core.repository.inrepository;
+package place.sita.labelle.core.repository.inrepository.tags;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;

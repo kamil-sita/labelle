@@ -1,10 +1,11 @@
-package place.sita.labelle.core.repository.inrepository;
+package place.sita.labelle.core.repository.inrepository.tags;
 
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.jooq.Tables;

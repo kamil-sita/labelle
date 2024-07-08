@@ -1,4 +1,4 @@
-package place.sita.labelle.core.repository.inrepository;
+package place.sita.labelle.core.repository.inrepository.tags;
 
 import java.util.*;
 import java.util.stream.Collectors;

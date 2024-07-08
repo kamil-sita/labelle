@@ -2,7 +2,7 @@ package place.sita.labelle.core.repository.inrepository.statistics;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
-import place.sita.labelle.core.repository.inrepository.TagValue;
+import place.sita.labelle.core.repository.inrepository.tags.TagValue;
 import place.sita.labelle.jooq.Tables;
 
 import java.util.List;
