@@ -9,6 +9,6 @@ package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee
  */
 public interface TagContainerInvokee {
 
-
+	void apply(TciInstruction instruction);
 
 }
