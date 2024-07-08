@@ -1,6 +1,6 @@
 package place.sita.tflang.filteringexpression.impl;
 
-import place.sita.tflang.filteringexpression.EverythingExpression;
+import place.sita.tflang.filteringexpression.fillteringexpression.EverythingExpression;
 
 public record EverythingExpressionImpl() implements EverythingExpression {
 

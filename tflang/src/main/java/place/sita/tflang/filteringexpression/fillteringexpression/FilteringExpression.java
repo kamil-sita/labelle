@@ -1,4 +1,4 @@
-package place.sita.tflang.filteringexpression;
+package place.sita.tflang.filteringexpression.fillteringexpression;
 
 import place.sita.tflang.filteringexpression.impl.EverythingExpressionImpl;
 import place.sita.tflang.filteringexpression.impl.NotExpressionImpl;

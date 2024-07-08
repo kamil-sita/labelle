@@ -1,6 +1,6 @@
 package place.sita.tflang.filteringexpression.impl;
 
-import place.sita.tflang.filteringexpression.InTupleExpression;
+import place.sita.tflang.filteringexpression.fillteringexpression.InTupleExpression;
 
 import java.util.List;
 

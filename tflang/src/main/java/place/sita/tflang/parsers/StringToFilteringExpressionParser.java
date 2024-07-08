@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import place.sita.tflang.TFLangLexer;
 import place.sita.tflang.TFLangParser;
-import place.sita.tflang.filteringexpression.FilteringExpression;
+import place.sita.tflang.filteringexpression.fillteringexpression.FilteringExpression;
 import place.sita.tflang.filteringexpression.parsing.TFlangFilteringExpressionParser;
 
 public class StringToFilteringExpressionParser {

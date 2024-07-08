@@ -1,7 +1,7 @@
 package place.sita.tflang.filteringexpression.impl;
 
-import place.sita.tflang.filteringexpression.FilteringExpression;
-import place.sita.tflang.filteringexpression.OrExpression;
+import place.sita.tflang.filteringexpression.fillteringexpression.FilteringExpression;
+import place.sita.tflang.filteringexpression.fillteringexpression.OrExpression;
 
 import java.util.List;
 

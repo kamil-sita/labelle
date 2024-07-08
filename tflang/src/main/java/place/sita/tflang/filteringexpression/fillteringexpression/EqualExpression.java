@@ -1,4 +1,4 @@
-package place.sita.tflang.filteringexpression;
+package place.sita.tflang.filteringexpression.fillteringexpression;
 
 public non-sealed interface EqualExpression extends FilteringExpression {
 
