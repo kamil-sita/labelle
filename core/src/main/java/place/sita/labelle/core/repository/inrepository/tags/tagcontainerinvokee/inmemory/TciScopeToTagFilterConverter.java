@@ -52,12 +52,6 @@ public class TciScopeToTagFilterConverter extends TciScopeBaseVisitor<TagFilter>
 	}
 
 	@Override
-	protected TagFilter visitTciScopeCategoryTagEqual(TciScopeCategoryTagEqual tciScopeCategoryTagEqual) {
-		return tag -> tciScopeCategoryTagEqual.tag().category().equals(tag.category())
-			&& tciScopeCategoryTagEqual.tag().tag().equals(tag.tag());
-	}
-
-	@Override
 	protected TagFilter visitTciScopeCategoryTagIn(TciScopeCategoryTagIn tciScopeCategoryTagIn) {
 		Set<Tag> in = new HashSet<>(tciScopeCategoryTagIn.in());
 		return tag -> in.contains(tag);

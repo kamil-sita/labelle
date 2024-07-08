@@ -11,7 +11,6 @@ public abstract class TciScopeBaseVisitor<T> {
 			case TciScopeCategoryEqual tciScopeCategoryEqual -> visitTciScopeCategoryEqual(tciScopeCategoryEqual);
 			case TciScopeCategoryIn tciScopeCategoryIn -> visitTciScopeCategoryIn(tciScopeCategoryIn);
 			case TciScopeCategoryLike tciScopeCategoryLike -> visitTciScopeCategoryLike(tciScopeCategoryLike);
-			case TciScopeCategoryTagEqual tciScopeCategoryTagEqual -> visitTciScopeCategoryTagEqual(tciScopeCategoryTagEqual);
 			case TciScopeCategoryTagIn tciScopeCategoryTagIn -> visitTciScopeCategoryTagIn(tciScopeCategoryTagIn);
 			case TciScopeNot tciScopeNot -> visitTciScopeNot(tciScopeNot);
 			case TciScopeOr tciScopeOr -> visitTciScopeOr(tciScopeOr);
@@ -30,8 +29,6 @@ public abstract class TciScopeBaseVisitor<T> {
 	protected abstract T visitTciScopeCategoryIn(TciScopeCategoryIn tciScopeCategoryIn);
 
 	protected abstract T visitTciScopeCategoryLike(TciScopeCategoryLike tciScopeCategoryLike);
-
-	protected abstract T visitTciScopeCategoryTagEqual(TciScopeCategoryTagEqual tciScopeCategoryTagEqual);
 
 	protected abstract T visitTciScopeCategoryTagIn(TciScopeCategoryTagIn tciScopeCategoryTagIn);
 

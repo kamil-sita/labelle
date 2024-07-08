@@ -5,7 +5,6 @@ public sealed interface TciScope permits
 	TciScopeCategoryEqual,
 	TciScopeCategoryIn,
 	TciScopeCategoryLike,
-	TciScopeCategoryTagEqual,
 	TciScopeCategoryTagIn,
 	TciScopeNot,
 	TciScopeOr,
