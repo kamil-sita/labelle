@@ -1,6 +1,6 @@
 # Labelle
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle)[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle)
 
 This is a **WORK IN PROGRESS** project, that aims to provide a framework application for labelling, tagging and categorizing images, with special support for processes that can consist of several steps.
 
@@ -27,7 +27,7 @@ Later, other databases might be supported (especially SQLite).
 
 Labelle has some integration tests, and pseudo E2E using TestFX. Coverage report and analysis is published on SonarCloud as below:
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle)[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=coverage)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle) [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=kamil-sita_labelle&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=kamil-sita_labelle)
 
 ## TFLang
 
