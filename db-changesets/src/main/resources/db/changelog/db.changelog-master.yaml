@@ -53,3 +53,5 @@ databaseChangeLog:
       file: db/changelog/changelogs/026-add-parent-child-image-view.yml
   - include:
       file: db/changelog/changelogs/027-add-tag-delta-view.yml
+  - include:
+      file: db/changelog/changelogs/028-add-tag-translation.yml

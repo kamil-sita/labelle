@@ -28,6 +28,7 @@ import place.sita.labelle.jooq.tables.TagDelta;
 import place.sita.labelle.jooq.tables.TagDeltaCalc;
 import place.sita.labelle.jooq.tables.TagImage;
 import place.sita.labelle.jooq.tables.TagSrc;
+import place.sita.labelle.jooq.tables.TagTranslation;
 import place.sita.labelle.jooq.tables.Task;
 import place.sita.labelle.jooq.tables.TaskConfig;
 import place.sita.labelle.jooq.tables.TaskDependencies;
@@ -135,6 +136,11 @@ public class Public extends SchemaImpl {
     public final TagSrc TAG_SRC = TagSrc.TAG_SRC;
 
     /**
+     * The table <code>public.tag_translation</code>.
+     */
+    public final TagTranslation TAG_TRANSLATION = TagTranslation.TAG_TRANSLATION;
+
+    /**
      * The table <code>public.task</code>.
      */
     public final Task TASK = Task.TASK;
@@ -197,6 +203,7 @@ public class Public extends SchemaImpl {
             TagDeltaCalc.TAG_DELTA_CALC,
             TagImage.TAG_IMAGE,
             TagSrc.TAG_SRC,
+            TagTranslation.TAG_TRANSLATION,
             Task.TASK,
             TaskConfig.TASK_CONFIG,
             TaskDependencies.TASK_DEPENDENCIES,

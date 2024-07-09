@@ -21,6 +21,7 @@ import place.sita.labelle.jooq.tables.TagDelta;
 import place.sita.labelle.jooq.tables.TagDeltaCalc;
 import place.sita.labelle.jooq.tables.TagImage;
 import place.sita.labelle.jooq.tables.TagSrc;
+import place.sita.labelle.jooq.tables.TagTranslation;
 import place.sita.labelle.jooq.tables.Task;
 import place.sita.labelle.jooq.tables.TaskConfig;
 import place.sita.labelle.jooq.tables.TaskDependencies;
@@ -119,6 +120,11 @@ public class Tables {
      * The table <code>public.tag_src</code>.
      */
     public static final TagSrc TAG_SRC = TagSrc.TAG_SRC;
+
+    /**
+     * The table <code>public.tag_translation</code>.
+     */
+    public static final TagTranslation TAG_TRANSLATION = TagTranslation.TAG_TRANSLATION;
 
     /**
      * The table <code>public.task</code>.

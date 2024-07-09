@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0028-01
+      author: kamil-sita
+      changes:
+        - createTable:
+            tableName: tag_translation
+            columns:
+              - column:
+                  name: repository_id
+                  type: UUID
+                  constraints:
+                      primaryKey: true
+                      references: repository(id)
+                      foreignKeyName: fk_tag_translation_repository_id
+              - column:
+                  name: tag_level_translation
+                  type: TEXT
+              - column:
+                  name: tags_level_translation
+                  type: TEXT
+  - changeSet:
+      id: 0028-02
+      author: kamil-sita
+      changes:
+        - addColumn:
+            tableName: tag_translation
+            columns:
+              - column:
+                  name: validation
+                  type: integer
