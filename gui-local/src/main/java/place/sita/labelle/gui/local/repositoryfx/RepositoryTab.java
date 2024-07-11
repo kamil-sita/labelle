@@ -319,7 +319,7 @@ public class RepositoryTab implements MainMenuTab {
         String categoryText = tagCategoryTextField.getText();
         String tagText = tagTagTextField.getText();
         Threading.onSeparateThread(toolkit -> {
-            inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), categoryText, tagText);
+            inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), new Tag(categoryText, tagText));
             toolkit.onFxThread(() -> {
                 tagsTableData.add(new Tag(categoryText, tagText));
             });

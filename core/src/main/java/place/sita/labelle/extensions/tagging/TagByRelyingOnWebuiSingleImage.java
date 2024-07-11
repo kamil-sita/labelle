@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
@@ -125,12 +126,12 @@ public class TagByRelyingOnWebuiSingleImage implements TaskType<TagByRelyingOnWe
 		List<String> tags = new ArrayList<>();
 		if (tagger.equals("clip")) {
 			ctx.log("Got description: " + resp.caption);
-			repositoryApi.getInRepositoryService().addTag(imageId, null, tagger, resp.caption);
+			repositoryApi.getInRepositoryService().addTag(imageId, null, new Tag(tagger, resp.caption));
 			tags.add(resp.caption);
 		} else {
 			Arrays.stream(resp.caption.split(", ")).forEach(tag -> {
 				ctx.log("Adding a tag: " + tag);
-				repositoryApi.getInRepositoryService().addTag(imageId, null, tagger, tag);
+				repositoryApi.getInRepositoryService().addTag(imageId, null, new Tag(tagger, tag));
 				tags.add(tag);
 			});
 		}
