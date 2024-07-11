@@ -52,11 +52,11 @@ public class PersistableImagesTags {
 
 	public Set<ImageTag> imageTags() {
 		return tags.entrySet().stream()
-			.flatMap(entry -> entry.getValue().stream().map(tagValue -> new ImageTag(entry.getKey(), tagValue.tag(), tagValue.category())))
+			.flatMap(entry -> entry.getValue().stream().map(tagValue -> new ImageTag(entry.getKey(), tagValue.category(), tagValue.tag())))
 			.collect(Collectors.toSet());
 	}
 
-	public record ImageTag(UUID imageId, String tag, String category) {
+	private record ImageTag(UUID imageId, String category, String tag) {
 
 	}
 
