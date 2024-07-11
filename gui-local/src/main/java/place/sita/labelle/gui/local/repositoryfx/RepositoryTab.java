@@ -238,7 +238,7 @@ public class RepositoryTab implements MainMenuTab {
         tagXColumn.setCellFactory(cb -> {
             return new ButtonCell<>("X", tr -> {
                 Threading.onSeparateThread(toolkit -> {
-                   inRepositoryService.removeTag(selectedImage.id(), selectedRepository.id(), tr.tag(), tr.category());
+                   inRepositoryService.removeTag(selectedImage.id(), selectedRepository.id(), tr);
                    toolkit.onFxThread(() -> {
                        tagsTableData.remove(tr);
                    });
@@ -319,7 +319,7 @@ public class RepositoryTab implements MainMenuTab {
         String categoryText = tagCategoryTextField.getText();
         String tagText = tagTagTextField.getText();
         Threading.onSeparateThread(toolkit -> {
-            inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), tagText, categoryText);
+            inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), categoryText, tagText);
             toolkit.onFxThread(() -> {
                 tagsTableData.add(new Tag(categoryText, tagText));
             });

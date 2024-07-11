@@ -169,23 +169,28 @@ public class TagRepository {
 	}
 
 	@Transactional
-	public void addTag(UUID imageId, @Nullable UUID repositoryId, String tag, String category) {
+	public void addTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(repositoryId);
-		persistableImagesTags.addTag(imageId, tag, category);
+		persistableImagesTags.addTag(imageId, tag);
 		addTags(persistableImagesTags);
 	}
 
+	@Deprecated
+	@Transactional
+	public void addTag(UUID imageId, @Nullable UUID repositoryId, String category, String tag) {
+		addTag(imageId, repositoryId, new Tag(category, tag));
+	}
 
 	@Transactional
-	public void deleteTag(UUID imageId, @Nullable UUID repositoryId, String tag, String category) {
-		UUID tagId = getTagId(imageId, repositoryId, tag, category);
+	public void deleteTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
+		UUID tagId = getTagId(imageId, repositoryId, tag.category(), tag.tag());
 
 		dslContext.deleteFrom(Tables.TAG_IMAGE)
 			.where(Tables.TAG_IMAGE.TAG_ID.eq(tagId).and(Tables.TAG_IMAGE.IMAGE_ID.eq(imageId)))
 			.execute();
 	}
 
-	private UUID getTagId(UUID imageId, @Nullable UUID repositoryId, String tag, String category) {
+	private UUID getTagId(UUID imageId, @Nullable UUID repositoryId, String category, String tag) {
 		UUID actualRepositoryId = resolveRepositoryId(imageId, repositoryId);
 		UUID categoryId = getCategoryId(actualRepositoryId, category);
 		return getTagId(categoryId, tag);

@@ -53,7 +53,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 		Ids parentIds = inRepositoryService.getIds(imageId);
-		inRepositoryService.addTag(imageId, null, "Some tag", "Some category");
+		inRepositoryService.addTag(imageId, null, "Some category", "Some tag");
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
@@ -87,12 +87,12 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository firstParentRepo = repositoryService.addRepository("First parent repo");
 		UUID firstParentImageId = inRepositoryService.addEmptySyntheticImage(firstParentRepo.id());
-		inRepositoryService.addTag(firstParentImageId, null, "First tag", "First category");
+		inRepositoryService.addTag(firstParentImageId, null, "First category", "First tag");
 		inRepositoryService.setPersistentId(firstParentImageId, "persistent ID");
 
 		Repository secondParentRepo = repositoryService.addRepository("Second parent repo");
 		UUID secondParentImageId = inRepositoryService.addEmptySyntheticImage(secondParentRepo.id());
-		inRepositoryService.addTag(secondParentImageId, null, "Second tag", "Second category");
+		inRepositoryService.addTag(secondParentImageId, null, "Second category", "Second tag");
 		inRepositoryService.setPersistentId(secondParentImageId, "persistent ID");
 
 		// when
@@ -127,7 +127,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, "Some tag", "Some category");
+		inRepositoryService.addTag(imageId, null, "Some category", "Some tag");
 		inRepositoryService.setVisibility(imageId, false);
 
 		// when

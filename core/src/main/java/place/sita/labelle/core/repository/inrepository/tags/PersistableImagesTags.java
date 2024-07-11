@@ -20,8 +20,12 @@ public class PersistableImagesTags {
 		this.repositoryId = null;
 	}
 
-	public void addTag(UUID imageId, String tag, String category) {
-		tags.computeIfAbsent(imageId, k -> new LinkedHashSet<>()).add(new Tag(category, tag));
+	public void addTag(UUID imageId, String category, String tag) {
+		addTag(imageId, new Tag(category, tag));
+	}
+
+	public void addTag(UUID imageId, Tag tag) {
+		tags.computeIfAbsent(imageId, k -> new LinkedHashSet<>()).add(tag);
 	}
 
 	public UUID repoId() {

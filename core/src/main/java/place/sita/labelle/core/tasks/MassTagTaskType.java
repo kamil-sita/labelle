@@ -39,7 +39,7 @@ public class MassTagTaskType implements TaskType<MassTagTaskType.Config, Reposit
 		try (CloseableIterator<ImageResponse> images = inRepositoryService.images().process().filterByRepository(parameter.repositoryId()).getIterator()) {
 			images.forEachRemaining(ir -> {
 				image.add(ir.id());
-				persistableImagesTags.addTag(ir.id(), parameter.tag, parameter.category);
+				persistableImagesTags.addTag(ir.id(), parameter.category, parameter.tag);
 			});
 		}
 		inRepositoryService.addTags(persistableImagesTags);

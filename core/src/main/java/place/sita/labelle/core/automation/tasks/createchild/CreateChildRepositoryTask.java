@@ -65,7 +65,7 @@ public class CreateChildRepositoryTask implements TaskType<CreateChildRepository
 			for (UUID parentImageId : parentImageIds) {
 				List<Tag> tagValues = tags.get(parentImageId);
 				for (Tag tagValue : tagValues) {
-					persistableImagesTags.addTag(newImageId, tagValue.tag(), tagValue.category());
+					persistableImagesTags.addTag(newImageId, tagValue);
 				}
 			}
 		}

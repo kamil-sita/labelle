@@ -1,5 +1,6 @@
 package place.sita.labelle.core.repository.inrepository;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -285,35 +286,38 @@ public class InRepositoryService {
     }
 
     @Transactional
-    public void addTag(UUID imageId, @Nullable UUID repositoryId, String tag, String category) {
-        tagRepository.addTag(imageId, repositoryId, tag, category);
+    public void addTag(UUID imageId, @Nullable UUID repositoryId, String category, String tag) {
+        tagRepository.addTag(imageId, repositoryId, category, tag);
     }
 
     @Transactional
-    public void removeTag(UUID imageId, @Nullable UUID repositoryId, String tag, String category) {
-        tagRepository.deleteTag(imageId, repositoryId, tag, category);
+    public void addTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
+        tagRepository.addTag(imageId, repositoryId, tag);
+    }
+
+    @Transactional
+    public void removeTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
+        tagRepository.deleteTag(imageId, repositoryId, tag);
     }
 
     @Transactional
     public void replaceTag(UUID imageId, @Nullable UUID repositoryId, String oldTag, String oldCategory, String newTag, String newCategory) {
-        removeTag(imageId, repositoryId, oldTag, oldCategory);
-        addTag(imageId, repositoryId, newTag, newCategory);
+        throw new NotImplementedException();
     }
 
     @Transactional
     public void addMarker(UUID imageId, String tag, String category, boolean shared) {
-
+        throw new NotImplementedException();
     }
 
     @Transactional
     public void removeMarker(UUID imageId, String tag, String category) {
-
+        throw new NotImplementedException();
     }
 
     @Transactional
     public void replaceMarker(UUID imageId, String oldTag, String oldCategory, String newTag, String newCategory, boolean shared) {
-        removeMarker(imageId, oldTag, oldCategory);
-        addMarker(imageId, newTag, newCategory, shared);
+        throw new NotImplementedException();
     }
 
     @Transactional(readOnly = true)

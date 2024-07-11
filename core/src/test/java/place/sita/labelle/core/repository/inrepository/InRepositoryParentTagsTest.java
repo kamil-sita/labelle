@@ -60,27 +60,27 @@ public class InRepositoryParentTagsTest extends TestContainersTest {
 
 		var parentRepo1Image = inRepositoryService.addEmptySyntheticImage(parentRepo1.id());
 		inRepositoryService.setPersistentId(parentRepo1Image, "PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo1Image, null, "TAG1", "CATEGORY1");
-		inRepositoryService.addTag(parentRepo1Image, null, "TAG2", "CATEGORY2");
+		inRepositoryService.addTag(parentRepo1Image, null, "CATEGORY1", "TAG1");
+		inRepositoryService.addTag(parentRepo1Image, null, "CATEGORY2", "TAG2");
 		var parentRepo2Image = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
 		inRepositoryService.setPersistentId(parentRepo2Image, "PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo2Image, null, "TAG3", "CATEGORY3");
-		inRepositoryService.addTag(parentRepo2Image, null, "TAG1", "CATEGORY1");
+		inRepositoryService.addTag(parentRepo2Image, null, "CATEGORY3", "TAG3");
+		inRepositoryService.addTag(parentRepo2Image, null, "CATEGORY1", "TAG1");
 		var parentRepo3Image = inRepositoryService.addEmptySyntheticImage(parentRepo3.id());
 		inRepositoryService.setPersistentId(parentRepo3Image, "PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo3Image, null, "TAG4", "CATEGORY4");
+		inRepositoryService.addTag(parentRepo3Image, null, "CATEGORY4", "TAG4");
 		var unrelatedRepoImage = inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());
 		inRepositoryService.setPersistentId(unrelatedRepoImage, "PERSISTENT_ID");
-		inRepositoryService.addTag(unrelatedRepoImage, null, "TAG5", "CATEGORY5");
+		inRepositoryService.addTag(unrelatedRepoImage, null, "CATEGORY5", "TAG5");
 
 		var parentRepo2UnrelatedImage = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
 		inRepositoryService.setPersistentId(parentRepo2UnrelatedImage, "UNRELATED_PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo2UnrelatedImage, null, "TAG6", "CATEGORY6");
+		inRepositoryService.addTag(parentRepo2UnrelatedImage, null, "CATEGORY6", "TAG6");
 
 		var childRepoImage = inRepositoryService.addEmptySyntheticImage(childRepo.id());
 		inRepositoryService.setParentPersistentId(childRepoImage, "PERSISTENT_ID");
 		inRepositoryService.setPersistentId(childRepoImage, "CHILD_PERSISTENT_ID");
-		inRepositoryService.addTag(childRepoImage, null, "TAG7", "CATEGORY7");
+		inRepositoryService.addTag(childRepoImage, null, "CATEGORY7", "TAG7");
 
 		// when
 		Set<Tag> parentTags = inRepositoryService.parentTags(childRepoImage);

@@ -48,7 +48,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, "Some tag", "Some category");
+		inRepositoryService.addTag(imageId, null, "Some category", "Some tag");
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(

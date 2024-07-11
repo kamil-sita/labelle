@@ -47,7 +47,7 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
+		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -63,8 +63,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
-		tagRepository.addTag(imageId, repo.id(), "Some tag 2", "Some category 2");
+		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
+		tagRepository.addTag(imageId, repo.id(), "Some category 2", "Some tag 2");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -82,8 +82,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
-		tagRepository.addTag(imageId, repo.id(), "Some tag 2", "Some category");
+		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
+		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag 2");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -101,8 +101,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
+		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
+		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -116,10 +116,10 @@ public class TagRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
+		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
 
 		// when
-		tagRepository.deleteTag(imageId, null, "Some tag", "Some category");
+		tagRepository.deleteTag(imageId, null, new Tag("Some category", "Some tag"));
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -134,8 +134,8 @@ public class TagRepositoryTest extends TestContainersTest {
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
-		persistableImagesTags.addTag(imageId, "Some tag", "Some category");
-		persistableImagesTags.addTag(imageId, "Some tag 2", "Some category 2");
+		persistableImagesTags.addTag(imageId, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId, "Some category 2", "Some tag 2");
 		tagRepository.addTags(persistableImagesTags);
 
 		// then
@@ -153,8 +153,8 @@ public class TagRepositoryTest extends TestContainersTest {
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(repo.id());
-		persistableImagesTags.addTag(imageId, "Some tag", "Some category");
-		persistableImagesTags.addTag(imageId, "Some tag 2", "Some category 2");
+		persistableImagesTags.addTag(imageId, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId, "Some category 2", "Some tag 2");
 		tagRepository.addTags(persistableImagesTags);
 
 		// then
