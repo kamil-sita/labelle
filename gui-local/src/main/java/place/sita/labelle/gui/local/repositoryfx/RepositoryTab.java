@@ -321,7 +321,7 @@ public class RepositoryTab implements MainMenuTab {
         Threading.onSeparateThread(toolkit -> {
             inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), tagText, categoryText);
             toolkit.onFxThread(() -> {
-                tagsTableData.add(new Tag(tagText, categoryText));
+                tagsTableData.add(new Tag(categoryText, tagText));
             });
         });
     }
