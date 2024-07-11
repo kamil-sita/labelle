@@ -9,7 +9,11 @@ This is a **WORK IN PROGRESS** project, that aims to provide a framework applica
 Labelle's architecture is modular (a modular monolith), and consists of several modules, that might be split to different
 projects (although, ultimately, it's unlikely):
 
-1. db-changesets, db-codegen, dd-precodegen, db-spring: these modules are responsible for database schema management and generation of code to support it. JOOQ and Liquibase are used here.
+1. db-changesets, db-codegen, db-pre-codegen, db-spring: these modules are responsible for database schema management and generation of code to support it. JOOQ and Liquibase are used here:
+   1. db-changesets: contains Liquibase changesets
+   2. db-pre-codegen: updates build database using Liquibase to prepare for JOOQ codegen
+   3. db-codegen: generates JOOQ code based on build database
+   4. db-spring: allows updating actual database without starting the app
 2. module-fx, module-fx-spring-boot: support modules that help modularize JavaFX screens, provide additional utilities
 3. TFLang is a limited in scope, simplified querying and modification language used in Labelle
 4. core-common: common classes used in 'common' modules
