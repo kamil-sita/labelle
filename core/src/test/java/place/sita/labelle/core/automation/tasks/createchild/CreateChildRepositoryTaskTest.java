@@ -8,7 +8,6 @@ import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.repository.inrepository.Ids;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
-import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.jooq.Tables;
@@ -24,9 +23,6 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 
 	@Autowired
 	private DSLContext context;
-
-	@Autowired
-	private TagRepository tagRepository;
 
 	@Autowired
 	private RepositoryService repositoryService;
@@ -119,8 +115,8 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		assertThat(images).hasSize(1);
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(2);
-		assertThat(tags).contains(new Tag("First tag", "First category"));
-		assertThat(tags).contains(new Tag("Second tag", "Second category"));
+		assertThat(tags).contains(new Tag("First category", "First tag"));
+		assertThat(tags).contains(new Tag("Second category", "Second tag"));
 		Ids imageIds = inRepositoryService.getIds(images.get(0).id());
 		assertThat(imageIds.persistentId()).isEqualTo("persistent ID");
 		assertThat(imageIds.parentPersistentId()).isEqualTo("persistent ID");

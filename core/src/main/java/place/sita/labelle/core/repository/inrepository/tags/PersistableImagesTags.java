@@ -56,7 +56,7 @@ public class PersistableImagesTags {
 			.collect(Collectors.toSet());
 	}
 
-	private record ImageTag(UUID imageId, String category, String tag) {
+	public record ImageTag(UUID imageId, String category, String tag) {
 
 	}
 
