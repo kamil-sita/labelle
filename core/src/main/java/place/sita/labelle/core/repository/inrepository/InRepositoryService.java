@@ -279,10 +279,7 @@ public class InRepositoryService {
     }
 
     public List<Tag> getTags(UUID imageId) {
-        return tagRepository.getTags(imageId)
-            .stream()
-            .map(tv -> new Tag(tv.tag(), tv.category()))
-            .toList();
+        return tagRepository.getTags(imageId);
     }
 
     @Transactional

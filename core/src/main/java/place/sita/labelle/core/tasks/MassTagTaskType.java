@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.magicscheduler.TaskContext;
@@ -39,7 +40,7 @@ public class MassTagTaskType implements TaskType<MassTagTaskType.Config, Reposit
 		try (CloseableIterator<ImageResponse> images = inRepositoryService.images().process().filterByRepository(parameter.repositoryId()).getIterator()) {
 			images.forEachRemaining(ir -> {
 				image.add(ir.id());
-				persistableImagesTags.addTag(ir.id(), parameter.category, parameter.tag);
+				persistableImagesTags.addTag(ir.id(), new Tag(parameter.category, parameter.tag));
 			});
 		}
 		inRepositoryService.addTags(persistableImagesTags);

@@ -136,11 +136,11 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 		assertThat(results.exception()).isNull();
 		List<Tag> tags1 = inRepositoryService.getTags(firstImage);
 		assertThat(tags1).hasSize(2);
-		assertThat(tags1).contains(new Tag("tag", "category"));
-		assertThat(tags1).contains(new Tag("some other tag", "category"));
+		assertThat(tags1).contains(new Tag("category", "tag"));
+		assertThat(tags1).contains(new Tag("category", "some other tag"));
 		List<Tag> tags2 = inRepositoryService.getTags(secondImage);
 		assertThat(tags2).hasSize(2);
-		assertThat(tags2).contains(new Tag("another tag", "of different category"));
-		assertThat(tags2).contains(new Tag("tag", "category"));
+		assertThat(tags2).contains(new Tag("of different category", "another tag"));
+		assertThat(tags2).contains(new Tag("category", "tag"));
 	}
 }
