@@ -35,7 +35,7 @@ public class RepositoryActions {
 	}
 
 	public static TextField tagTextField() {
-		return FxAssert.assertContext().getNodeFinder().lookup("#tagEntryTextField").query();
+		return FxAssert.assertContext().getNodeFinder().lookup("#tagTagTextField").query();
 	}
 
 	public static Button addTagButton() {
