@@ -53,9 +53,9 @@ public class Marker extends TableImpl<MarkerRecord> {
     public final TableField<MarkerRecord, UUID> IMAGE_ID = createField(DSL.name("image_id"), SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>public.marker.family</code>.
+     * The column <code>public.marker.category</code>.
      */
-    public final TableField<MarkerRecord, String> FAMILY = createField(DSL.name("family"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<MarkerRecord, String> CATEGORY = createField(DSL.name("category"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.marker.value</code>.

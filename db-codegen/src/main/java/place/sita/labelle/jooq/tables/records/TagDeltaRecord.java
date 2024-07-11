@@ -51,16 +51,16 @@ public class TagDeltaRecord extends TableRecordImpl<TagDeltaRecord> implements R
     }
 
     /**
-     * Setter for <code>public.tag_delta.family</code>.
+     * Setter for <code>public.tag_delta.category</code>.
      */
-    public void setFamily(String value) {
+    public void setCategory(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.tag_delta.family</code>.
+     * Getter for <code>public.tag_delta.category</code>.
      */
-    public String getFamily() {
+    public String getCategory() {
         return (String) get(2);
     }
 
@@ -104,7 +104,7 @@ public class TagDeltaRecord extends TableRecordImpl<TagDeltaRecord> implements R
 
     @Override
     public Field<String> field3() {
-        return TagDelta.TAG_DELTA.FAMILY;
+        return TagDelta.TAG_DELTA.CATEGORY;
     }
 
     @Override
@@ -124,7 +124,7 @@ public class TagDeltaRecord extends TableRecordImpl<TagDeltaRecord> implements R
 
     @Override
     public String component3() {
-        return getFamily();
+        return getCategory();
     }
 
     @Override
@@ -144,7 +144,7 @@ public class TagDeltaRecord extends TableRecordImpl<TagDeltaRecord> implements R
 
     @Override
     public String value3() {
-        return getFamily();
+        return getCategory();
     }
 
     @Override
@@ -166,7 +166,7 @@ public class TagDeltaRecord extends TableRecordImpl<TagDeltaRecord> implements R
 
     @Override
     public TagDeltaRecord value3(String value) {
-        setFamily(value);
+        setCategory(value);
         return this;
     }
 
@@ -199,12 +199,12 @@ public class TagDeltaRecord extends TableRecordImpl<TagDeltaRecord> implements R
     /**
      * Create a detached, initialised TagDeltaRecord
      */
-    public TagDeltaRecord(UUID imageId, Boolean adds, String family, String tag) {
+    public TagDeltaRecord(UUID imageId, Boolean adds, String category, String tag) {
         super(TagDelta.TAG_DELTA);
 
         setImageId(imageId);
         setAdds(adds);
-        setFamily(family);
+        setCategory(category);
         setTag(tag);
     }
 }

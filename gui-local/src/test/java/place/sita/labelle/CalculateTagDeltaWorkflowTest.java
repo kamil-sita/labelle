@@ -142,8 +142,8 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 
 		robot.sleep(1, TimeUnit.SECONDS);
 		robot.clickOn(RepositoryActions.imageInPaginator(0));
-		robot.clickOn(RepositoryActions.familyTextField());
-		robot.write("Test Family");
+		robot.clickOn(RepositoryActions.categoryTextField());
+		robot.write("Test Category");
 		robot.clickOn(RepositoryActions.tagTextField());
 		robot.write("Test Tag");
 		robot.clickOn(RepositoryActions.addTagButton());
@@ -188,8 +188,8 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 		robot.sleep(1, TimeUnit.SECONDS);
 		robot.clickOn(RepositoryActions.removeTag(0));
 
-		robot.clickOn(RepositoryActions.familyTextField());
-		robot.write("Test Family 2");
+		robot.clickOn(RepositoryActions.categoryTextField());
+		robot.write("Test Category 2");
 		robot.clickOn(RepositoryActions.tagTextField());
 		robot.write("Test Tag 2");
 		robot.clickOn(RepositoryActions.addTagButton());
@@ -198,8 +198,8 @@ public class CalculateTagDeltaWorkflowTest extends GuiTest {
 
 		List<TagDeltaResponse> deltas = inRepositoryService.tagDeltas().getAll();
 		assertThat(deltas).hasSize(2);
-		assertThat(deltas).contains(new TagDeltaResponse("Test Family", "Test Tag", TagDeltaType.REMOVE));
-		assertThat(deltas).contains(new TagDeltaResponse("Test Family 2", "Test Tag 2", TagDeltaType.ADD));
+		assertThat(deltas).contains(new TagDeltaResponse("Test Category", "Test Tag", TagDeltaType.REMOVE));
+		assertThat(deltas).contains(new TagDeltaResponse("Test Category 2", "Test Tag 2", TagDeltaType.ADD));
 	}
 
 }

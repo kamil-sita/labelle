@@ -24,10 +24,10 @@ import place.sita.labelle.jooq.tables.Repository;
 import place.sita.labelle.jooq.tables.RepositoryRelationship;
 import place.sita.labelle.jooq.tables.Root;
 import place.sita.labelle.jooq.tables.Tag;
+import place.sita.labelle.jooq.tables.TagCategory;
 import place.sita.labelle.jooq.tables.TagDelta;
 import place.sita.labelle.jooq.tables.TagDeltaCalc;
 import place.sita.labelle.jooq.tables.TagImage;
-import place.sita.labelle.jooq.tables.TagSrc;
 import place.sita.labelle.jooq.tables.TagTranslation;
 import place.sita.labelle.jooq.tables.Task;
 import place.sita.labelle.jooq.tables.TaskConfig;
@@ -116,6 +116,11 @@ public class Public extends SchemaImpl {
     public final Tag TAG = Tag.TAG;
 
     /**
+     * The table <code>public.tag_category</code>.
+     */
+    public final TagCategory TAG_CATEGORY = TagCategory.TAG_CATEGORY;
+
+    /**
      * The table <code>public.tag_delta</code>.
      */
     public final TagDelta TAG_DELTA = TagDelta.TAG_DELTA;
@@ -129,11 +134,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.tag_image</code>.
      */
     public final TagImage TAG_IMAGE = TagImage.TAG_IMAGE;
-
-    /**
-     * The table <code>public.tag_src</code>.
-     */
-    public final TagSrc TAG_SRC = TagSrc.TAG_SRC;
 
     /**
      * The table <code>public.tag_translation</code>.
@@ -199,10 +199,10 @@ public class Public extends SchemaImpl {
             RepositoryRelationship.REPOSITORY_RELATIONSHIP,
             Root.ROOT,
             Tag.TAG,
+            TagCategory.TAG_CATEGORY,
             TagDelta.TAG_DELTA,
             TagDeltaCalc.TAG_DELTA_CALC,
             TagImage.TAG_IMAGE,
-            TagSrc.TAG_SRC,
             TagTranslation.TAG_TRANSLATION,
             Task.TASK,
             TaskConfig.TASK_CONFIG,

@@ -35,7 +35,7 @@ public class StatisticsServiceTest extends TestContainersTest {
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
@@ -64,15 +64,15 @@ public class StatisticsServiceTest extends TestContainersTest {
 		// given
 		var repository = repositoryService.addRepository("test");
 		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image, null, "tag", "family");
+		inRepositoryService.addTag(image, null, "tag", "category");
 
 		// when
 		List<TagWithCountResponse> tagCount = statisticsService.getTagCount(repository.id());
 
 		// then
 		assertThat(tagCount).hasSize(1);
-		assertThat(tagCount.get(0).tag().value()).isEqualTo("tag");
-		assertThat(tagCount.get(0).tag().family()).isEqualTo("family");
+		assertThat(tagCount.get(0).tag().tag()).isEqualTo("tag");
+		assertThat(tagCount.get(0).tag().category()).isEqualTo("category");
 		assertThat(tagCount.get(0).count()).isEqualTo(1);
 	}
 
@@ -81,21 +81,21 @@ public class StatisticsServiceTest extends TestContainersTest {
 		// given
 		var repository = repositoryService.addRepository("test");
 		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image, null, "tag", "family");
-		inRepositoryService.addTag(image, null, "tag2", "family");
+		inRepositoryService.addTag(image, null, "tag", "category");
+		inRepositoryService.addTag(image, null, "tag2", "category");
 		var image2 = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image2, null, "tag", "family");
+		inRepositoryService.addTag(image2, null, "tag", "category");
 
 		// when
 		List<TagWithCountResponse> tagCount = statisticsService.getTagCount(repository.id());
 
 		// then
 		assertThat(tagCount).hasSize(2);
-		assertThat(tagCount.get(0).tag().value()).isEqualTo("tag");
-		assertThat(tagCount.get(0).tag().family()).isEqualTo("family");
+		assertThat(tagCount.get(0).tag().tag()).isEqualTo("tag");
+		assertThat(tagCount.get(0).tag().category()).isEqualTo("category");
 		assertThat(tagCount.get(0).count()).isEqualTo(2);
-		assertThat(tagCount.get(1).tag().value()).isEqualTo("tag2");
-		assertThat(tagCount.get(1).tag().family()).isEqualTo("family");
+		assertThat(tagCount.get(1).tag().tag()).isEqualTo("tag2");
+		assertThat(tagCount.get(1).tag().category()).isEqualTo("category");
 		assertThat(tagCount.get(1).count()).isEqualTo(1);
 	}
 
@@ -105,7 +105,7 @@ public class StatisticsServiceTest extends TestContainersTest {
 		var repository = repositoryService.addRepository("test");
 		var repository2 = repositoryService.addRepository("test2");
 		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image, null, "tag", "family");
+		inRepositoryService.addTag(image, null, "tag", "category");
 
 		// when
 		List<TagWithCountResponse> tagCount = statisticsService.getTagCount(repository2.id());

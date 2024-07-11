@@ -12,6 +12,7 @@ import place.sita.labelle.core.repository.inrepository.delta.TagDeltaResponse;
 import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
 import place.sita.labelle.core.utils.Result3;
 import place.sita.labelle.datasource.cross.PreprocessableDataSourceWithRemoval;
@@ -276,47 +277,43 @@ public class InRepositoryService {
             .execute();
     }
 
-    public record TagResponse(String tag, String family) {
-
-    }
-
-    public List<TagResponse> getTags(UUID imageId) {
+    public List<Tag> getTags(UUID imageId) {
         return tagRepository.getTags(imageId)
             .stream()
-            .map(tv -> new TagResponse(tv.value(), tv.family()))
+            .map(tv -> new Tag(tv.tag(), tv.category()))
             .toList();
     }
 
     @Transactional
-    public void addTag(UUID imageId, @Nullable UUID repositoryId, String tag, String family) {
-        tagRepository.addTag(imageId, repositoryId, tag, family);
+    public void addTag(UUID imageId, @Nullable UUID repositoryId, String tag, String category) {
+        tagRepository.addTag(imageId, repositoryId, tag, category);
     }
 
     @Transactional
-    public void removeTag(UUID imageId, @Nullable UUID repositoryId, String tag, String family) {
-        tagRepository.deleteTag(imageId, repositoryId, tag, family);
+    public void removeTag(UUID imageId, @Nullable UUID repositoryId, String tag, String category) {
+        tagRepository.deleteTag(imageId, repositoryId, tag, category);
     }
 
     @Transactional
-    public void replaceTag(UUID imageId, @Nullable UUID repositoryId, String oldTag, String oldFamily, String newTag, String newFamily) {
-        removeTag(imageId, repositoryId, oldTag, oldFamily);
-        addTag(imageId, repositoryId, newTag, newFamily);
+    public void replaceTag(UUID imageId, @Nullable UUID repositoryId, String oldTag, String oldCategory, String newTag, String newCategory) {
+        removeTag(imageId, repositoryId, oldTag, oldCategory);
+        addTag(imageId, repositoryId, newTag, newCategory);
     }
 
     @Transactional
-    public void addMarker(UUID imageId, String tag, String family, boolean shared) {
-
-    }
-
-    @Transactional
-    public void removeMarker(UUID imageId, String tag, String family) {
+    public void addMarker(UUID imageId, String tag, String category, boolean shared) {
 
     }
 
     @Transactional
-    public void replaceMarker(UUID imageId, String oldTag, String oldFamily, String newTag, String newFamily, boolean shared) {
-        removeMarker(imageId, oldTag, oldFamily);
-        addMarker(imageId, newTag, newFamily, shared);
+    public void removeMarker(UUID imageId, String tag, String category) {
+
+    }
+
+    @Transactional
+    public void replaceMarker(UUID imageId, String oldTag, String oldCategory, String newTag, String newCategory, boolean shared) {
+        removeMarker(imageId, oldTag, oldCategory);
+        addMarker(imageId, newTag, newCategory, shared);
     }
 
     @Transactional(readOnly = true)
@@ -330,17 +327,17 @@ public class InRepositoryService {
     }
 
     @Transactional(readOnly = true)
-    public Set<TagResponse> parentTags(UUID imageId) {
+    public Set<Tag> parentTags(UUID imageId) {
         Set<UUID> parents = dslContext.select(PARENT_CHILD_IMAGE.PARENT_IMAGE_ID)
             .from(PARENT_CHILD_IMAGE)
             .where(PARENT_CHILD_IMAGE.CHILD_IMAGE_ID.eq(imageId))
             .fetchSet(PARENT_CHILD_IMAGE.PARENT_IMAGE_ID);
 
-        List<TagResponse> tags = dslContext.select(IMAGE_TAGS.TAG_VALUE, IMAGE_TAGS.TAG_FAMILY)
+        List<Tag> tags = dslContext.select(IMAGE_TAGS.TAG, IMAGE_TAGS.TAG_CATEGORY)
             .from(IMAGE_TAGS)
             .where(IMAGE_TAGS.IMAGE_ID.in(parents))
             .fetch()
-            .map(rr -> new TagResponse(rr.value1(), rr.value2()));
+            .map(rr -> new Tag(rr.value1(), rr.value2()));
 
         return new LinkedHashSet<>(tags);
     }

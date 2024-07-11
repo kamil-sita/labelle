@@ -48,7 +48,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();

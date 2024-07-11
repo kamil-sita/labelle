@@ -1,0 +1,99 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0029-01
+      author: kamil-sita
+      changes:
+        - renameColumn:
+            tableName: marker
+            oldColumnName: family
+            newColumnName: category
+        - renameColumn:
+            tableName: tag
+            oldColumnName: tag_src_id
+            newColumnName: tag_category_id
+        - renameColumn:
+            tableName: tag_delta
+            oldColumnName: family
+            newColumnName: category
+        - renameTable:
+            oldTableName: tag_src
+            newTableName: tag_category
+        - dropView:
+            viewName: tag_delta_calc
+        - dropView:
+            viewName: image_tags
+        - createView:
+            viewName: image_tags
+            selectQuery: |
+              select 
+                tag.value as tag, 
+                tag_category.value as tag_category, 
+                tag_image.image_id as image_id, 
+                repository.id as repository_id 
+              from 
+                tag, 
+                tag_image, 
+                tag_category, 
+                repository 
+              where 
+                tag.tag_category_id = tag_category.id 
+              and 
+                tag_category.repository_id = repository.id 
+              and 
+                tag_image.tag_id = tag.id
+        - createView:
+            viewName: tag_delta_calc
+            selectQuery: |
+              SELECT 
+                  delta.added AS added, 
+                  delta.category AS category, 
+                  delta.tag AS tag, 
+                  delta.image_id AS image_id
+              FROM (
+                  (
+                      SELECT 
+                          true AS added, 
+                          child.tag_category AS category, 
+                          child.tag AS tag, 
+                          child.image_id
+                      FROM 
+                          image_tags child
+                      JOIN 
+                          image child_im ON child.image_id = child_im.id
+                      WHERE 
+                          child_im.parent_reference IS NOT NULL
+                          AND NOT EXISTS (
+                              SELECT 1
+                              FROM 
+                                  image_tags parent
+                              JOIN 
+                                  parent_child_image pci ON pci.parent_image_id = parent.image_id
+                              WHERE 
+                                  pci.child_image_id = child.image_id
+                                  AND child.tag = parent.tag
+                                  AND child.tag_category = parent.tag_category
+                          )
+                  )
+                  UNION
+                  (
+                      SELECT 
+                          false AS added, 
+                          parent.tag_category AS category, 
+                          parent.tag AS tag, 
+                          pci.child_image_id AS image_id
+                      FROM 
+                          image_tags parent
+                      JOIN 
+                          parent_child_image pci ON pci.parent_image_id = parent.image_id
+                      WHERE 
+                          NOT EXISTS (
+                              SELECT 1
+                              FROM 
+                                  image_tags child
+                              WHERE 
+                                  child.image_id = pci.child_image_id
+                                  AND child.tag = parent.tag
+                                  AND child.tag_category = parent.tag_category
+                          )
+                  )
+              ) delta

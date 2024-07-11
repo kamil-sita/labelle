@@ -2,13 +2,12 @@ package place.sita.labelle.core.repository.acrossrepository;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
+import place.sita.labelle.jooq.Tables;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import place.sita.labelle.core.repository.inrepository.tags.TagValue;
-import place.sita.labelle.jooq.Tables;
 
 @Service
 public class AcrossRepositoryService {
@@ -31,12 +30,12 @@ public class AcrossRepositoryService {
 				.map(record -> new PullableImageResponse(record.get(Tables.IMAGE.ID), record.get(Tables.IMAGE.REFERENCE_ID)));
 	}
 
-	public Map<UUID, List<TagValue>> getTags(List<UUID> images) {
+	public Map<UUID, List<Tag>> getTags(List<UUID> images) {
 		// todo in AcrossRepositoryService, we maybe should consider limiting it to publicly available images?
 		return dslContext
-				.select(Tables.IMAGE_TAGS.IMAGE_ID, Tables.IMAGE_TAGS.TAG_FAMILY, Tables.IMAGE_TAGS.TAG_VALUE)
+				.select(Tables.IMAGE_TAGS.IMAGE_ID, Tables.IMAGE_TAGS.TAG_CATEGORY, Tables.IMAGE_TAGS.TAG)
 				.from(Tables.IMAGE_TAGS)
 				.where(Tables.IMAGE_TAGS.IMAGE_ID.in(images))
-				.fetchGroups(Tables.IMAGE_TAGS.IMAGE_ID, record -> new TagValue(record.get(Tables.IMAGE_TAGS.TAG_FAMILY), record.get(Tables.IMAGE_TAGS.TAG_VALUE)));
+				.fetchGroups(Tables.IMAGE_TAGS.IMAGE_ID, record -> new Tag(record.get(Tables.IMAGE_TAGS.TAG_CATEGORY), record.get(Tables.IMAGE_TAGS.TAG)));
 	}
 }

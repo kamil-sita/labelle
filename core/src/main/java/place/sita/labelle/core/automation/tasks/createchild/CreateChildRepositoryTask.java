@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.automation.tasks.AutomationTasksCommon;
 import place.sita.labelle.core.repository.acrossrepository.PullableImageResponse;
 import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
-import place.sita.labelle.core.repository.inrepository.tags.TagValue;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
@@ -44,7 +44,7 @@ public class CreateChildRepositoryTask implements TaskType<CreateChildRepository
 		return TaskResult.success(newRepoId);
 	}
 
-	private static Map<UUID, List<TagValue>> getTagsOfParents(TaskContext<RepositoryApi> taskContext, Map<String, List<UUID>> parentImagesReferences) {
+	private static Map<UUID, List<Tag>> getTagsOfParents(TaskContext<RepositoryApi> taskContext, Map<String, List<UUID>> parentImagesReferences) {
 		List<UUID> allReferencedImages = parentImagesReferences.values()
 			.stream()
 			.flatMap(Collection::stream)
@@ -54,7 +54,7 @@ public class CreateChildRepositoryTask implements TaskType<CreateChildRepository
 	}
 
 	private static void addTagsToNewImages(TaskContext<RepositoryApi> taskContext, Map<String, List<UUID>> parentImagesReferences, UUID newRepoId, Map<String, UUID> referenceToNewImageId) {
-		Map<UUID, List<TagValue>> tags = getTagsOfParents(taskContext, parentImagesReferences);
+		Map<UUID, List<Tag>> tags = getTagsOfParents(taskContext, parentImagesReferences);
 
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(newRepoId);
 
@@ -63,9 +63,9 @@ public class CreateChildRepositoryTask implements TaskType<CreateChildRepository
 			UUID newImageId = newImage.getValue();
 			List<UUID> parentImageIds = parentImagesReferences.get(newImageReference);
 			for (UUID parentImageId : parentImageIds) {
-				List<TagValue> tagValues = tags.get(parentImageId);
-				for (TagValue tagValue : tagValues) {
-					persistableImagesTags.addTag(newImageId, tagValue.value(), tagValue.family());
+				List<Tag> tagValues = tags.get(parentImageId);
+				for (Tag tagValue : tagValues) {
+					persistableImagesTags.addTag(newImageId, tagValue.tag(), tagValue.category());
 				}
 			}
 		}

@@ -59,9 +59,9 @@ public class Tag extends TableImpl<TagRecord> {
     public final TableField<TagRecord, UUID> ID = createField(DSL.name("id"), SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>public.tag.tag_src_id</code>.
+     * The column <code>public.tag.tag_category_id</code>.
      */
-    public final TableField<TagRecord, UUID> TAG_SRC_ID = createField(DSL.name("tag_src_id"), SQLDataType.UUID.nullable(false), this, "");
+    public final TableField<TagRecord, UUID> TAG_CATEGORY_ID = createField(DSL.name("tag_category_id"), SQLDataType.UUID.nullable(false), this, "");
 
     private Tag(Name alias, Table<TagRecord> aliased) {
         this(alias, aliased, null);
@@ -111,13 +111,13 @@ public class Tag extends TableImpl<TagRecord> {
         return Arrays.asList(Keys.TAG__FK_TAG_TAG_SRC_ID_3b);
     }
 
-    private transient TagSrc _tagSrc;
+    private transient TagCategory _tagCategory;
 
-    public TagSrc tagSrc() {
-        if (_tagSrc == null)
-            _tagSrc = new TagSrc(this, Keys.TAG__FK_TAG_TAG_SRC_ID_3b);
+    public TagCategory tagCategory() {
+        if (_tagCategory == null)
+            _tagCategory = new TagCategory(this, Keys.TAG__FK_TAG_TAG_SRC_ID_3b);
 
-        return _tagSrc;
+        return _tagCategory;
     }
 
     @Override

@@ -27,9 +27,9 @@ public class DeltaService {
 			.where(TagDelta.TAG_DELTA.IMAGE_ID.in(imageIds))
 			.execute();
 
-		record DeltaTagView(boolean added, String tag, String family, UUID imageId) {}
+		record DeltaTagView(boolean added, String tag, String category, UUID imageId) {}
 
-		List<DeltaTagView> tagDeltas = dslContext.select(TAG_DELTA_CALC.ADDED, TAG_DELTA_CALC.TAG, TAG_DELTA_CALC.SOURCE, TAG_DELTA_CALC.IMAGE_ID)
+		List<DeltaTagView> tagDeltas = dslContext.select(TAG_DELTA_CALC.ADDED, TAG_DELTA_CALC.TAG, TAG_DELTA_CALC.CATEGORY, TAG_DELTA_CALC.IMAGE_ID)
 			.from(TAG_DELTA_CALC)
 			.where(TAG_DELTA_CALC.IMAGE_ID.in(imageIds))
 			.fetch()
@@ -44,7 +44,7 @@ public class DeltaService {
 						.set(TagDelta.TAG_DELTA.IMAGE_ID, delta.imageId)
 						.set(TagDelta.TAG_DELTA.ADDS, delta.added)
 						.set(TagDelta.TAG_DELTA.TAG, delta.tag)
-						.set(TagDelta.TAG_DELTA.FAMILY, delta.family);
+						.set(TagDelta.TAG_DELTA.CATEGORY, delta.category);
 				})
 				.collect(Collectors.toList())
 		).execute();

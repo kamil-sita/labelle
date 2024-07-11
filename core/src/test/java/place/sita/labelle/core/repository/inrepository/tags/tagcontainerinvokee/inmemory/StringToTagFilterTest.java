@@ -1,10 +1,9 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.inmemory;
 
 import org.junit.jupiter.api.Test;
-import place.sita.labelle.core.repository.inrepository.tags.TagImpl;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class StringToTagFilterTest {
 
@@ -17,9 +16,9 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("tag1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("tag2", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("tag3", "tag3"))).isTrue();
+		assertThat(filter.filter(new Tag("tag1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("tag2", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("tag3", "tag3"))).isTrue();
 	}
 
 	@Test
@@ -31,9 +30,9 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("tag1", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("tag2", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("tag3", "tag3"))).isFalse();
+		assertThat(filter.filter(new Tag("tag1", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("tag2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("tag3", "tag3"))).isFalse();
 	}
 
 	@Test
@@ -45,12 +44,12 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("tag1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("tag2", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("tag3", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("tag1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("tag2", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("tag3", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("tag1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("tag2", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("tag3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("tag1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("tag2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("tag3", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -62,12 +61,12 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("tag1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("tag2", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("tag3", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("tag1", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("tag2", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("tag3", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("tag1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("tag2", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("tag3", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("tag1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("tag2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("tag3", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -79,10 +78,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat2", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat2", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -94,10 +93,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -109,10 +108,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -124,10 +123,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isTrue();
 	}
 
 	@Test
@@ -139,10 +138,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("category1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("category2", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("category3", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("category1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("category2", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("category3", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isFalse();
 	}
 
 	@Test
@@ -154,10 +153,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag3"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "something"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag3"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "something"))).isFalse();
 	}
 
 	@Test
@@ -169,14 +168,14 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag3"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "something"))).isFalse();
-		assertThat(filter.filter(new TagImpl("something", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("something", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("something", "tag3"))).isFalse();
-		assertThat(filter.filter(new TagImpl("something", "something"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag3"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "something"))).isFalse();
+		assertThat(filter.filter(new Tag("something", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("something", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("something", "tag3"))).isFalse();
+		assertThat(filter.filter(new Tag("something", "something"))).isFalse();
 	}
 
 	@Test
@@ -188,9 +187,9 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isFalse();
 	}
 
 	@Test
@@ -202,11 +201,11 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag3"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag3"))).isFalse();
 	}
 
 	@Test
@@ -218,10 +217,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -233,10 +232,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -248,11 +247,11 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat1", "tag3"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isTrue();
+		assertThat(filter.filter(new Tag("cat1", "tag3"))).isFalse();
 	}
 
 	@Test
@@ -264,10 +263,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -279,10 +278,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -294,10 +293,10 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isFalse();
 	}
 
 	@Test
@@ -309,9 +308,9 @@ public class StringToTagFilterTest {
 		TagFilter filter = StringToTagFilter.fromString(query);
 
 		// then
-		assertThat(filter.filter(new TagImpl("cat1", "tag1"))).isTrue();
-		assertThat(filter.filter(new TagImpl("cat2", "tag2"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat3", "tag1"))).isFalse();
-		assertThat(filter.filter(new TagImpl("cat1", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
+		assertThat(filter.filter(new Tag("cat2", "tag2"))).isFalse();
+		assertThat(filter.filter(new Tag("cat3", "tag1"))).isFalse();
+		assertThat(filter.filter(new Tag("cat1", "tag2"))).isFalse();
 	}
 }

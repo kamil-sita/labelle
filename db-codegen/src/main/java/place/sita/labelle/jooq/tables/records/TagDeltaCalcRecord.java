@@ -37,16 +37,16 @@ public class TagDeltaCalcRecord extends TableRecordImpl<TagDeltaCalcRecord> impl
     }
 
     /**
-     * Setter for <code>public.tag_delta_calc.source</code>.
+     * Setter for <code>public.tag_delta_calc.category</code>.
      */
-    public void setSource(String value) {
+    public void setCategory(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.tag_delta_calc.source</code>.
+     * Getter for <code>public.tag_delta_calc.category</code>.
      */
-    public String getSource() {
+    public String getCategory() {
         return (String) get(1);
     }
 
@@ -99,7 +99,7 @@ public class TagDeltaCalcRecord extends TableRecordImpl<TagDeltaCalcRecord> impl
 
     @Override
     public Field<String> field2() {
-        return TagDeltaCalc.TAG_DELTA_CALC.SOURCE;
+        return TagDeltaCalc.TAG_DELTA_CALC.CATEGORY;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class TagDeltaCalcRecord extends TableRecordImpl<TagDeltaCalcRecord> impl
 
     @Override
     public String component2() {
-        return getSource();
+        return getCategory();
     }
 
     @Override
@@ -139,7 +139,7 @@ public class TagDeltaCalcRecord extends TableRecordImpl<TagDeltaCalcRecord> impl
 
     @Override
     public String value2() {
-        return getSource();
+        return getCategory();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class TagDeltaCalcRecord extends TableRecordImpl<TagDeltaCalcRecord> impl
 
     @Override
     public TagDeltaCalcRecord value2(String value) {
-        setSource(value);
+        setCategory(value);
         return this;
     }
 
@@ -199,11 +199,11 @@ public class TagDeltaCalcRecord extends TableRecordImpl<TagDeltaCalcRecord> impl
     /**
      * Create a detached, initialised TagDeltaCalcRecord
      */
-    public TagDeltaCalcRecord(Boolean added, String source, String tag, UUID imageId) {
+    public TagDeltaCalcRecord(Boolean added, String category, String tag, UUID imageId) {
         super(TagDeltaCalc.TAG_DELTA_CALC);
 
         setAdded(added);
-        setSource(source);
+        setCategory(category);
         setTag(tag);
         setImageId(imageId);
     }

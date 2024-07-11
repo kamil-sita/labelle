@@ -52,16 +52,16 @@ public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record3
     }
 
     /**
-     * Setter for <code>public.tag.tag_src_id</code>.
+     * Setter for <code>public.tag.tag_category_id</code>.
      */
-    public void setTagSrcId(UUID value) {
+    public void setTagCategoryId(UUID value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>public.tag.tag_src_id</code>.
+     * Getter for <code>public.tag.tag_category_id</code>.
      */
-    public UUID getTagSrcId() {
+    public UUID getTagCategoryId() {
         return (UUID) get(2);
     }
 
@@ -100,7 +100,7 @@ public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record3
 
     @Override
     public Field<UUID> field3() {
-        return Tag.TAG.TAG_SRC_ID;
+        return Tag.TAG.TAG_CATEGORY_ID;
     }
 
     @Override
@@ -115,7 +115,7 @@ public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record3
 
     @Override
     public UUID component3() {
-        return getTagSrcId();
+        return getTagCategoryId();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record3
 
     @Override
     public UUID value3() {
-        return getTagSrcId();
+        return getTagCategoryId();
     }
 
     @Override
@@ -147,7 +147,7 @@ public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record3
 
     @Override
     public TagRecord value3(UUID value) {
-        setTagSrcId(value);
+        setTagCategoryId(value);
         return this;
     }
 
@@ -173,11 +173,11 @@ public class TagRecord extends UpdatableRecordImpl<TagRecord> implements Record3
     /**
      * Create a detached, initialised TagRecord
      */
-    public TagRecord(String value, UUID id, UUID tagSrcId) {
+    public TagRecord(String value, UUID id, UUID tagCategoryId) {
         super(Tag.TAG);
 
         setValue(value);
         setId(id);
-        setTagSrcId(tagSrcId);
+        setTagCategoryId(tagCategoryId);
     }
 }

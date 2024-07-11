@@ -34,7 +34,7 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
@@ -47,10 +47,10 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, "Some tag", "Some family");
+		inRepositoryService.addTag(imageId, null, "Some tag", "Some category");
 		UUID anotherImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some family");
-		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some family 2");
+		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some category");
+		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some category 2");
 
 		// when
 		taskExecutionEnvironment.executeTask(
@@ -70,10 +70,10 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, "Some tag", "Some family");
+		inRepositoryService.addTag(imageId, null, "Some tag", "Some category");
 		UUID anotherImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some family");
-		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some family 2");
+		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some category");
+		inRepositoryService.addTag(anotherImageId, null, "Some tag", "Some category 2");
 
 		Repository unrelatedRepo = repositoryService.addRepository("Unrelated test repo");
 		inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());

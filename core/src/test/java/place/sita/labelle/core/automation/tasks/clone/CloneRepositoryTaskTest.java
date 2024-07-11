@@ -35,7 +35,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
@@ -48,7 +48,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, "Some tag", "Some family");
+		inRepositoryService.addTag(imageId, null, "Some tag", "Some category");
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
@@ -69,7 +69,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(1);
 		assertThat(tags.get(0).tag()).isEqualTo("Some tag");
-		assertThat(tags.get(0).family()).isEqualTo("Some family");
+		assertThat(tags.get(0).category()).isEqualTo("Some category");
 	}
 
 

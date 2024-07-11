@@ -55,13 +55,13 @@
                                     <TableView fx:id="tagsTable" editable="true" prefHeight="394.0" prefWidth="262.0" AnchorPane.bottomAnchor="78.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="23.0">
                                       <columns>
                                           <TableColumn fx:id="tagXColumn" prefWidth="61.5999755859375" text="X" />
-                                        <TableColumn fx:id="tagsFamilyColumn" prefWidth="103.99994277954102" text="Family" />
-                                        <TableColumn fx:id="tagsValueColumn" prefWidth="128.7998809814453" text="Entry" />
+                                        <TableColumn fx:id="tagsCategoryColumn" prefWidth="103.99994277954102" text="Category" />
+                                        <TableColumn fx:id="tagsTagColumn" prefWidth="128.7998809814453" text="Tag" />
                                       </columns>
                                     </TableView>
                                     <Label layoutX="15.0" layoutY="5.0" text="Tags" />
-                                    <TextField fx:id="tagFamilyTextField" prefHeight="26.0" prefWidth="212.0" promptText="Family" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
-                                    <TextField fx:id="tagEntryTextField" prefHeight="26.0" prefWidth="212.0" promptText="Entry" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
+                                    <TextField fx:id="tagCategoryTextField" prefHeight="26.0" prefWidth="212.0" promptText="Category" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
+                                    <TextField fx:id="tagTagTextField" prefHeight="26.0" prefWidth="212.0" promptText="Tag" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="103.19999999999999" />
                                     <Button mnemonicParsing="false" onAction="#updateTagPress" prefHeight="25.0" prefWidth="76.0" text="Update" AnchorPane.bottomAnchor="14.599999999999987" AnchorPane.rightAnchor="15.199999999999989" />
                                     <Button fx:id="addTagButton" layoutX="251.0" layoutY="423.0" mnemonicParsing="false" onAction="#addTagPress" prefHeight="25.0" prefWidth="76.0" text="Add" AnchorPane.bottomAnchor="45.0" AnchorPane.rightAnchor="15.399999999999977" />
                                  </children>
@@ -85,8 +85,8 @@
                                                       <Label text="Markers (not implemented yet)" />
                                                       <TableView fx:id="markersTable" editable="true" prefHeight="297.0" prefWidth="262.0" AnchorPane.bottomAnchor="128.0" AnchorPane.leftAnchor="32.0" AnchorPane.topAnchor="69.0">
                                                          <columns>
-                                                            <TableColumn prefWidth="107.99999845027924" text="Family" />
-                                                            <TableColumn prefWidth="101.0" text="Entry" />
+                                                            <TableColumn prefWidth="107.99999845027924" text="Category" />
+                                                            <TableColumn prefWidth="101.0" text="Tag" />
                                                             <TableColumn prefWidth="51.0" text="Shared" />
                                                          </columns>
                                                       </TableView>

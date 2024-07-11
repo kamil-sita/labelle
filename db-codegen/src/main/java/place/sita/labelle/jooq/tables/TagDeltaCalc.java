@@ -50,9 +50,9 @@ public class TagDeltaCalc extends TableImpl<TagDeltaCalcRecord> {
     public final TableField<TagDeltaCalcRecord, Boolean> ADDED = createField(DSL.name("added"), SQLDataType.BOOLEAN, this, "");
 
     /**
-     * The column <code>public.tag_delta_calc.source</code>.
+     * The column <code>public.tag_delta_calc.category</code>.
      */
-    public final TableField<TagDeltaCalcRecord, String> SOURCE = createField(DSL.name("source"), SQLDataType.VARCHAR(256), this, "");
+    public final TableField<TagDeltaCalcRecord, String> CATEGORY = createField(DSL.name("category"), SQLDataType.VARCHAR(256), this, "");
 
     /**
      * The column <code>public.tag_delta_calc.tag</code>.
@@ -69,7 +69,7 @@ public class TagDeltaCalc extends TableImpl<TagDeltaCalcRecord> {
     }
 
     private TagDeltaCalc(Name alias, Table<TagDeltaCalcRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"tag_delta_calc\" as  SELECT delta.added,\n    delta.source,\n    delta.tag,\n    delta.image_id\n   FROM ( SELECT true AS added,\n            child.tag_family AS source,\n            child.tag_value AS tag,\n            child.image_id\n           FROM (image_tags child\n             JOIN image child_im ON ((child.image_id = child_im.id)))\n          WHERE ((child_im.parent_reference IS NOT NULL) AND (NOT (EXISTS ( SELECT 1\n                   FROM (image_tags parent\n                     JOIN parent_child_image pci ON ((pci.parent_image_id = parent.image_id)))\n                  WHERE ((pci.child_image_id = child.image_id) AND ((child.tag_value)::text = (parent.tag_value)::text) AND ((child.tag_family)::text = (parent.tag_family)::text))))))\n        UNION\n         SELECT false AS added,\n            parent.tag_family AS source,\n            parent.tag_value AS tag,\n            pci.child_image_id AS image_id\n           FROM (image_tags parent\n             JOIN parent_child_image pci ON ((pci.parent_image_id = parent.image_id)))\n          WHERE (NOT (EXISTS ( SELECT 1\n                   FROM image_tags child\n                  WHERE ((child.image_id = pci.child_image_id) AND ((child.tag_value)::text = (parent.tag_value)::text) AND ((child.tag_family)::text = (parent.tag_family)::text)))))) delta;"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"tag_delta_calc\" as  SELECT delta.added,\n    delta.category,\n    delta.tag,\n    delta.image_id\n   FROM ( SELECT true AS added,\n            child.tag_category AS category,\n            child.tag,\n            child.image_id\n           FROM (image_tags child\n             JOIN image child_im ON ((child.image_id = child_im.id)))\n          WHERE ((child_im.parent_reference IS NOT NULL) AND (NOT (EXISTS ( SELECT 1\n                   FROM (image_tags parent\n                     JOIN parent_child_image pci ON ((pci.parent_image_id = parent.image_id)))\n                  WHERE ((pci.child_image_id = child.image_id) AND ((child.tag)::text = (parent.tag)::text) AND ((child.tag_category)::text = (parent.tag_category)::text))))))\n        UNION\n         SELECT false AS added,\n            parent.tag_category AS category,\n            parent.tag,\n            pci.child_image_id AS image_id\n           FROM (image_tags parent\n             JOIN parent_child_image pci ON ((pci.parent_image_id = parent.image_id)))\n          WHERE (NOT (EXISTS ( SELECT 1\n                   FROM image_tags child\n                  WHERE ((child.image_id = pci.child_image_id) AND ((child.tag)::text = (parent.tag)::text) AND ((child.tag_category)::text = (parent.tag_category)::text)))))) delta;"));
     }
 
     /**

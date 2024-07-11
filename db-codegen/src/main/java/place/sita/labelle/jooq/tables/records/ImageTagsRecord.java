@@ -23,30 +23,30 @@ public class ImageTagsRecord extends TableRecordImpl<ImageTagsRecord> implements
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.image_tags.tag_value</code>.
+     * Setter for <code>public.image_tags.tag</code>.
      */
-    public void setTagValue(String value) {
+    public void setTag(String value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>public.image_tags.tag_value</code>.
+     * Getter for <code>public.image_tags.tag</code>.
      */
-    public String getTagValue() {
+    public String getTag() {
         return (String) get(0);
     }
 
     /**
-     * Setter for <code>public.image_tags.tag_family</code>.
+     * Setter for <code>public.image_tags.tag_category</code>.
      */
-    public void setTagFamily(String value) {
+    public void setTagCategory(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.image_tags.tag_family</code>.
+     * Getter for <code>public.image_tags.tag_category</code>.
      */
-    public String getTagFamily() {
+    public String getTagCategory() {
         return (String) get(1);
     }
 
@@ -94,12 +94,12 @@ public class ImageTagsRecord extends TableRecordImpl<ImageTagsRecord> implements
 
     @Override
     public Field<String> field1() {
-        return ImageTags.IMAGE_TAGS.TAG_VALUE;
+        return ImageTags.IMAGE_TAGS.TAG;
     }
 
     @Override
     public Field<String> field2() {
-        return ImageTags.IMAGE_TAGS.TAG_FAMILY;
+        return ImageTags.IMAGE_TAGS.TAG_CATEGORY;
     }
 
     @Override
@@ -114,12 +114,12 @@ public class ImageTagsRecord extends TableRecordImpl<ImageTagsRecord> implements
 
     @Override
     public String component1() {
-        return getTagValue();
+        return getTag();
     }
 
     @Override
     public String component2() {
-        return getTagFamily();
+        return getTagCategory();
     }
 
     @Override
@@ -134,12 +134,12 @@ public class ImageTagsRecord extends TableRecordImpl<ImageTagsRecord> implements
 
     @Override
     public String value1() {
-        return getTagValue();
+        return getTag();
     }
 
     @Override
     public String value2() {
-        return getTagFamily();
+        return getTagCategory();
     }
 
     @Override
@@ -154,13 +154,13 @@ public class ImageTagsRecord extends TableRecordImpl<ImageTagsRecord> implements
 
     @Override
     public ImageTagsRecord value1(String value) {
-        setTagValue(value);
+        setTag(value);
         return this;
     }
 
     @Override
     public ImageTagsRecord value2(String value) {
-        setTagFamily(value);
+        setTagCategory(value);
         return this;
     }
 
@@ -199,11 +199,11 @@ public class ImageTagsRecord extends TableRecordImpl<ImageTagsRecord> implements
     /**
      * Create a detached, initialised ImageTagsRecord
      */
-    public ImageTagsRecord(String tagValue, String tagFamily, UUID imageId, UUID repositoryId) {
+    public ImageTagsRecord(String tag, String tagCategory, UUID imageId, UUID repositoryId) {
         super(ImageTags.IMAGE_TAGS);
 
-        setTagValue(tagValue);
-        setTagFamily(tagFamily);
+        setTag(tag);
+        setTagCategory(tagCategory);
         setImageId(imageId);
         setRepositoryId(repositoryId);
     }

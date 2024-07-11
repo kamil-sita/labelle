@@ -37,16 +37,16 @@ public class MarkerRecord extends TableRecordImpl<MarkerRecord> implements Recor
     }
 
     /**
-     * Setter for <code>public.marker.family</code>.
+     * Setter for <code>public.marker.category</code>.
      */
-    public void setFamily(String value) {
+    public void setCategory(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.marker.family</code>.
+     * Getter for <code>public.marker.category</code>.
      */
-    public String getFamily() {
+    public String getCategory() {
         return (String) get(1);
     }
 
@@ -99,7 +99,7 @@ public class MarkerRecord extends TableRecordImpl<MarkerRecord> implements Recor
 
     @Override
     public Field<String> field2() {
-        return Marker.MARKER.FAMILY;
+        return Marker.MARKER.CATEGORY;
     }
 
     @Override
@@ -119,7 +119,7 @@ public class MarkerRecord extends TableRecordImpl<MarkerRecord> implements Recor
 
     @Override
     public String component2() {
-        return getFamily();
+        return getCategory();
     }
 
     @Override
@@ -139,7 +139,7 @@ public class MarkerRecord extends TableRecordImpl<MarkerRecord> implements Recor
 
     @Override
     public String value2() {
-        return getFamily();
+        return getCategory();
     }
 
     @Override
@@ -160,7 +160,7 @@ public class MarkerRecord extends TableRecordImpl<MarkerRecord> implements Recor
 
     @Override
     public MarkerRecord value2(String value) {
-        setFamily(value);
+        setCategory(value);
         return this;
     }
 
@@ -199,11 +199,11 @@ public class MarkerRecord extends TableRecordImpl<MarkerRecord> implements Recor
     /**
      * Create a detached, initialised MarkerRecord
      */
-    public MarkerRecord(UUID imageId, String family, String value, Boolean shared) {
+    public MarkerRecord(UUID imageId, String category, String value, Boolean shared) {
         super(Marker.MARKER);
 
         setImageId(imageId);
-        setFamily(family);
+        setCategory(category);
         setValue(value);
         setShared(shared);
     }

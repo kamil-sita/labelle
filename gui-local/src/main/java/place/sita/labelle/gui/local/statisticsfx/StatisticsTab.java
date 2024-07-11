@@ -85,7 +85,7 @@ public class StatisticsTab implements MainMenuTab {
                 toolkit.onFxThread(() -> {
                     for (TagWithCountResponse tagWithCountResponse : response) {
                         tableElements.add(
-                            new TableElement(tagWithCountResponse.tag().family(), tagWithCountResponse.tag().value(), tagWithCountResponse.count())
+                            new TableElement(tagWithCountResponse.tag().category(), tagWithCountResponse.tag().tag(), tagWithCountResponse.count())
                         );
                     }
                 });

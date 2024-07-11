@@ -63,7 +63,7 @@ public class CloneRepositoryTask implements TaskType<CloneRepositoryTaskInput, R
                 .getInRepositoryService()
                 .getTags(image.id())
                 .forEach(tagResponse -> {
-                    persistableImagesTags.addTag(imageId, tagResponse.tag(), tagResponse.family());
+                    persistableImagesTags.addTag(imageId, tagResponse.tag(), tagResponse.category());
                 });
 
         taskContext.getApi()

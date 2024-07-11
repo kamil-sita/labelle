@@ -29,7 +29,7 @@ public class DeltaRepository {
 	}
 
 	public List<TagDeltaResponse> getTagDeltas(UUID imageId) {
-		return dslContext.select(TAG_DELTA.ADDS, TAG_DELTA.TAG, TAG_DELTA.FAMILY)
+		return dslContext.select(TAG_DELTA.ADDS, TAG_DELTA.TAG, TAG_DELTA.CATEGORY)
 			.from(TAG_DELTA)
 			.where(TAG_DELTA.IMAGE_ID.eq(imageId))
 			.fetch()
@@ -69,7 +69,7 @@ public class DeltaRepository {
 
 			private final TableField<TagDeltaRecord, UUID> imageId = TAG_DELTA.IMAGE_ID;
 			private final TableField<TagDeltaRecord, Boolean> adds = TAG_DELTA.ADDS;
-			private final TableField<TagDeltaRecord, String> family = TAG_DELTA.FAMILY;
+			private final TableField<TagDeltaRecord, String> category = TAG_DELTA.CATEGORY;
 			private final TableField<TagDeltaRecord, String> tag = TAG_DELTA.TAG;
 
 
@@ -81,18 +81,18 @@ public class DeltaRepository {
 			@Override
 			public RecordMapper<Record, TagDeltaResponse> mapper() {
 				return rr -> {
-					return new TagDeltaResponse(rr.get(family), rr.get(tag), rr.get(adds) ? TagDeltaType.ADD : TagDeltaType.REMOVE);
+					return new TagDeltaResponse(rr.get(category), rr.get(tag), rr.get(adds) ? TagDeltaType.ADD : TagDeltaType.REMOVE);
 				};
 			}
 
 			@Override
 			public Collection<? extends SelectFieldOrAsterisk> select(List<PreprocessingType> preprocessing) {
-				return List.of(adds, family, tag);
+				return List.of(adds, category, tag);
 			}
 
 			@Override
 			public Collection<? extends OrderField<?>> orderBy(List<PreprocessingType> preprocessing) {
-				return List.of(imageId, family, tag);
+				return List.of(imageId, category, tag);
 			}
 
 			@Override
@@ -103,7 +103,7 @@ public class DeltaRepository {
 						conditions.add(TAG_DELTA.IMAGE_ID.equal(filterByImageIdPreprocessor.imageUuid));
 					}
 					if (preprocessingType instanceof FilterByTagDeltaPreprocessor filterByTagDeltaPreprocessor) {
-						conditions.add(TAG_DELTA.FAMILY.equal(filterByTagDeltaPreprocessor.family));
+						conditions.add(TAG_DELTA.CATEGORY.equal(filterByTagDeltaPreprocessor.category));
 						conditions.add(TAG_DELTA.TAG.equal(filterByTagDeltaPreprocessor.tag));
 						conditions.add(TAG_DELTA.ADDS.equal(filterByTagDeltaPreprocessor.type == TagDeltaType.ADD));
 					}
@@ -152,8 +152,8 @@ public class DeltaRepository {
 					}
 
 					@Override
-					public Self byTagDelta(TagDeltaType deltaType, String family, String tag) {
-						return adapter.accept(new FilterByTagDeltaPreprocessor(family, tag, deltaType));
+					public Self byTagDelta(TagDeltaType deltaType, String category, String tag) {
+						return adapter.accept(new FilterByTagDeltaPreprocessor(category, tag, deltaType));
 					}
 				};
 			}
@@ -190,7 +190,7 @@ public class DeltaRepository {
 
 	}
 
-	private record FilterByTagDeltaPreprocessor(String family, String tag, TagDeltaType type) implements PreprocessingType {
+	private record FilterByTagDeltaPreprocessor(String category, String tag, TagDeltaType type) implements PreprocessingType {
 
 	}
 
@@ -198,6 +198,6 @@ public class DeltaRepository {
 
 		ReturnT filterByImageId(UUID imageUuid);
 
-		ReturnT byTagDelta(TagDeltaType deltaType, String family, String tag);
+		ReturnT byTagDelta(TagDeltaType deltaType, String category, String tag);
 	}
 }

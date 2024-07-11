@@ -1,6 +1,6 @@
 package place.sita.labelle.core.repository.inrepository.statistics;
 
-import place.sita.labelle.core.repository.inrepository.tags.TagValue;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 
-public record TagWithCountResponse(TagValue tag, int count) {
+public record TagWithCountResponse(Tag tag, int count) {
 }

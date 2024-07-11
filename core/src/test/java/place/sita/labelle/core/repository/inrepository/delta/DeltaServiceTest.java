@@ -38,7 +38,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		context.delete(Tables.TAG_DELTA).execute();
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
@@ -114,7 +114,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(imageId));
@@ -130,7 +130,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 		inRepositoryService.setParentPersistentId(imageId, "parent persistent id");
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(imageId));
@@ -139,7 +139,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		var tagDeltas = inRepositoryService.getTagDeltas(imageId);
 		assertThat(tagDeltas).hasSize(1);
 		assertThat(tagDeltas.get(0).tag()).isEqualTo("Some tag");
-		assertThat(tagDeltas.get(0).family()).isEqualTo("Some family");
+		assertThat(tagDeltas.get(0).category()).isEqualTo("Some category");
 		assertThat(tagDeltas.get(0).type()).isEqualTo(TagDeltaType.ADD);
 	}
 
@@ -157,8 +157,8 @@ public class DeltaServiceTest extends TestContainersTest {
 		inRepositoryService.setPersistentId(parentImageId, "parent persistent id");
 		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
 
-		tagRepository.addTag(childImageId, childRepo.id(), "Some tag", "Some family");
-		tagRepository.addTag(parentImageId, parentRepo.id(), "Some tag", "Some family");
+		tagRepository.addTag(childImageId, childRepo.id(), "Some tag", "Some category");
+		tagRepository.addTag(parentImageId, parentRepo.id(), "Some tag", "Some category");
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));
@@ -182,7 +182,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		inRepositoryService.setPersistentId(parentImageId, "parent persistent id");
 		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
 
-		tagRepository.addTag(parentImageId, parentRepo.id(), "Some tag", "Some family");
+		tagRepository.addTag(parentImageId, parentRepo.id(), "Some tag", "Some category");
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));
@@ -191,7 +191,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		var tagDeltas = inRepositoryService.getTagDeltas(childImageId);
 		assertThat(tagDeltas).hasSize(1);
 		assertThat(tagDeltas.get(0).tag()).isEqualTo("Some tag");
-		assertThat(tagDeltas.get(0).family()).isEqualTo("Some family");
+		assertThat(tagDeltas.get(0).category()).isEqualTo("Some category");
 		assertThat(tagDeltas.get(0).type()).isEqualTo(TagDeltaType.REMOVE);
 	}
 
@@ -213,10 +213,10 @@ public class DeltaServiceTest extends TestContainersTest {
 		inRepositoryService.setPersistentId(parentImageId2, "parent persistent id");
 		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
 
-		tagRepository.addTag(childImageId, childRepo.id(), "Some tag 1", "Some family");
-		tagRepository.addTag(childImageId, childRepo.id(), "Some tag 2", "Some family");
-		tagRepository.addTag(parentImageId1, parentRepo1.id(), "Some tag 2", "Some family");
-		tagRepository.addTag(parentImageId2, parentRepo2.id(), "Some tag 1", "Some family");
+		tagRepository.addTag(childImageId, childRepo.id(), "Some tag 1", "Some category");
+		tagRepository.addTag(childImageId, childRepo.id(), "Some tag 2", "Some category");
+		tagRepository.addTag(parentImageId1, parentRepo1.id(), "Some tag 2", "Some category");
+		tagRepository.addTag(parentImageId2, parentRepo2.id(), "Some tag 1", "Some category");
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));

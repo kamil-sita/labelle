@@ -45,14 +45,14 @@ public class ImageTags extends TableImpl<ImageTagsRecord> {
     }
 
     /**
-     * The column <code>public.image_tags.tag_value</code>.
+     * The column <code>public.image_tags.tag</code>.
      */
-    public final TableField<ImageTagsRecord, String> TAG_VALUE = createField(DSL.name("tag_value"), SQLDataType.VARCHAR(256), this, "");
+    public final TableField<ImageTagsRecord, String> TAG = createField(DSL.name("tag"), SQLDataType.VARCHAR(256), this, "");
 
     /**
-     * The column <code>public.image_tags.tag_family</code>.
+     * The column <code>public.image_tags.tag_category</code>.
      */
-    public final TableField<ImageTagsRecord, String> TAG_FAMILY = createField(DSL.name("tag_family"), SQLDataType.VARCHAR(256), this, "");
+    public final TableField<ImageTagsRecord, String> TAG_CATEGORY = createField(DSL.name("tag_category"), SQLDataType.VARCHAR(256), this, "");
 
     /**
      * The column <code>public.image_tags.image_id</code>.
@@ -69,7 +69,7 @@ public class ImageTags extends TableImpl<ImageTagsRecord> {
     }
 
     private ImageTags(Name alias, Table<ImageTagsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"image_tags\" as  SELECT tag.value AS tag_value,\n    tag_src.value AS tag_family,\n    tag_image.image_id,\n    repository.id AS repository_id\n   FROM tag,\n    tag_image,\n    tag_src,\n    repository\n  WHERE ((tag.tag_src_id = tag_src.id) AND (tag_src.repository_id = repository.id) AND (tag_image.tag_id = tag.id));"));
+        super(alias, null, aliased, parameters, DSL.comment(""), TableOptions.view("create view \"image_tags\" as  SELECT tag.value AS tag,\n    tag_category.value AS tag_category,\n    tag_image.image_id,\n    repository.id AS repository_id\n   FROM tag,\n    tag_image,\n    tag_category,\n    repository\n  WHERE ((tag.tag_category_id = tag_category.id) AND (tag_category.repository_id = repository.id) AND (tag_image.tag_id = tag.id));"));
     }
 
     /**

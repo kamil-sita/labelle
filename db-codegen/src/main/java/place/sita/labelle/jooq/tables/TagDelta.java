@@ -58,9 +58,9 @@ public class TagDelta extends TableImpl<TagDeltaRecord> {
     public final TableField<TagDeltaRecord, Boolean> ADDS = createField(DSL.name("adds"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
-     * The column <code>public.tag_delta.family</code>.
+     * The column <code>public.tag_delta.category</code>.
      */
-    public final TableField<TagDeltaRecord, String> FAMILY = createField(DSL.name("family"), SQLDataType.CLOB.nullable(false), this, "");
+    public final TableField<TagDeltaRecord, String> CATEGORY = createField(DSL.name("category"), SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.tag_delta.tag</code>.

@@ -6,11 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.cache.CacheRegistry;
-import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagResponse;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.jooq.Tables;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +32,7 @@ public class InRepositoryParentTagsTest extends TestContainersTest {
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
@@ -61,37 +60,37 @@ public class InRepositoryParentTagsTest extends TestContainersTest {
 
 		var parentRepo1Image = inRepositoryService.addEmptySyntheticImage(parentRepo1.id());
 		inRepositoryService.setPersistentId(parentRepo1Image, "PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo1Image, null, "TAG1", "FAMILY1");
-		inRepositoryService.addTag(parentRepo1Image, null, "TAG2", "FAMILY2");
+		inRepositoryService.addTag(parentRepo1Image, null, "TAG1", "CATEGORY1");
+		inRepositoryService.addTag(parentRepo1Image, null, "TAG2", "CATEGORY2");
 		var parentRepo2Image = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
 		inRepositoryService.setPersistentId(parentRepo2Image, "PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo2Image, null, "TAG3", "FAMILY3");
-		inRepositoryService.addTag(parentRepo2Image, null, "TAG1", "FAMILY1");
+		inRepositoryService.addTag(parentRepo2Image, null, "TAG3", "CATEGORY3");
+		inRepositoryService.addTag(parentRepo2Image, null, "TAG1", "CATEGORY1");
 		var parentRepo3Image = inRepositoryService.addEmptySyntheticImage(parentRepo3.id());
 		inRepositoryService.setPersistentId(parentRepo3Image, "PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo3Image, null, "TAG4", "FAMILY4");
+		inRepositoryService.addTag(parentRepo3Image, null, "TAG4", "CATEGORY4");
 		var unrelatedRepoImage = inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());
 		inRepositoryService.setPersistentId(unrelatedRepoImage, "PERSISTENT_ID");
-		inRepositoryService.addTag(unrelatedRepoImage, null, "TAG5", "FAMILY5");
+		inRepositoryService.addTag(unrelatedRepoImage, null, "TAG5", "CATEGORY5");
 
 		var parentRepo2UnrelatedImage = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
 		inRepositoryService.setPersistentId(parentRepo2UnrelatedImage, "UNRELATED_PERSISTENT_ID");
-		inRepositoryService.addTag(parentRepo2UnrelatedImage, null, "TAG6", "FAMILY6");
+		inRepositoryService.addTag(parentRepo2UnrelatedImage, null, "TAG6", "CATEGORY6");
 
 		var childRepoImage = inRepositoryService.addEmptySyntheticImage(childRepo.id());
 		inRepositoryService.setParentPersistentId(childRepoImage, "PERSISTENT_ID");
 		inRepositoryService.setPersistentId(childRepoImage, "CHILD_PERSISTENT_ID");
-		inRepositoryService.addTag(childRepoImage, null, "TAG7", "FAMILY7");
+		inRepositoryService.addTag(childRepoImage, null, "TAG7", "CATEGORY7");
 
 		// when
-		Set<TagResponse> parentTags = inRepositoryService.parentTags(childRepoImage);
+		Set<Tag> parentTags = inRepositoryService.parentTags(childRepoImage);
 
 		// then
 		assertThat(parentTags).containsExactlyInAnyOrder(
-				new TagResponse("TAG1", "FAMILY1"),
-				new TagResponse("TAG2", "FAMILY2"),
-				new TagResponse("TAG3", "FAMILY3"),
-				new TagResponse("TAG4", "FAMILY4")
+				new Tag("TAG1", "CATEGORY1"),
+				new Tag("TAG2", "CATEGORY2"),
+				new Tag("TAG3", "CATEGORY3"),
+				new Tag("TAG4", "CATEGORY4")
 		);
 	}
 

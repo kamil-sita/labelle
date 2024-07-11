@@ -32,7 +32,7 @@ public class TagRepositoryTest extends TestContainersTest {
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
@@ -47,13 +47,13 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(1);
-		assertThat(tags.get(0).value()).isEqualTo("Some tag");
-		assertThat(tags.get(0).family()).isEqualTo("Some family");
+		assertThat(tags.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tags.get(0).category()).isEqualTo("Some category");
 	}
 
 	@Test
@@ -63,35 +63,35 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
-		tagRepository.addTag(imageId, repo.id(), "Some tag 2", "Some family 2");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
+		tagRepository.addTag(imageId, repo.id(), "Some tag 2", "Some category 2");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(2);
-		assertThat(tags.get(0).value()).isEqualTo("Some tag");
-		assertThat(tags.get(0).family()).isEqualTo("Some family");
-		assertThat(tags.get(1).value()).isEqualTo("Some tag 2");
-		assertThat(tags.get(1).family()).isEqualTo("Some family 2");
+		assertThat(tags.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tags.get(0).category()).isEqualTo("Some category");
+		assertThat(tags.get(1).tag()).isEqualTo("Some tag 2");
+		assertThat(tags.get(1).category()).isEqualTo("Some category 2");
 	}
 
 	@Test
-	public void shouldAddMultipleTagsWithinSameFamily() {
+	public void shouldAddMultipleTagsWithinSameCategory() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
-		tagRepository.addTag(imageId, repo.id(), "Some tag 2", "Some family");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
+		tagRepository.addTag(imageId, repo.id(), "Some tag 2", "Some category");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(2);
-		assertThat(tags.get(0).value()).isEqualTo("Some tag");
-		assertThat(tags.get(0).family()).isEqualTo("Some family");
-		assertThat(tags.get(1).value()).isEqualTo("Some tag 2");
-		assertThat(tags.get(1).family()).isEqualTo("Some family");
+		assertThat(tags.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tags.get(0).category()).isEqualTo("Some category");
+		assertThat(tags.get(1).tag()).isEqualTo("Some tag 2");
+		assertThat(tags.get(1).category()).isEqualTo("Some category");
 	}
 
 	@Test
@@ -101,14 +101,14 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(1);
-		assertThat(tags.get(0).value()).isEqualTo("Some tag");
-		assertThat(tags.get(0).family()).isEqualTo("Some family");
+		assertThat(tags.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tags.get(0).category()).isEqualTo("Some category");
 	}
 
 	@Test
@@ -116,10 +116,10 @@ public class TagRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some family");
+		tagRepository.addTag(imageId, repo.id(), "Some tag", "Some category");
 
 		// when
-		tagRepository.deleteTag(imageId, null, "Some tag", "Some family");
+		tagRepository.deleteTag(imageId, null, "Some tag", "Some category");
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -134,15 +134,15 @@ public class TagRepositoryTest extends TestContainersTest {
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
-		persistableImagesTags.addTag(imageId, "Some tag", "Some family");
-		persistableImagesTags.addTag(imageId, "Some tag 2", "Some family 2");
+		persistableImagesTags.addTag(imageId, "Some tag", "Some category");
+		persistableImagesTags.addTag(imageId, "Some tag 2", "Some category 2");
 		tagRepository.addTags(persistableImagesTags);
 
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(2);
-		assertThat(tags).contains(new TagRepository.TagView("Some tag", "Some family"));
-		assertThat(tags).contains(new TagRepository.TagView("Some tag 2", "Some family 2"));
+		assertThat(tags).contains(new Tag("Some tag", "Some category"));
+		assertThat(tags).contains(new Tag("Some tag 2", "Some category 2"));
 	}
 
 	@Test
@@ -153,15 +153,15 @@ public class TagRepositoryTest extends TestContainersTest {
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(repo.id());
-		persistableImagesTags.addTag(imageId, "Some tag", "Some family");
-		persistableImagesTags.addTag(imageId, "Some tag 2", "Some family 2");
+		persistableImagesTags.addTag(imageId, "Some tag", "Some category");
+		persistableImagesTags.addTag(imageId, "Some tag 2", "Some category 2");
 		tagRepository.addTags(persistableImagesTags);
 
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(2);
-		assertThat(tags).contains(new TagRepository.TagView("Some tag", "Some family"));
-		assertThat(tags).contains(new TagRepository.TagView("Some tag 2", "Some family 2"));
+		assertThat(tags).contains(new Tag("Some tag", "Some category"));
+		assertThat(tags).contains(new Tag("Some tag 2", "Some category 2"));
 	}
 
 }

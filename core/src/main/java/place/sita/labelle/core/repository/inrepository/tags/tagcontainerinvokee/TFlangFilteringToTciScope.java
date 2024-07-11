@@ -1,7 +1,6 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee;
 
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
-import place.sita.labelle.core.repository.inrepository.tags.TagImpl;
 import place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.scope.*;
 import place.sita.tflang.filteringexpression.FilteringExpressionBaseVisitor;
 import place.sita.tflang.filteringexpression.fillteringexpression.*;
@@ -82,7 +81,7 @@ public class TFlangFilteringToTciScope extends FilteringExpressionBaseVisitor<Tc
 		} else {
 			List<Tag> values = new ArrayList<>();
 			for (int i = 0; i < inTupleExpression.values().size(); i++) {
-				Tag tag = new TagImpl(
+				Tag tag = new Tag(
 					inTupleExpression.values().get(i).get(categoryIndex),
 					inTupleExpression.values().get(i).get(tagIndex)
 				);

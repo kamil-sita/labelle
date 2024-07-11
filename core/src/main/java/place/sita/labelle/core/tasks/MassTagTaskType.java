@@ -39,17 +39,17 @@ public class MassTagTaskType implements TaskType<MassTagTaskType.Config, Reposit
 		try (CloseableIterator<ImageResponse> images = inRepositoryService.images().process().filterByRepository(parameter.repositoryId()).getIterator()) {
 			images.forEachRemaining(ir -> {
 				image.add(ir.id());
-				persistableImagesTags.addTag(ir.id(), parameter.tag, parameter.family);
+				persistableImagesTags.addTag(ir.id(), parameter.tag, parameter.category);
 			});
 		}
 		inRepositoryService.addTags(persistableImagesTags);
 
-		return TaskResult.success(new Response(parameter.repositoryId, image, parameter.family, parameter.tag));
+		return TaskResult.success(new Response(parameter.repositoryId, image, parameter.category, parameter.tag));
 	}
 
 	@Override
 	public String sampleValue() {
-		return serializeParam(new Config(UUID.randomUUID(), "family", "tag"));
+		return serializeParam(new Config(UUID.randomUUID(), "category", "tag"));
 	}
 
 	@Override
@@ -72,11 +72,11 @@ public class MassTagTaskType implements TaskType<MassTagTaskType.Config, Reposit
 		return Response.class;
 	}
 
-	public record Config(UUID repositoryId, String family, String tag) {
+	public record Config(UUID repositoryId, String category, String tag) {
 
 	}
 
-	public record Response(UUID repositoryId, Set<UUID> images, String family, String tag) {
+	public record Response(UUID repositoryId, Set<UUID> images, String category, String tag) {
 
 	}
 }

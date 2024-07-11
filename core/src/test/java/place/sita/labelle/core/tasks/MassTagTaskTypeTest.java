@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
-import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagResponse;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
@@ -39,7 +39,7 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 	public void cleanup() {
 		context.delete(Tables.TAG_IMAGE).execute();
 		context.delete(Tables.TAG).execute();
-		context.delete(Tables.TAG_SRC).execute();
+		context.delete(Tables.TAG_CATEGORY).execute();
 
 		context.delete(Tables.IMAGE).execute();
 		context.delete(Tables.IMAGE_RESOLVABLE).execute();
@@ -57,7 +57,7 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 		var results = taskExecutionEnvironment.executeTask(
 			UUID.randomUUID(),
 			new MassTagTaskType(),
-			new MassTagTaskType.Config(repository.id(), "family", "tag"),
+			new MassTagTaskType.Config(repository.id(), "category", "tag"),
 			new TaskStateContext(false)
 		);
 
@@ -75,15 +75,15 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 		var results = taskExecutionEnvironment.executeTask(
 			UUID.randomUUID(),
 			new MassTagTaskType(),
-			new MassTagTaskType.Config(repository.id(), "family", "tag"),
+			new MassTagTaskType.Config(repository.id(), "category", "tag"),
 			new TaskStateContext(false)
 		);
 
 		// then
 		assertThat(results.exception()).isNull();
-		List<TagResponse> tags = inRepositoryService.getTags(imageId);
+		List<Tag> tags = inRepositoryService.getTags(imageId);
 		assertThat(tags).hasSize(1);
-		assertThat(tags.get(0).family()).isEqualTo("family");
+		assertThat(tags.get(0).category()).isEqualTo("category");
 		assertThat(tags.get(0).tag()).isEqualTo("tag");
 	}
 
@@ -98,19 +98,19 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 		var results = taskExecutionEnvironment.executeTask(
 			UUID.randomUUID(),
 			new MassTagTaskType(),
-			new MassTagTaskType.Config(repository.id(), "family", "tag"),
+			new MassTagTaskType.Config(repository.id(), "category", "tag"),
 			new TaskStateContext(false)
 		);
 
 		// then
 		assertThat(results.exception()).isNull();
-		List<TagResponse> tags1 = inRepositoryService.getTags(imageId1);
+		List<Tag> tags1 = inRepositoryService.getTags(imageId1);
 		assertThat(tags1).hasSize(1);
-		assertThat(tags1.get(0).family()).isEqualTo("family");
+		assertThat(tags1.get(0).category()).isEqualTo("category");
 		assertThat(tags1.get(0).tag()).isEqualTo("tag");
-		List<TagResponse> tags2 = inRepositoryService.getTags(imageId2);
+		List<Tag> tags2 = inRepositoryService.getTags(imageId2);
 		assertThat(tags2).hasSize(1);
-		assertThat(tags2.get(0).family()).isEqualTo("family");
+		assertThat(tags2.get(0).category()).isEqualTo("category");
 		assertThat(tags2.get(0).tag()).isEqualTo("tag");
 	}
 
@@ -119,28 +119,28 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 		// given
 		Repository repository = repositoryService.addRepository("Test repo");
 		UUID firstImage = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(firstImage, null, "tag", "family");
-		inRepositoryService.addTag(firstImage, null, "some other tag", "family");
+		inRepositoryService.addTag(firstImage, null, "tag", "category");
+		inRepositoryService.addTag(firstImage, null, "some other tag", "category");
 		UUID secondImage = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(secondImage, null, "another tag", "of different family");
+		inRepositoryService.addTag(secondImage, null, "another tag", "of different category");
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
 			UUID.randomUUID(),
 			new MassTagTaskType(),
-			new MassTagTaskType.Config(repository.id(), "family", "tag"),
+			new MassTagTaskType.Config(repository.id(), "category", "tag"),
 			new TaskStateContext(false)
 		);
 
 		// then
 		assertThat(results.exception()).isNull();
-		List<TagResponse> tags1 = inRepositoryService.getTags(firstImage);
+		List<Tag> tags1 = inRepositoryService.getTags(firstImage);
 		assertThat(tags1).hasSize(2);
-		assertThat(tags1).contains(new TagResponse("tag", "family"));
-		assertThat(tags1).contains(new TagResponse("some other tag", "family"));
-		List<TagResponse> tags2 = inRepositoryService.getTags(secondImage);
+		assertThat(tags1).contains(new Tag("tag", "category"));
+		assertThat(tags1).contains(new Tag("some other tag", "category"));
+		List<Tag> tags2 = inRepositoryService.getTags(secondImage);
 		assertThat(tags2).hasSize(2);
-		assertThat(tags2).contains(new TagResponse("another tag", "of different family"));
-		assertThat(tags2).contains(new TagResponse("tag", "family"));
+		assertThat(tags2).contains(new Tag("another tag", "of different category"));
+		assertThat(tags2).contains(new Tag("tag", "category"));
 	}
 }

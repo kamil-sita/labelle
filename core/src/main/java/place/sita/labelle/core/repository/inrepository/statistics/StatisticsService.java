@@ -2,13 +2,13 @@ package place.sita.labelle.core.repository.inrepository.statistics;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
-import place.sita.labelle.core.repository.inrepository.tags.TagValue;
-import place.sita.labelle.jooq.Tables;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 
 import java.util.List;
 import java.util.UUID;
 
 import static org.jooq.impl.DSL.count;
+import static place.sita.labelle.jooq.Tables.IMAGE_TAGS;
 
 @Service
 public class StatisticsService {
@@ -20,12 +20,12 @@ public class StatisticsService {
 	}
 
 	public List<TagWithCountResponse> getTagCount(UUID repositoryId) {
-		return dslContext.select(Tables.IMAGE_TAGS.TAG_FAMILY, Tables.IMAGE_TAGS.TAG_VALUE, count())
-			.from(Tables.IMAGE_TAGS)
-			.where(Tables.IMAGE_TAGS.REPOSITORY_ID.eq(repositoryId))
-			.groupBy(Tables.IMAGE_TAGS.TAG_FAMILY, Tables.IMAGE_TAGS.TAG_VALUE)
+		return dslContext.select(IMAGE_TAGS.TAG_CATEGORY, IMAGE_TAGS.TAG, count())
+			.from(IMAGE_TAGS)
+			.where(IMAGE_TAGS.REPOSITORY_ID.eq(repositoryId))
+			.groupBy(IMAGE_TAGS.TAG_CATEGORY, IMAGE_TAGS.TAG)
 			.orderBy(count().desc())
 			.fetch()
-			.map(record -> new TagWithCountResponse(new TagValue(record.value1(), record.value2()), record.value3()));
+			.map(record -> new TagWithCountResponse(new Tag(record.value1(), record.value2()), record.value3()));
 	}
 }

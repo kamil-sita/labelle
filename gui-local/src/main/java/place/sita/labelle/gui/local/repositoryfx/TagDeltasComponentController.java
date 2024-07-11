@@ -42,7 +42,7 @@ public class TagDeltasComponentController {
 	private TextField deltaEntryTextField;
 
 	@FXML
-	private TextField deltaFamilyTextField;
+	private TextField deltaCategoryTextField;
 
 	public void onImageSelected(ImageResponse selected) {
 		this.selected = selected;
@@ -66,7 +66,7 @@ public class TagDeltasComponentController {
 	private TableColumn<DeltaResponse, String> deltaTypeTableColumn;
 
 	@FXML
-	private TableColumn<DeltaResponse, String> deltaFamilyTableColumn;
+	private TableColumn<DeltaResponse, String> deltaCategoryTableColumn;
 
 	@FXML
 	private TableColumn<DeltaResponse, String> deltaEntryTableColumn;
@@ -82,7 +82,7 @@ public class TagDeltasComponentController {
 			var tdrs = inRepositoryService.tagDeltas().process().filterByImageId(selected.id()).getAll();
 			toolkit.onFxThread(() -> {
 				for (var tr : tdrs) {
-					tagsTableData.add(new DeltaResponse(map(tr.type()), tr.tag(), tr.family()));
+					tagsTableData.add(new DeltaResponse(map(tr.type()), tr.tag(), tr.category()));
 				}
 			});
 		});
@@ -107,12 +107,12 @@ public class TagDeltasComponentController {
 		deltaTagsTableView.setItems(tagsTableData);
 
 		deltaEntryTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().tag()));
-		deltaFamilyTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().family()));
+		deltaCategoryTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().category()));
 		deltaTypeTableColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().type().toString()));
 		deltaDeleteButtonTableColumn.setCellFactory(cb -> {
 			return new ButtonCell<>("X", tr -> {
 				Threading.onSeparateThread(toolkit -> {
-					inRepositoryService.tagDeltas().process().filterByImageId(selected.id()).process().byTagDelta(map(tr.type()), tr.family, tr.tag).remove();
+					inRepositoryService.tagDeltas().process().filterByImageId(selected.id()).process().byTagDelta(map(tr.type()), tr.category, tr.tag).remove();
 					toolkit.onFxThread(() -> {
 						tagsTableData.remove(tr);
 					});
@@ -121,7 +121,7 @@ public class TagDeltasComponentController {
 		});
 	}
 
-	private record DeltaResponse(DeltaType type, String tag, String family) {
+	private record DeltaResponse(DeltaType type, String tag, String category) {
 
 	}
 
@@ -168,7 +168,7 @@ public class TagDeltasComponentController {
 
 
 	@FXML
-	private TableColumn<ParentTags, String> parentsTagsFamilyColumn;
+	private TableColumn<ParentTags, String> parentsTagsCategoryColumn;
 
 	private ObservableList<ParentTags> parentTagsData = FXCollections.observableArrayList();
 
@@ -176,11 +176,11 @@ public class TagDeltasComponentController {
 	public void initParents() {
 		parentTagsTableView.setItems(parentTagsData);
 
-		parentsTagsFamilyColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().family()));
+		parentsTagsCategoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().category()));
 		parentsTagsEntryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().value()));
 	}
 
-	private record ParentTags(String family, String value) {
+	private record ParentTags(String category, String value) {
 
 	}
 
@@ -196,7 +196,7 @@ public class TagDeltasComponentController {
 				var tdrs = inRepositoryService.parentTags(selected.id());
 				toolkit.onFxThread(() -> {
 					for (var tr : tdrs) {
-						parentTagsData.add(new ParentTags(tr.family(), tr.tag()));
+						parentTagsData.add(new ParentTags(tr.category(), tr.tag()));
 					}
 				});
 			});

@@ -2,7 +2,7 @@ package place.sita.labelle.core.tasks;
 
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.images.imagelocator.ImagePtr;
-import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
@@ -51,7 +51,7 @@ public class ExportForTrainingTask implements TaskType<ExportForTrainingTask.Con
 					List<String> tags = taskContext.getApi().getInRepositoryService()
 						.getTags(imageResponse.id())
 						.stream()
-						.map(InRepositoryService.TagResponse::tag)
+						.map(Tag::tag)
 						.toList();
 					String tag = String.join(", ", tags);
 					File tagText = new File(parameter.directory + "/" + onlyFileName.split("\\.")[0] + ".txt");

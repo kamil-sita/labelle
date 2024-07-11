@@ -9,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -18,25 +17,25 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.core.images.loading.ImageCachingLoader;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
+import place.sita.labelle.core.repository.repositories.Repository;
+import place.sita.labelle.core.repository.repositories.RepositoryService;
+import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.datasource.Page;
 import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
-import place.sita.modulefx.annotations.ModuleFx;
-import place.sita.modulefx.messagebus.MessageSender;
-import place.sita.modulefx.threading.Threading;
-import place.sita.labelle.core.images.loading.ImageCachingLoader;
-import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
-import place.sita.labelle.core.repository.inrepository.InRepositoryService;
-import place.sita.labelle.core.repository.inrepository.InRepositoryService.TagResponse;
-import place.sita.labelle.core.repository.repositories.Repository;
-import place.sita.labelle.core.repository.repositories.RepositoryService;
-import place.sita.labelle.core.utils.Result2;
-import place.sita.modulefx.threading.Threading.KeyStone;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;
+import place.sita.modulefx.annotations.ModuleFx;
 import place.sita.modulefx.annotations.PostFxConstruct;
+import place.sita.modulefx.messagebus.MessageSender;
+import place.sita.modulefx.threading.Threading;
+import place.sita.modulefx.threading.Threading.KeyStone;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -86,22 +85,22 @@ public class RepositoryTab implements MainMenuTab {
     private TableView<?> markersTable;
 
     @FXML
-    private TableView<TagResponse> tagsTable;
+    private TableView<Tag> tagsTable;
 
     @FXML
     private CheckBox sharedCheckBox;
 
     @FXML
-    private TextField tagEntryTextField;
+    private TextField tagTagTextField;
 
     @FXML
-    private TextField tagFamilyTextField;
+    private TextField tagCategoryTextField;
 
     @FXML
-    private TextField entryFamilyTextField;
+    private TextField entryCategoryTextField;
 
     @FXML
-    private TextField markerFamilyTextField;
+    private TextField markerCategoryTextField;
 
     @FXML
     private AnchorPane imageDisplay;
@@ -220,26 +219,26 @@ public class RepositoryTab implements MainMenuTab {
         });
     }
 
-    private ObservableList<TagResponse> tagsTableData = FXCollections.observableArrayList();
+    private ObservableList<Tag> tagsTableData = FXCollections.observableArrayList();
 
     @FXML
-    private TableColumn<TagResponse, String> tagsFamilyColumn;
+    private TableColumn<Tag, String> tagsCategoryColumn;
 
     @FXML
-    private TableColumn<TagResponse, String> tagsValueColumn;
+    private TableColumn<Tag, String> tagsTagColumn;
 
     @FXML
-    private TableColumn<TagResponse, String> tagXColumn;
+    private TableColumn<Tag, String> tagXColumn;
 
     @PostFxConstruct
     public void setupTagsTable() {
         tagsTable.setItems(tagsTableData);
-        tagsFamilyColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().family()));
-        tagsValueColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().tag()));
+        tagsCategoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().category()));
+        tagsTagColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().tag()));
         tagXColumn.setCellFactory(cb -> {
             return new ButtonCell<>("X", tr -> {
                 Threading.onSeparateThread(toolkit -> {
-                   inRepositoryService.removeTag(selectedImage.id(), selectedRepository.id(), tr.tag(), tr.family());
+                   inRepositoryService.removeTag(selectedImage.id(), selectedRepository.id(), tr.tag(), tr.category());
                    toolkit.onFxThread(() -> {
                        tagsTableData.remove(tr);
                    });
@@ -252,7 +251,7 @@ public class RepositoryTab implements MainMenuTab {
 
     private void loadTags(ImageResponse selected) {
         Threading.onSeparateThread(loadTagsKeyStone, toolkit -> {
-            List<TagResponse> tags = inRepositoryService.getTags(selected.id());
+            List<Tag> tags = inRepositoryService.getTags(selected.id());
             toolkit.onFxThread(() -> {
                 tagsTableData.clear();
                 tagsTableData.addAll(tags);
@@ -317,12 +316,12 @@ public class RepositoryTab implements MainMenuTab {
 
     @FXML
     void addTagPress(ActionEvent event) {
-        String familyText = tagFamilyTextField.getText();
-        String tagText = tagEntryTextField.getText();
+        String categoryText = tagCategoryTextField.getText();
+        String tagText = tagTagTextField.getText();
         Threading.onSeparateThread(toolkit -> {
-            inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), tagText, familyText);
+            inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), tagText, categoryText);
             toolkit.onFxThread(() -> {
-                tagsTableData.add(new TagResponse(tagText, familyText));
+                tagsTableData.add(new Tag(tagText, categoryText));
             });
         });
     }

@@ -30,8 +30,8 @@ public class RepositoryActions {
 		return FxAssert.assertContext().getNodeFinder().lookup("#paginator").lookup(".list-view").lookup(".list-cell").nth(i).query();
 	}
 
-	public static TextField familyTextField() {
-		return FxAssert.assertContext().getNodeFinder().lookup("#tagFamilyTextField").query();
+	public static TextField categoryTextField() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#tagCategoryTextField").query();
 	}
 
 	public static TextField tagTextField() {
