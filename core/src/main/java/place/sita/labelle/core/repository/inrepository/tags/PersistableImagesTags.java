@@ -21,7 +21,7 @@ public class PersistableImagesTags {
 	}
 
 	public void addTag(UUID imageId, String tag, String category) {
-		tags.computeIfAbsent(imageId, k -> new LinkedHashSet<>()).add(new Tag(tag, category));
+		tags.computeIfAbsent(imageId, k -> new LinkedHashSet<>()).add(new Tag(category, tag));
 	}
 
 	public UUID repoId() {
@@ -45,9 +45,7 @@ public class PersistableImagesTags {
 	public Set<Tag> tags() {
 		Set<Tag> tagViews = new LinkedHashSet<>();
 		for (var entry : tags.entrySet()) {
-			for (var tagValue : entry.getValue()) {
-				tagViews.add(new Tag(tagValue.tag(), tagValue.category()));
-			}
+			tagViews.addAll(entry.getValue());
 		}
 		return tagViews;
 	}
