@@ -298,6 +298,6 @@ public class TagRepository {
 		return dslContext.select(Tables.IMAGE_TAGS.TAG_CATEGORY, Tables.IMAGE_TAGS.TAG)
 			.from(Tables.IMAGE_TAGS)
 			.where(Tables.IMAGE_TAGS.IMAGE_ID.eq(imageId))
-			.fetch(rr -> new Tag(rr.value2(), rr.value1()));
+			.fetch(rr -> new Tag(rr.value1(), rr.value2()));
 	}
 }

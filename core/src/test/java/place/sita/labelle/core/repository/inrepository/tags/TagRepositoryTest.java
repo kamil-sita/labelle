@@ -141,8 +141,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(2);
-		assertThat(tags).contains(new Tag("Some tag", "Some category"));
-		assertThat(tags).contains(new Tag("Some tag 2", "Some category 2"));
+		assertThat(tags).contains(new Tag("Some category", "Some tag"));
+		assertThat(tags).contains(new Tag("Some category 2", "Some tag 2"));
 	}
 
 	@Test
@@ -160,8 +160,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		// then
 		var tags = tagRepository.getTags(imageId);
 		assertThat(tags).hasSize(2);
-		assertThat(tags).contains(new Tag("Some tag", "Some category"));
-		assertThat(tags).contains(new Tag("Some tag 2", "Some category 2"));
+		assertThat(tags).contains(new Tag("Some category", "Some tag"));
+		assertThat(tags).contains(new Tag("Some category 2", "Some tag 2"));
 	}
 
 }
