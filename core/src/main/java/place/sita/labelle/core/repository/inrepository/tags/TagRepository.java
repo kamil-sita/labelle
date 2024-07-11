@@ -157,7 +157,7 @@ public class TagRepository {
 				continue;
 			}
 
-			UUID tagId = tagIds.get(new Tag(tag.tag(), tag.category()));
+			UUID tagId = tagIds.get(new Tag(tag.category(), tag.tag()));
 			ongoing = ongoing.values(tagId, imageId);
 			toPersist++;
 		}
