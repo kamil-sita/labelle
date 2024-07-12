@@ -175,12 +175,6 @@ public class TagRepository {
 		addTags(persistableImagesTags);
 	}
 
-	@Deprecated
-	@Transactional
-	public void addTag(UUID imageId, @Nullable UUID repositoryId, String category, String tag) {
-		addTag(imageId, repositoryId, new Tag(category, tag));
-	}
-
 	@Transactional
 	public void deleteTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
 		UUID tagId = getTagId(imageId, repositoryId, tag.category(), tag.tag());

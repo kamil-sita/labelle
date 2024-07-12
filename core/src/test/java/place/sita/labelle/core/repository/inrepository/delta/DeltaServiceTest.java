@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
@@ -114,7 +115,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
+		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(imageId));
@@ -130,7 +131,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 		inRepositoryService.setParentPersistentId(imageId, "parent persistent id");
-		tagRepository.addTag(imageId, repo.id(), "Some category", "Some tag");
+		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(imageId));
@@ -157,8 +158,8 @@ public class DeltaServiceTest extends TestContainersTest {
 		inRepositoryService.setPersistentId(parentImageId, "parent persistent id");
 		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
 
-		tagRepository.addTag(childImageId, childRepo.id(), "Some category", "Some tag");
-		tagRepository.addTag(parentImageId, parentRepo.id(), "Some category", "Some tag");
+		tagRepository.addTag(childImageId, childRepo.id(), new Tag("Some category", "Some tag"));
+		tagRepository.addTag(parentImageId, parentRepo.id(), new Tag("Some category", "Some tag"));
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));
@@ -182,7 +183,7 @@ public class DeltaServiceTest extends TestContainersTest {
 		inRepositoryService.setPersistentId(parentImageId, "parent persistent id");
 		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
 
-		tagRepository.addTag(parentImageId, parentRepo.id(), "Some category", "Some tag");
+		tagRepository.addTag(parentImageId, parentRepo.id(), new Tag("Some category", "Some tag"));
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));
@@ -213,10 +214,10 @@ public class DeltaServiceTest extends TestContainersTest {
 		inRepositoryService.setPersistentId(parentImageId2, "parent persistent id");
 		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
 
-		tagRepository.addTag(childImageId, childRepo.id(), "Some category", "Some tag 1");
-		tagRepository.addTag(childImageId, childRepo.id(), "Some category", "Some tag 2");
-		tagRepository.addTag(parentImageId1, parentRepo1.id(), "Some category", "Some tag 2");
-		tagRepository.addTag(parentImageId2, parentRepo2.id(), "Some category", "Some tag 1");
+		tagRepository.addTag(childImageId, childRepo.id(), new Tag("Some category", "Some tag 1"));
+		tagRepository.addTag(childImageId, childRepo.id(), new Tag("Some category", "Some tag 2"));
+		tagRepository.addTag(parentImageId1, parentRepo1.id(), new Tag("Some category", "Some tag 2"));
+		tagRepository.addTag(parentImageId2, parentRepo2.id(), new Tag("Some category", "Some tag 1"));
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));
