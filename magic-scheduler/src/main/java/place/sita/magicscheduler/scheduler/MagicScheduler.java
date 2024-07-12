@@ -3,7 +3,6 @@ package place.sita.magicscheduler.scheduler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Component;
 import place.sita.magicscheduler.TaskType;
 import place.sita.magicscheduler.scheduler.environment.SchedulerAwareTaskExecutionEnvironment;
@@ -173,18 +172,18 @@ public class MagicScheduler {
         public void run() {
             // todo maybe the details of the implementation should be inside those task types?
             NextJobResult nextJob = getJob();
-            if (nextJob instanceof NoNextJob) {
-                return;
-            }
-            if (nextJob instanceof NextJobNotAvailableYet nextJobNotAvailableYet) {
-                scheduleLater.schedule(
-                    MagicScheduler.this::submitUnknownTaskToInternalScheduler,
-                    nextJobNotAvailableYet.expectedJobAvailabilityTime);
-                return;
-            }
-            if (nextJob instanceof Job job) {
-                execute(job.task);
-            }
+	        switch (nextJob) {
+		        case NoNextJob noNextJob -> { /* nothing to do */ }
+		        case NextJobNotAvailableYet nextJobNotAvailableYet -> {
+			        scheduleLater.schedule(
+				        MagicScheduler.this::submitUnknownTaskToInternalScheduler,
+				        nextJobNotAvailableYet.expectedJobAvailabilityTime);
+		        }
+		        case Job job -> execute(job.task);
+		        default -> {
+                    throw new IllegalStateException("Unexpected value: " + nextJob);
+                }
+	        }
         }
 
         private <ParameterT> void execute(MagicSchedulerTask<ParameterT> task) {
