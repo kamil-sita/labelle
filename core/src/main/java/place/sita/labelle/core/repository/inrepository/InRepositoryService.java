@@ -283,12 +283,6 @@ public class InRepositoryService {
     }
 
     @Transactional
-    @Deprecated
-    public void addTag(UUID imageId, @Nullable UUID repositoryId, String category, String tag) {
-        addTag(imageId, repositoryId, new Tag(category, tag));
-    }
-
-    @Transactional
     public void addTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
         tagRepository.addTag(imageId, repositoryId, tag);
     }

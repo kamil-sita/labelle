@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.cache.CacheRegistry;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.jooq.Tables;
 
@@ -64,7 +65,7 @@ public class StatisticsServiceTest extends TestContainersTest {
 		// given
 		var repository = repositoryService.addRepository("test");
 		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image, null, "category", "tag");
+		inRepositoryService.addTag(image, null, new Tag("category", "tag"));
 
 		// when
 		List<TagWithCountResponse> tagCount = statisticsService.getTagCount(repository.id());
@@ -81,10 +82,10 @@ public class StatisticsServiceTest extends TestContainersTest {
 		// given
 		var repository = repositoryService.addRepository("test");
 		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image, null, "category", "tag");
-		inRepositoryService.addTag(image, null, "category", "tag2");
+		inRepositoryService.addTag(image, null, new Tag("category", "tag"));
+		inRepositoryService.addTag(image, null, new Tag("category", "tag2"));
 		var image2 = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image2, null, "category", "tag");
+		inRepositoryService.addTag(image2, null, new Tag("category", "tag"));
 
 		// when
 		List<TagWithCountResponse> tagCount = statisticsService.getTagCount(repository.id());
@@ -105,7 +106,7 @@ public class StatisticsServiceTest extends TestContainersTest {
 		var repository = repositoryService.addRepository("test");
 		var repository2 = repositoryService.addRepository("test2");
 		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(image, null, "category", "tag");
+		inRepositoryService.addTag(image, null, new Tag("category", "tag"));
 
 		// when
 		List<TagWithCountResponse> tagCount = statisticsService.getTagCount(repository2.id());

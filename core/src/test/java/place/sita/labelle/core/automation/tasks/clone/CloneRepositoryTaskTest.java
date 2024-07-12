@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.magicscheduler.scheduler.TaskStateContext;
@@ -48,7 +49,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, "Some category", "Some tag");
+		inRepositoryService.addTag(imageId, null, new Tag("Some category", "Some tag"));
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
