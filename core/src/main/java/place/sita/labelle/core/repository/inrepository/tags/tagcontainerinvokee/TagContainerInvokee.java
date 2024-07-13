@@ -1,5 +1,7 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee;
 
+import java.util.List;
+
 /**
  * Represents an abstract tag container on which operations can be performed.
  *
@@ -9,6 +11,6 @@ package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee
  */
 public interface TagContainerInvokee {
 
-	void apply(TciInstruction instruction);
+	void apply(List<TciInstruction> instructions);
 
 }
