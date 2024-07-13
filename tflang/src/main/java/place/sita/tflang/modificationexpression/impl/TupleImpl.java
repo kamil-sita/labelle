@@ -1,7 +1,7 @@
 package place.sita.tflang.modificationexpression.impl;
 
-import place.sita.tflang.modificationexpression.StringOrMatched;
-import place.sita.tflang.modificationexpression.Tuple;
+import place.sita.tflang.modificationexpression.changeexpression.StringOrMatched;
+import place.sita.tflang.modificationexpression.changeexpression.Tuple;
 
 import java.util.List;
 

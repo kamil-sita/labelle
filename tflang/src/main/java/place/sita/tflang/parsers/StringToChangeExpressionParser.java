@@ -7,7 +7,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import place.sita.tflang.TFLangLexer;
 import place.sita.tflang.TFLangParser;
-import place.sita.tflang.modificationexpression.ChangeExpression;
+import place.sita.tflang.modificationexpression.changeexpression.ChangeExpression;
 import place.sita.tflang.modificationexpression.parsing.TFLangModificationExpressionParser;
 
 public class StringToChangeExpressionParser {

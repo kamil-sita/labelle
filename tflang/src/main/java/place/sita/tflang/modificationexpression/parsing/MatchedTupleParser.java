@@ -2,10 +2,8 @@ package place.sita.tflang.modificationexpression.parsing;
 
 import place.sita.tflang.TFLangBaseVisitor;
 import place.sita.tflang.TFLangParser;
-import place.sita.tflang.modificationexpression.AddUsingFunctionExpression;
-import place.sita.tflang.modificationexpression.StringOrMatched;
-import place.sita.tflang.modificationexpression.Tuple;
-import place.sita.tflang.modificationexpression.impl.AddUsingFunctionExpressionImpl;
+import place.sita.tflang.modificationexpression.changeexpression.StringOrMatched;
+import place.sita.tflang.modificationexpression.changeexpression.Tuple;
 import place.sita.tflang.modificationexpression.impl.TupleImpl;
 
 import java.util.ArrayList;

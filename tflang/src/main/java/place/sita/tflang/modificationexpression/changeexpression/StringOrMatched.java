@@ -1,4 +1,4 @@
-package place.sita.tflang.modificationexpression;
+package place.sita.tflang.modificationexpression.changeexpression;
 
 public interface StringOrMatched {
 

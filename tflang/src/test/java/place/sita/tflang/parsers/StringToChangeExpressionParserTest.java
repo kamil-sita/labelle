@@ -1,7 +1,7 @@
 package place.sita.tflang.parsers;
 
 import org.junit.jupiter.api.Test;
-import place.sita.tflang.modificationexpression.*;
+import place.sita.tflang.modificationexpression.changeexpression.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

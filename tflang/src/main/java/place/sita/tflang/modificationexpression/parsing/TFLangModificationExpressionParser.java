@@ -2,7 +2,7 @@ package place.sita.tflang.modificationexpression.parsing;
 
 import place.sita.tflang.TFLangBaseVisitor;
 import place.sita.tflang.TFLangParser;
-import place.sita.tflang.modificationexpression.ChangeExpression;
+import place.sita.tflang.modificationexpression.changeexpression.ChangeExpression;
 import place.sita.tflang.modificationexpression.impl.*;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package place.sita.tflang.modificationexpression.impl;
 
-import place.sita.tflang.modificationexpression.ChangeExpression;
-import place.sita.tflang.modificationexpression.MultiChangeExpression;
+import place.sita.tflang.modificationexpression.changeexpression.ChangeExpression;
+import place.sita.tflang.modificationexpression.changeexpression.MultiChangeExpression;
 
 import java.util.List;
 
