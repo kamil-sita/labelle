@@ -9,3 +9,12 @@ conditionalChangeExpression
     : 'IF' matchExpression 'THEN' changeManyExpression
     | changeManyExpression
     ;
+
+
+parseConditionalChangeExpressionMany
+    : conditionalChangeExpressionMany EOF
+    ;
+
+conditionalChangeExpressionMany
+    : conditionalChangeExpression (';'+ conditionalChangeExpression)* (';')*
+    ;

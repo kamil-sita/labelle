@@ -11,6 +11,10 @@ import java.util.List;
  */
 public interface TagContainerInvokee {
 
-	void apply(List<TciInstruction> instructions);
+	void applyInstructions(List<TciInstruction> instructions);
+
+	default void applyInstructions(String expression) {
+		applyInstructions(TfLangChangeExpressionToTciInstructionConverter.convert(expression));
+	}
 
 }

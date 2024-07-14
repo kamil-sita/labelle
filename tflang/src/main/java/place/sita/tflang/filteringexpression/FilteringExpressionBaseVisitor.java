@@ -5,6 +5,9 @@ import place.sita.tflang.filteringexpression.fillteringexpression.*;
 public abstract class FilteringExpressionBaseVisitor<T> {
 
 	public T visit(FilteringExpression expression) {
+		if (expression == null) {
+			throw new IllegalArgumentException("expression cannot be null");
+		}
 		if (expression == FilteringExpression.MATCH_EVERYTHING) {
 			return visitMatchEverything();
 		} else if (expression == FilteringExpression.MATCH_NOTHING) {

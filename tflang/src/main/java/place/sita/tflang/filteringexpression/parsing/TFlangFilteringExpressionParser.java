@@ -16,6 +16,8 @@ import static place.sita.tflang.TFlangUtil.stripQuotes;
 
 public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<FilteringExpression> {
 
+
+
 	@Override
 	public FilteringExpression visitParseMatchExpression(TFLangParser.ParseMatchExpressionContext ctx) {
 		return visit(ctx.matchExpression());
@@ -55,7 +57,7 @@ public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<Filtering
 	@Override
 	public FilteringExpression visitParenthesesMatchExpression(TFLangParser.ParenthesesMatchExpressionContext ctx) {
 		// fallthrough
-		return super.visitParenthesesMatchExpression(ctx);
+		return visit(ctx.matchExpression());
 	}
 
 	@Override
