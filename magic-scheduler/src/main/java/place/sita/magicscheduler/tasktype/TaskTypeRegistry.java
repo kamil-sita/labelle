@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static java.util.stream.Collectors.toSet;
 import static place.sita.labelle.jooq.tables.TaskType.TASK_TYPE;
 
 @Component
@@ -22,9 +23,9 @@ public class TaskTypeRegistry {
 
     private final DSLContext ctx;
     private final List<TaskTypeRef> taskTypeDefinitions;
-    private Map<String, TaskTypeRef> tasksByCode;
-    private Map<UUID, TaskTypeRef> tasksByUUID;
-    private Map<String, UUID> uuidByCode;
+    private final Map<String, TaskTypeRef> tasksByCode = new HashMap<>();
+    private final Map<UUID, TaskTypeRef> tasksByUUID = new HashMap<>();
+    private final Map<String, UUID> uuidByCode = new HashMap<>();
     private final ApplicationContext applicationContext;
     private final TypeSpecificQueueRegistry typeSpecificQueueRegistry;
 
@@ -40,20 +41,34 @@ public class TaskTypeRegistry {
 
     @PostConstruct
     public void syncDatabaseDefinitions() {
-        tasksByUUID = new HashMap<>();
-        tasksByCode = new HashMap<>();
-        uuidByCode = new HashMap<>();
+        register(taskTypeDefinitions);
+    }
 
-        for (var taskDefinition : taskTypeDefinitions) {
-            boolean nonUnique = tasksByCode.containsKey(taskDefinition.code());
-            if (nonUnique) {
+    public void register(List<TaskTypeRef> refs) {
+        registerNewTasks(refs);
+
+        updateUuidMappings();
+
+        createNewQueues(refs);
+    }
+
+    private void registerNewTasks(List<TaskTypeRef> refs) {
+        for (var taskDefinition : refs) {
+            TaskTypeRef ref = tasksByCode.get(taskDefinition.code());
+            if (ref == null || ref.isHistoric()) {
+                tasksByCode.put(taskDefinition.code(), taskDefinition);
+            } else {
                 throw new IllegalStateException("Expected task codes to be unique, but " + taskDefinition + " duplicates code " + taskDefinition.code());
             }
-            tasksByCode.put(taskDefinition.code(), taskDefinition);
         }
 
-        log.info("Known tasks: {}", tasksByCode.keySet());
+        Set<String> tasksToRegister = refs.stream().map(TaskTypeRef::code).collect(toSet());
 
+        log.info("Registering tasks: {}", tasksToRegister);
+    }
+
+    private void updateUuidMappings() {
+        // note: this is not optimal, as it always refetches everything, but it shouldn't be a problem short-term
         var results = ctx
             .select(TASK_TYPE.ID, TASK_TYPE.CODE)
             .from(TASK_TYPE)
@@ -80,21 +95,23 @@ public class TaskTypeRegistry {
                 .values(uuid, taskType.code(), taskType.name())
                 .execute();
         }
+    }
 
-        for (var r : tasksByCode.values()) {
-            if (!r.isHistoric()) {
+    private void createNewQueues(List<TaskTypeRef> refs) {
+        for (var ref : refs) {
+            if (!ref.isHistoric()) {
                 TypeSpecificQueue typeSpecificQueue = applicationContext.getBean(TypeSpecificQueue.class);
-                typeSpecificQueue.setType(r);
-                typeSpecificQueue.setThisTaskTypeId(uuidByCode(r.code()));
-                log.info("Registering a TypeSpecificQueue for {}", r.code());
+                typeSpecificQueue.setType(ref);
+                typeSpecificQueue.setThisTaskTypeId(uuidByCode(ref.code()));
+                log.info("Registering a TypeSpecificQueue for {}", ref.code());
                 typeSpecificQueue.scheduleFirstExecution();
-                typeSpecificQueueRegistry.register(r.code(), typeSpecificQueue);
+                typeSpecificQueueRegistry.register(ref.code(), typeSpecificQueue);
             }
         }
     }
 
     public List<TaskTypeRef> all() {
-        return new ArrayList<>(taskTypeDefinitions);
+        return new ArrayList<>(tasksByCode.values());
     }
 
     public List<TaskTypeResponse> allR() {
