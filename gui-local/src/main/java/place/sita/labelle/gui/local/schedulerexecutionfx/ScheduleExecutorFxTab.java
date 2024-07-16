@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.magicscheduler.TasksService;
+import place.sita.magicscheduler.transfer.KnownTaskTypesResponse;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
-import place.sita.labelle.core.tasks.transfer.KnownTaskTypesResponse;
 
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelected;

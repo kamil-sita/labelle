@@ -1,4 +1,4 @@
-package place.sita.labelle.core.tasks.transfer;
+package place.sita.magicscheduler.transfer;
 
 import java.math.BigDecimal;
 
@@ -6,7 +6,8 @@ public record KnownTaskTypesResponse(
     String code,
     String name,
     BigDecimal delay,
-    String sampleValue) {
+    String sampleValue,
+    boolean isHistoric) {
 
     @Override
     public String toString() {

@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.utils.ExceptionUtil;
 import place.sita.labelle.jooq.enums.TaskStatus;
-import place.sita.magicscheduler.tasktype.TaskType;
-import place.sita.magicscheduler.tasktype.TaskTypeRepository;
+import place.sita.magicscheduler.tasktype.TaskTypeRef;
+import place.sita.magicscheduler.tasktype.TaskTypeRegistry;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,13 +28,12 @@ public class TypeSpecificQueue {
     private final ScheduleLater scheduleLater;
 
     private static final Logger log = LoggerFactory.getLogger(TypeSpecificQueue.class);
-    private TaskType<?, ?, ?> taskType;
+    private TaskTypeRef taskType;
     private final DSLContext dslContext;
     private final Set<UUID> tasksInSchedulerOrExecutor = new HashSet<>();
     private int inSystemTargetCount = 100;
     private final MagicScheduler magicScheduler;
     private final ExecutionResultsSubmitter executionResultsSubmitter;
-    private final TaskTypeRepository taskTypeRepository;
     private final SoftToHardFailPolicy softToHardFailPolicy;
     private final SchedulerProperties schedulerProperties;
 
@@ -42,14 +41,12 @@ public class TypeSpecificQueue {
                              DSLContext dslContext,
                              MagicScheduler magicScheduler,
                              ExecutionResultsSubmitter executionResultsSubmitter,
-                             TaskTypeRepository taskTypeRepository,
                              SoftToHardFailPolicy softToHardFailPolicy,
                              SchedulerProperties schedulerProperties) {
         this.scheduleLater = scheduleLater;
         this.dslContext = dslContext;
         this.magicScheduler = magicScheduler;
         this.executionResultsSubmitter = executionResultsSubmitter;
-        this.taskTypeRepository = taskTypeRepository;
         this.softToHardFailPolicy = softToHardFailPolicy;
 	    this.schedulerProperties = schedulerProperties;
     }
@@ -209,8 +206,7 @@ public class TypeSpecificQueue {
         List<JobExecFailures> failures = new ArrayList<>();
         for (var job : readyToSubmitJobs) {
             try {
-                Object config = taskType.deserializeParam(job.config);
-                magicScheduler.schedule(job.id, (TaskType) taskType, config, job.executionCount, () -> {
+                magicScheduler.schedule(job.id, taskType, job.config, job.executionCount, () -> {
                     tasksInSchedulerOrExecutor.remove(job.id);
                 });
             } catch (Exception e) {
@@ -243,14 +239,15 @@ public class TypeSpecificQueue {
 
     private UUID thisTaskTypeId;
 
+    public void setThisTaskTypeId(UUID thisTaskTypeId) {
+        this.thisTaskTypeId = thisTaskTypeId;
+    }
+
     private UUID thisTaskTypeId() {
-        if (thisTaskTypeId == null) {
-            thisTaskTypeId = taskTypeRepository.uuidByCode(taskType.code());
-        }
         return thisTaskTypeId;
     }
 
-    public void setType(TaskType<?, ?, ?> type) {
+    public void setType(TaskTypeRef type) {
         this.taskType = type;
     }
 

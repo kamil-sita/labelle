@@ -11,11 +11,7 @@ import place.sita.magicscheduler.scheduler.resources.resource.Resource;
 
 import java.util.List;
 
-public interface TaskType<ParameterT, AcceptedContextT, ResultT> {
-
-    String code();
-
-    String name();
+public non-sealed interface TaskType<ParameterT, AcceptedContextT, ResultT> extends TaskTypeRef {
 
     TaskResult<ResultT> runTask(ParameterT parameter, TaskContext<AcceptedContextT> taskContext);
 
@@ -65,4 +61,8 @@ public interface TaskType<ParameterT, AcceptedContextT, ResultT> {
 
 	Class<ResultT> resultType();
 
+	@Override
+	default boolean isHistoric() {
+		return false;
+	}
 }

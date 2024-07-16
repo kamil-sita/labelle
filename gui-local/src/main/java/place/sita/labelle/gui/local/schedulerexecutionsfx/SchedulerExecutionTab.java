@@ -12,8 +12,8 @@ import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.magicscheduler.ExecutionsService;
 import place.sita.magicscheduler.ExecutionsService.ScheduledTaskResponse;
-import place.sita.magicscheduler.tasktype.TaskTypeRepository;
-import place.sita.magicscheduler.tasktype.TaskTypeRepository.TaskTypeResponse;
+import place.sita.magicscheduler.tasktype.TaskTypeRegistry;
+import place.sita.magicscheduler.tasktype.TaskTypeRegistry.TaskTypeResponse;
 import place.sita.modulefx.annotations.FxChild;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
@@ -28,7 +28,7 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @FxTab(resourceFile = "/fx/schedulerexecutions/scheduler_executions.fxml", order = 1, tabName = "Scheduler Executions")
 public class SchedulerExecutionTab implements MainMenuTab {
 
-    private final TaskTypeRepository taskTypeRepository;
+    private final TaskTypeRegistry taskTypeRegistry;
     private final ExecutionsService executionsService;
 
     @FXML
@@ -43,8 +43,8 @@ public class SchedulerExecutionTab implements MainMenuTab {
     @FxChild(patchNode = "view")
     private SchedulerExecutionViewFx schedulerExecutionViewFx;
 
-    public SchedulerExecutionTab(TaskTypeRepository taskTypeRepository, ExecutionsService executionsService) {
-        this.taskTypeRepository = taskTypeRepository;
+    public SchedulerExecutionTab(TaskTypeRegistry taskTypeRegistry, ExecutionsService executionsService) {
+        this.taskTypeRegistry = taskTypeRegistry;
         this.executionsService = executionsService;
     }
 
@@ -52,7 +52,7 @@ public class SchedulerExecutionTab implements MainMenuTab {
     public void setupTaskTypes() {
         ObservableList<TaskTypeResponse> observableList = FXCollections.observableArrayList();
         observableList.add(null);
-        observableList.addAll(taskTypeRepository.allR());
+        observableList.addAll(taskTypeRegistry.allR());
         taskTypeChoiceBox.setItems(observableList);
     }
 

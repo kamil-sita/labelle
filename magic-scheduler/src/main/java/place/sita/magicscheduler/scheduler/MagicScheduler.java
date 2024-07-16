@@ -11,6 +11,7 @@ import place.sita.magicscheduler.scheduler.events.TaskPickedUpEvent;
 import place.sita.magicscheduler.scheduler.resources.LockResult;
 import place.sita.magicscheduler.scheduler.resources.ResourceHub;
 import place.sita.magicscheduler.scheduler.resources.resource.Resource;
+import place.sita.magicscheduler.tasktype.TaskTypeRef;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -46,7 +47,16 @@ public class MagicScheduler {
 	    this.eventPublisher = eventPublisher;
     }
 
-    public <ParameterT> void schedule(UUID id, TaskType<ParameterT, ?, ?> task, ParameterT parameter, int executionCount, ExecutionFinishedCallback callback) {
+    public void schedule(UUID id, TaskTypeRef taskTypeRef, String config, int executionCount, ExecutionFinishedCallback callback) {
+        if (taskTypeRef instanceof TaskType<?,?,?> taskType && !taskType.isHistoric()) {
+            Object configDeserialized = taskType.deserializeParam(config);
+            schedule(id, (TaskType) taskType, configDeserialized, executionCount, callback);
+        } else {
+            log.warn("Task with ID {} is scheduled, but cannot be executed by MagicScheduler", id);
+        }
+    }
+
+    private <ParameterT> void schedule(UUID id, TaskType<ParameterT, ?, ?> task, ParameterT parameter, int executionCount, ExecutionFinishedCallback callback) {
         List<Resource<?>> resources = getResources(parameter, task);
         if (resources == null) {
             resources = List.of();
@@ -147,7 +157,6 @@ public class MagicScheduler {
 
         // rip rat, the previous algorithm
     }
-
 
     public interface ExecutionFinishedCallback {
         void onExecutionFinished();

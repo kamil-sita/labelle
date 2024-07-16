@@ -12,7 +12,8 @@ import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.jooq.enums.TaskExecutionResult;
 import place.sita.labelle.jooq.enums.TaskStatus;
 import place.sita.magicscheduler.tasktype.TaskType;
-import place.sita.magicscheduler.tasktype.TaskTypeRepository;
+import place.sita.magicscheduler.tasktype.TaskTypeRef;
+import place.sita.magicscheduler.tasktype.TaskTypeRegistry;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -29,11 +30,11 @@ public class ExecutionsService {
     private static final Logger log = LoggerFactory.getLogger(ExecutionsService.class);
 
     private final DSLContext dslContext;
-    private final TaskTypeRepository taskTypeRepository;
+    private final TaskTypeRegistry taskTypeRegistry;
 
-    public ExecutionsService(DSLContext dslContext, TaskTypeRepository taskTypeRepository) {
+    public ExecutionsService(DSLContext dslContext, TaskTypeRegistry taskTypeRegistry) {
         this.dslContext = dslContext;
-        this.taskTypeRepository = taskTypeRepository;
+        this.taskTypeRegistry = taskTypeRegistry;
     }
 
     public int getJobsCountByTaskId(UUID id) {
@@ -50,7 +51,7 @@ public class ExecutionsService {
             .offset(offset)
             .limit(limit)
             .fetch(rr -> {
-                TaskType taskType = taskTypeRepository.byUUID(rr.value1());
+                TaskTypeRef taskType = taskTypeRegistry.byUUID(rr.value1());
                 if (taskType == null) {
                     String code = dslContext
                         .select(TASK_TYPE.CODE)
@@ -58,13 +59,13 @@ public class ExecutionsService {
                         .where(TASK_TYPE.ID.eq(rr.value1()))
                         .fetchOne(0, String.class);
 
-                    log.warn("Task type with id {} not found in memory. Code is \"{}\". This configuration is not supported", rr.value1(), code);
+                    log.warn("Task type with id {} not found in memory. Code is \"{}\". This should not happen", rr.value1(), code);
                     return null;
                 }
-                return new ScheduledTaskResponse(taskType.code(), taskType.name(), rr.value4(), rr.value3(), rr.value2());
+                return new ScheduledTaskResponse(taskType.code(), taskType.name(), rr.value4(), rr.value3(), rr.value2(), taskType.isHistoric());
             })
             .stream()
-            .filter(x -> x != null)
+            .filter(Objects::nonNull)
             .toList();
     }
 
@@ -184,12 +185,12 @@ public class ExecutionsService {
         }
     }
 
-    public record ScheduledTaskResponse(String taskCode, String taskName, UUID taskId, LocalDateTime jobCreationTime, TaskStatus taskStatus) {
+    public record ScheduledTaskResponse(String taskCode, String taskName, UUID taskId, LocalDateTime jobCreationTime, TaskStatus taskStatus, boolean isHistoric) {
 
 
         @Override
         public String toString() {
-            return "[" + taskId + "] " + taskName + " (" + taskCode + "): " + taskStatus + ", scheduled @ " + jobCreationTime;
+            return "[" + (isHistoric ? "HISTORIC" : "") + taskId + "] " + taskName + " (" + taskCode + "): " + taskStatus + ", scheduled @ " + jobCreationTime;
         }
     }
 
