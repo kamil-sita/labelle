@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
-import place.sita.magicscheduler.TaskType;
+import place.sita.magicscheduler.tasktype.TaskType;
 import place.sita.magicscheduler.scheduler.resources.resource.Resource;
 
 import java.util.List;

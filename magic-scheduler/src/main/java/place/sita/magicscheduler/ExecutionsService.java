@@ -11,6 +11,8 @@ import place.sita.labelle.core.persistence.JqRepo;
 import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.jooq.enums.TaskExecutionResult;
 import place.sita.labelle.jooq.enums.TaskStatus;
+import place.sita.magicscheduler.tasktype.TaskType;
+import place.sita.magicscheduler.tasktype.TaskTypeRepository;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;

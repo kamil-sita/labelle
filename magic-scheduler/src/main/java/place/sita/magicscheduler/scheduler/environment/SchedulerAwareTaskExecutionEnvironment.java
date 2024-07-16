@@ -6,7 +6,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import place.sita.labelle.jooq.enums.TaskStatus;
 import place.sita.magicscheduler.InternalTaskSubmitter;
-import place.sita.magicscheduler.TaskType;
+import place.sita.magicscheduler.tasktype.TaskType;
 import place.sita.magicscheduler.scheduler.*;
 
 import java.util.UUID;

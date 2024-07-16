@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import place.sita.labelle.core.utils.ExceptionUtil;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
-import place.sita.magicscheduler.TaskType;
+import place.sita.magicscheduler.tasktype.TaskType;
 import place.sita.magicscheduler.scheduler.*;
 import place.sita.magicscheduler.scheduler.resources.ResourceHub;
 import place.sita.magicscheduler.scheduler.resources.resource.Resource;

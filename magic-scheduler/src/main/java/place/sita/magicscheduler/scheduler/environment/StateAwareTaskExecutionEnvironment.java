@@ -1,7 +1,7 @@
 package place.sita.magicscheduler.scheduler.environment;
 
 import org.springframework.stereotype.Component;
-import place.sita.magicscheduler.TaskType;
+import place.sita.magicscheduler.tasktype.TaskType;
 import place.sita.magicscheduler.scheduler.ApiTaskExecutionResult;
 import place.sita.magicscheduler.scheduler.SoftToHardFailPolicy;
 import place.sita.magicscheduler.scheduler.TaskStateContext;

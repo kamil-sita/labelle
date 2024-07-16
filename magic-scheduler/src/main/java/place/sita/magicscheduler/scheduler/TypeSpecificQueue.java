@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.utils.ExceptionUtil;
 import place.sita.labelle.jooq.enums.TaskStatus;
-import place.sita.magicscheduler.TaskType;
-import place.sita.magicscheduler.TaskTypeRepository;
+import place.sita.magicscheduler.tasktype.TaskType;
+import place.sita.magicscheduler.tasktype.TaskTypeRepository;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

@@ -1,6 +1,10 @@
-package place.sita.magicscheduler;
+package place.sita.magicscheduler.tasktype;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+
+import place.sita.magicscheduler.MappingSupport;
+import place.sita.magicscheduler.TaskContext;
+import place.sita.magicscheduler.TaskResult;
 import place.sita.magicscheduler.scheduler.ApiTaskExecutionResult;
 import place.sita.magicscheduler.scheduler.FailResolver;
 import place.sita.magicscheduler.scheduler.resources.resource.Resource;

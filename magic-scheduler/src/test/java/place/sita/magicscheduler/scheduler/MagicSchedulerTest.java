@@ -14,6 +14,7 @@ import place.sita.labelle.jooq.enums.TaskStatus;
 import place.sita.magicscheduler.*;
 import place.sita.magicscheduler.scheduler.task.StringTaskTestValueProcessor;
 import place.sita.magicscheduler.scheduler.task.StringTestTask;
+import place.sita.magicscheduler.tasktype.TaskType;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;

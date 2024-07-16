@@ -1,4 +1,4 @@
-package place.sita.magicscheduler;
+package place.sita.magicscheduler.tasktype;
 
 
 import com.google.common.collect.Sets;

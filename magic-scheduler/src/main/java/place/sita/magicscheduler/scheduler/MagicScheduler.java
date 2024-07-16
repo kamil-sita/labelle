@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import place.sita.magicscheduler.TaskType;
+import place.sita.magicscheduler.tasktype.TaskType;
 import place.sita.magicscheduler.scheduler.environment.SchedulerAwareTaskExecutionEnvironment;
 import place.sita.magicscheduler.scheduler.events.TaskExecutionCompleteEvent;
 import place.sita.magicscheduler.scheduler.events.TaskPickedUpEvent;

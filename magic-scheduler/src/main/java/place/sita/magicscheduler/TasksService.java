@@ -2,6 +2,7 @@ package place.sita.magicscheduler;
 
 import org.springframework.stereotype.Service;
 import place.sita.labelle.core.tasks.transfer.KnownTaskTypesResponse;
+import place.sita.magicscheduler.tasktype.TaskTypeRepository;
 
 import java.math.BigDecimal;
 import java.util.List;

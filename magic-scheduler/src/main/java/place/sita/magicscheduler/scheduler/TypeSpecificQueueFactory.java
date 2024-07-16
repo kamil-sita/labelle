@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import place.sita.magicscheduler.TaskTypeRepository;
+import place.sita.magicscheduler.tasktype.TaskTypeRepository;
 
 @Component
 public class TypeSpecificQueueFactory {
