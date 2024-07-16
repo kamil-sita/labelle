@@ -7,7 +7,7 @@ import place.sita.tflang.parsers.StringToFilteringExpressionParser;
 
 public class StringToTagFilter {
 
-	public static TagFilter fromString(String filter) {
+	public static TagFiltering fromString(String filter) {
 		FilteringExpression fe = StringToFilteringExpressionParser.parse(filter);
 		TFlangFilteringToTciScope tflangFilteringToTciScope = new TFlangFilteringToTciScope();
 		TciScope scope = tflangFilteringToTciScope.visit(fe);

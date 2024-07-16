@@ -9,6 +9,7 @@ import place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -17,7 +18,7 @@ public class InMemoryTagContainerInvokee implements TagContainerInvokee {
 
 	private List<OptimizedTciInstruction> instructions;
 
-	private record OptimizedTciInstruction(TagFilter filter, List<TciAction> actions) {
+	private record OptimizedTciInstruction(TagFiltering filter, List<TciAction> actions) {
 
 	}
 
@@ -29,12 +30,13 @@ public class InMemoryTagContainerInvokee implements TagContainerInvokee {
 				instruction.actions()
 			))
 			.toList();
+
+		// test run to throw upfront
+		applyToInvokee(new LinkedHashSet<>());
 	}
 
 	public Set<Tag> applyToInvokee(Set<Tag> tags) {
-		if (instructions == null) {
-			throw new IllegalStateException("Instructions not set");
-		}
+		Objects.requireNonNull(instructions, "Instructions not set");
 
 		Set<Tag> copy = new LinkedHashSet<>(tags);
 
@@ -45,19 +47,72 @@ public class InMemoryTagContainerInvokee implements TagContainerInvokee {
 		return copy;
 	}
 
-	private void apply(OptimizedTciInstruction instruction, Set<Tag> copy) {
-		Set<Tag> matchingTags = copy.stream().filter(t -> instruction.filter.filter(t)).collect(toSet());
+	private void apply(OptimizedTciInstruction instruction, Set<Tag> mutableContainer) {
+		switch (instruction.filter) {
+			case ContainerFiltering containerFiltering -> {
+				apply(containerFiltering, instruction.actions, mutableContainer);
+			}
+			case TagFilter tagFilter -> {
+				apply(tagFilter, instruction.actions, mutableContainer);
+			}
+		}
+	}
 
-		for (TciAction action : instruction.actions) {
+	private void apply(ContainerFiltering containerFiltering, List<TciAction> extActions, Set<Tag> mutableContainer) {
+		boolean isMatching = containerFiltering.filter(mutableContainer);
+
+		for(TciAction extAction : extActions) {
+			if (extAction instanceof TciIsInExpressionWrapper inActions) {
+				for (TciAction inAction : inActions.actions()) {
+					switch (inAction) {
+						case TciAddTag tciAddTag -> addTag(mutableContainer, isMatching, tciAddTag);
+						case TciAddUsingFunction tciAddUsingFunction -> throw new NotImplementedException();
+						case TciIsInExpressionWrapper tciIsInExpressionWrapper -> throw new UnexpectedExpressionException();
+						case TciJustRemoveTag tciJustRemoveTag -> throw new UnexpectedExpressionException();
+						case TciModifyTag tciModifyTag -> throw new UnexpectedExpressionException();
+						case TciModifyUsingFunction tciModifyUsingFunction -> throw new UnexpectedExpressionException();
+						case TciRemoveTag tciRemoveTag -> removeTag(mutableContainer, isMatching, tciRemoveTag);
+						case TciRemoveUsingFunction tciRemoveUsingFunction -> throw new NotImplementedException();
+					}
+				}
+			} else {
+				throw new UnexpectedExpressionException();
+			}
+		}
+	}
+
+	private void addTag(Set<Tag> mutableContainer, boolean isMatching, TciAddTag tciAddTag) {
+		MatchedType mt = MatchedType.resolve(tciAddTag.tag());
+		if (mt != MatchedType.NEITHER) {
+			throw new UnexpectedExpressionException();
+		}
+		if (isMatching) {
+			mutableContainer.add(new Tag(tciAddTag.tag().category().stringValue(), tciAddTag.tag().tag().stringValue()));
+		}
+	}
+
+	private void removeTag(Set<Tag> mutableContainer, boolean isMatching, TciRemoveTag tciRemoveTag) {
+		MatchedType mt = MatchedType.resolve(tciRemoveTag.tag());
+		if (mt != MatchedType.NEITHER) {
+			throw new UnexpectedExpressionException();
+		}
+		if (isMatching) {
+			mutableContainer.remove(new Tag(tciRemoveTag.tag().category().stringValue(), tciRemoveTag.tag().tag().stringValue()));
+		}
+	}
+
+	private void apply(TagFilter tagFilter, List<TciAction> actions, Set<Tag> mutableContainer) {
+		Set<Tag> matchingTags = mutableContainer.stream().filter(t -> tagFilter.filter(t)).collect(toSet());
+		for (TciAction action : actions) {
 			switch (action) {
-				case TciAddTag tciAddTag -> addTag(copy, matchingTags, tciAddTag);
-				case TciAddUsingFunction tciAddUsingFunction -> throw new NotImplementedException();
-				case TciIsInExpressionWrapper tciIsInExpressionWrapper -> throw new NotImplementedException();
-				case TciJustRemoveTag tciJustRemoveTag -> justRemove(copy, matchingTags, tciJustRemoveTag);
-				case TciModifyTag tciModifyTag -> modifyTag(copy, matchingTags, tciModifyTag);
-				case TciModifyUsingFunction tciModifyUsingFunction -> throw new NotImplementedException();
-				case TciRemoveTag tciRemoveTag -> removeTag(copy, matchingTags, tciRemoveTag);
-				case TciRemoveUsingFunction tciRemoveUsingFunction -> throw new NotImplementedException();
+			case TciAddTag tciAddTag -> addTag(mutableContainer, matchingTags, tciAddTag);
+			case TciAddUsingFunction tciAddUsingFunction -> throw new NotImplementedException();
+			case TciIsInExpressionWrapper tciIsInExpressionWrapper -> throw new UnexpectedExpressionException();
+			case TciJustRemoveTag tciJustRemoveTag -> justRemove(mutableContainer, matchingTags, tciJustRemoveTag);
+			case TciModifyTag tciModifyTag -> modifyTag(mutableContainer, matchingTags, tciModifyTag);
+			case TciModifyUsingFunction tciModifyUsingFunction -> throw new NotImplementedException();
+			case TciRemoveTag tciRemoveTag -> removeTag(mutableContainer, matchingTags, tciRemoveTag);
+			case TciRemoveUsingFunction tciRemoveUsingFunction -> throw new NotImplementedException();
 			}
 		}
 	}

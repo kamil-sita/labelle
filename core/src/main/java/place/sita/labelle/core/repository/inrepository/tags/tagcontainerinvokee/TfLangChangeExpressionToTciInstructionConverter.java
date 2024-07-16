@@ -6,6 +6,7 @@ import place.sita.tflang.ConditionalChangeExpression;
 import place.sita.tflang.parsers.StringToMultipleConditionalChangeExpressionParser;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TfLangChangeExpressionToTciInstructionConverter {
 
@@ -20,6 +21,9 @@ public class TfLangChangeExpressionToTciInstructionConverter {
 	}
 
 	public static TciInstruction convert(ConditionalChangeExpression expression) {
+		Objects.requireNonNull(expression, "expression cannot be null");
+		Objects.requireNonNull(expression.filter(), "expression.filter() cannot be null");
+		Objects.requireNonNull(expression.change(), "expression.change() cannot be null");
 		TciScope scope = new TFlangFilteringToTciScope().visit(expression.filter());
 		List<TciAction> actions = new TFlangChangeToTciAction().visit(expression.change());
 

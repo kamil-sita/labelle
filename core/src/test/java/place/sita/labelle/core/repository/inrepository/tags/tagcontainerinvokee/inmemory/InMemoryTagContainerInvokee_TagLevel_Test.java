@@ -8,7 +8,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class InMemoryTagContainerInvokeeTest {
+public class InMemoryTagContainerInvokee_TagLevel_Test {
 
 	@Test
 	public void shouldConditionallyRemoveTag() {

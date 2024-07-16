@@ -11,7 +11,8 @@ public sealed interface FilteringExpression permits
 	InTupleExpression,
 	LikeExpression,
 	NotExpression,
-	OrExpression {
+	OrExpression,
+	InSubEntityExpression {
 
 	FilteringExpression MATCH_EVERYTHING = EverythingExpressionImpl.INSTANCE;
 

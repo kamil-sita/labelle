@@ -7,11 +7,21 @@ import place.sita.tflang.filteringexpression.fillteringexpression.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TFlangFilteringToTciScope extends FilteringExpressionBaseVisitor<TciScope>  {
 
 	protected static final String CATEGORY = "category";
 	protected static final String TAG = "tag";
+
+	@Override
+	protected TciScope visitInSubEntity(InSubEntityExpression inSubEntityExpression) {
+		if (Objects.equals("tags", inSubEntityExpression.subEntity())) {
+			return new TciExists(visit(inSubEntityExpression.expression()));
+		} else {
+			throw new ConversionException("Unknown subEntity: " + inSubEntityExpression.subEntity() + ". Expected: tags");
+		}
+	}
 
 	@Override
 	protected TciScope visitMatchEverything() {

@@ -10,6 +10,7 @@ import place.sita.tflang.modificationexpression.parsing.TFLangModificationExpres
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TfLangConditionalChangeExpressionParser extends TFLangBaseVisitor<List<ConditionalChangeExpression>> {
 
@@ -39,6 +40,7 @@ public class TfLangConditionalChangeExpressionParser extends TFLangBaseVisitor<L
 		} else {
 			expression = FilteringExpression.MATCH_EVERYTHING;
 		}
+		Objects.requireNonNull(expression);
 
 		ChangeExpression changeExpression = new TFLangModificationExpressionParser().visit(ctx.changeManyExpression());
 

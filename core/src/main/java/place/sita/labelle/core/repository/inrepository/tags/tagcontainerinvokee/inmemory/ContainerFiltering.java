@@ -1,9 +1,11 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.inmemory;
 
+import java.util.Collection;
+
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 
-public non-sealed interface TagFilter extends TagFiltering {
+public non-sealed interface ContainerFiltering extends TagFiltering {
 
-	boolean filter(Tag tag);
+	boolean filter(Collection<Tag> tags);
 
 }

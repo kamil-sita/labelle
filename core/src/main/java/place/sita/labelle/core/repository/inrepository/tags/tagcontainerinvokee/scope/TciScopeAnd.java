@@ -2,5 +2,5 @@ package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee
 
 import java.util.List;
 
-public record TciScopeAnd(List<TciScope> and) implements TciScope {
+public record TciScopeAnd(List<TciScope> and) implements TciAnyScope {
 }

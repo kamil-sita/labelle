@@ -13,7 +13,7 @@ public class StringToTagFilterTest {
 		String query = "ANY";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("tag1", "tag1"))).isTrue();
@@ -27,7 +27,7 @@ public class StringToTagFilterTest {
 		String query = "NOT ANY";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("tag1", "tag1"))).isFalse();
@@ -41,7 +41,7 @@ public class StringToTagFilterTest {
 		String query = "category = \"tag1\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("tag1", "tag1"))).isTrue();
@@ -58,7 +58,7 @@ public class StringToTagFilterTest {
 		String query = "tag = \"tag1\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("tag1", "tag1"))).isTrue();
@@ -75,7 +75,7 @@ public class StringToTagFilterTest {
 		String query = "category = \"cat1\" AND tag = \"tag1\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -90,7 +90,7 @@ public class StringToTagFilterTest {
 		String query = "category = \"cat1\" OR tag = \"tag1\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -105,7 +105,7 @@ public class StringToTagFilterTest {
 		String query = "category = \"cat1\" AND NOT tag = \"tag1\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isFalse();
@@ -120,7 +120,7 @@ public class StringToTagFilterTest {
 		String query = "category = \"cat1\" OR NOT tag = \"tag1\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -135,7 +135,7 @@ public class StringToTagFilterTest {
 		String query = "category like \"category.*\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("category1", "tag1"))).isTrue();
@@ -150,7 +150,7 @@ public class StringToTagFilterTest {
 		String query = "tag like \"tag.*\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -165,7 +165,7 @@ public class StringToTagFilterTest {
 		String query = "category like \"cat.*\" AND tag like \"tag.*\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -184,7 +184,7 @@ public class StringToTagFilterTest {
 		String query = "category in (\"cat1\", \"cat2\")";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -198,7 +198,7 @@ public class StringToTagFilterTest {
 		String query = "tag in (\"tag1\", \"tag2\")";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -214,7 +214,7 @@ public class StringToTagFilterTest {
 		String query = "(category, tag) in ((\"cat1\", \"tag1\"), (\"cat2\", \"tag2\"))";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -229,7 +229,7 @@ public class StringToTagFilterTest {
 		String query = "(tag, category) in ((\"tag1\", \"cat1\"), (\"tag2\", \"cat2\"))";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -244,7 +244,7 @@ public class StringToTagFilterTest {
 		String query = "(tag) in ((\"tag1\"), (\"tag2\"))";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -260,7 +260,7 @@ public class StringToTagFilterTest {
 		String query = "tag = \"tag1\" AND tag = \"tag2\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isFalse();
@@ -275,7 +275,7 @@ public class StringToTagFilterTest {
 		String query = "category = \"cat1\" AND category = \"cat2\"";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isFalse();
@@ -290,7 +290,7 @@ public class StringToTagFilterTest {
 		String query = "(tag, category) = (\"tag1\", \"cat1\")";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();
@@ -305,7 +305,7 @@ public class StringToTagFilterTest {
 		String query = "(category, tag) = (\"cat1\", \"tag1\")";
 
 		// when
-		TagFilter filter = StringToTagFilter.fromString(query);
+		TagFilter filter = (TagFilter) StringToTagFilter.fromString(query);
 
 		// then
 		assertThat(filter.filter(new Tag("cat1", "tag1"))).isTrue();

@@ -22,8 +22,11 @@ public abstract class FilteringExpressionBaseVisitor<T> {
 			case LikeExpression likeExpression -> visitLike(likeExpression);
 			case NotExpression notExpression -> visitNot(notExpression);
 			case OrExpression orExpression -> visitOr(orExpression);
+			case InSubEntityExpression inSubEntityExpression -> visitInSubEntity(inSubEntityExpression);
 		};
 	}
+
+	protected abstract T visitInSubEntity(InSubEntityExpression inSubEntityExpression);
 
 	protected abstract T visitMatchEverything();
 

@@ -11,12 +11,18 @@ import place.sita.tflang.filteringexpression.impl.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static place.sita.tflang.TFlangUtil.stripQuotes;
 
 public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<FilteringExpression> {
 
-
+	@Override
+	public FilteringExpression visitMatchInnerExpression(TFLangParser.MatchInnerExpressionContext ctx) {
+		FilteringExpression expression = visit(ctx.matchExpression());
+		Objects.requireNonNull(expression);
+		return new InSubEntityExpressionImpl(ctx.NAME().getText(), expression);
+	}
 
 	@Override
 	public FilteringExpression visitParseMatchExpression(TFLangParser.ParseMatchExpressionContext ctx) {

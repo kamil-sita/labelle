@@ -1,4 +1,4 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.scope;
 
-public record TciScopeAll() implements TciAnyScope {
+public sealed interface TciContainerScope extends TciScope permits TciExists {
 }

@@ -5,33 +5,69 @@ import place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.
 import place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.scope.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-public class TciScopeToTagFilterConverter extends TciScopeBaseVisitor<TagFilter> {
+public class TciScopeToTagFilterConverter extends TciScopeBaseVisitor<TagFiltering> {
+	@Override
+	protected TagFiltering visitExists(TciExists tciExists) {
+		TagFiltering tagFiltering = visit(tciExists.expression());
+		Scope scope = resolveScope(tagFiltering);
+		if (scope != Scope.TAG) {
+			throw new UnexpectedExpressionException();
+		}
+		TagFilter tagFilter = (TagFilter) tagFiltering;
+		return (ContainerFiltering) tags -> {
+			for (Tag tag : tags) {
+				if (tagFilter.filter(tag)) {
+					return true;
+				}
+			}
+			return false;
+		};
+	}
+
 	@Override
 	protected TagFilter visitTciScopeAll(TciScopeAll tciScopeAll) {
 		return tag -> true;
 	}
 
 	@Override
-	protected TagFilter visitTciScopeAnd(TciScopeAnd tciScopeAnd) {
-		List<TagFilter> filters = new ArrayList<>();
+	protected TagFiltering visitTciScopeAnd(TciScopeAnd tciScopeAnd) {
+		List<TagFiltering> filters = new ArrayList<>();
 		for (TciScope scope : tciScopeAnd.and()) {
-			TagFilter filter = visit(scope);
+			TagFiltering filter = visit(scope);
 			filters.add(filter);
 		}
-		return tag -> {
-			for (TagFilter filter : filters) {
-				if (!filter.filter(tag)) {
-					return false;
-				}
+		Scope scope = resolveScope(filters);
+		return switch (scope) {
+			case CONTAINER -> {
+				List<ContainerFiltering> actualFiltering = (List<ContainerFiltering>) (List<?>) filters;
+				yield (ContainerFiltering) tags -> {
+					for (ContainerFiltering filter : actualFiltering) {
+						if (!filter.filter(tags)) {
+							return false;
+						}
+					}
+					return true;
+				};
 			}
-			return true;
+			case TAG -> {
+				List<TagFilter> actualFiltering = (List<TagFilter>) (List<?>) filters;
+				yield (TagFilter) tag -> {
+					for (TagFilter filter : actualFiltering) {
+						if (!filter.filter(tag)) {
+							return false;
+						}
+					}
+					return true;
+				};
+			}
+			case MIXED -> throw new UnexpectedExpressionException();
 		};
-
 	}
 
 	@Override
@@ -58,25 +94,54 @@ public class TciScopeToTagFilterConverter extends TciScopeBaseVisitor<TagFilter>
 	}
 
 	@Override
-	protected TagFilter visitTciScopeNot(TciScopeNot tciScopeNot) {
-		TagFilter filter = visit(tciScopeNot.not());
-		return tag -> !filter.filter(tag);
+	protected TagFiltering visitTciScopeNot(TciScopeNot tciScopeNot) {
+		TagFiltering filter = visit(tciScopeNot.not());
+		Scope scope = resolveScope(filter);
+		return switch (scope) {
+			case CONTAINER -> {
+				ContainerFiltering actualFilter = (ContainerFiltering) filter;
+				yield (ContainerFiltering) tags -> !actualFilter.filter(tags);
+			}
+			case TAG -> {
+				TagFilter actualFilter = (TagFilter) filter;
+				yield (TagFilter) tag -> !actualFilter.filter(tag);
+			}
+			case MIXED -> throw new UnexpectedExpressionException();
+		};
 	}
 
 	@Override
-	protected TagFilter visitTciScopeOr(TciScopeOr tciScopeOr) {
-		List<TagFilter> filters = new ArrayList<>();
+	protected TagFiltering visitTciScopeOr(TciScopeOr tciScopeOr) {
+		List<TagFiltering> filters = new ArrayList<>();
 		for (TciScope scope : tciScopeOr.or()) {
-			TagFilter filter = visit(scope);
+			TagFiltering filter = visit(scope);
 			filters.add(filter);
 		}
-		return tag -> {
-			for (TagFilter filter : filters) {
-				if (filter.filter(tag)) {
-					return true;
-				}
+		Scope scope = resolveScope(filters);
+		return switch (scope) {
+			case CONTAINER -> {
+				List<ContainerFiltering> actualFiltering = (List<ContainerFiltering>) (List<?>) filters;
+				yield (ContainerFiltering) tags -> {
+					for (ContainerFiltering filter : actualFiltering) {
+						if (filter.filter(tags)) {
+							return true;
+						}
+					}
+					return false;
+				};
 			}
-			return false;
+			case TAG -> {
+				List<TagFilter> actualFiltering = (List<TagFilter>) (List<?>) filters;
+				yield (TagFilter) tag -> {
+					for (TagFilter filter : actualFiltering) {
+						if (filter.filter(tag)) {
+							return true;
+						}
+					}
+					return false;
+				};
+			}
+			case MIXED -> throw new UnexpectedExpressionException();
 		};
 	}
 
@@ -95,5 +160,34 @@ public class TciScopeToTagFilterConverter extends TciScopeBaseVisitor<TagFilter>
 	protected TagFilter visitTciScopeTagLike(TciScopeTagLike tciScopeTagLike) {
 		Pattern pattern = Pattern.compile(tciScopeTagLike.like());
 		return tag -> pattern.matcher(tag.tag()).matches();
+	}
+
+	private static Scope resolveScope(TagFiltering tagFiltering) {
+		return switch (tagFiltering) {
+			case ContainerFiltering containerFiltering -> Scope.CONTAINER;
+			case TagFilter tagFilter -> Scope.TAG;
+		};
+	}
+
+	private static Scope resolveScope(Collection<TagFiltering> tagFilters) {
+		Scope scope = null;
+		for (TagFiltering tagFilter : tagFilters) {
+			Scope myScope = resolveScope(tagFilter);
+			if (scope == null) {
+				scope = myScope;
+			} else {
+				if (scope != myScope) {
+					scope = Scope.MIXED;
+				}
+			}
+		}
+		return scope;
+	}
+
+	private enum Scope {
+		CONTAINER,
+		TAG,
+		MIXED,
+		;
 	}
 }
