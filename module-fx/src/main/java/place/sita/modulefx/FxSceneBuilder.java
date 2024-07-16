@@ -25,6 +25,11 @@ public class FxSceneBuilder {
     }
 
     private static Parent getParent(Object controller, String resource) {
+        if (Thread.currentThread().getContextClassLoader() == null) {
+            log.warn("Current thread ClassLoader is null"); // seems like a macos specific issue
+            Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
+        }
+
         Class<?> clazz = controller.getClass();
         log.debug("[{}], Setting up FX view", clazz);
         log.debug("[{}] Creating parent loader", clazz);

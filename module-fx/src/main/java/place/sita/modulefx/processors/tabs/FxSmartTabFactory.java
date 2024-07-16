@@ -28,7 +28,7 @@ public class FxSmartTabFactory {
 
 	private static FxSmartTab createUnloadingTab(FxTab fxTab, Class<?> tabClass, FxSetupContext setupContext, ChildrenFactory factory) {
 		UUID id = UUID.randomUUID();
-		String stringId = id.toString();
+		String stringId = fxTab.tabName() + "@" + id.toString();
 
 		Tab internalTab = new Tab(fxTab.tabName());
 		internalTab.setId(stringId);

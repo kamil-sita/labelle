@@ -10,7 +10,11 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FxSmartTabManager {
+	private static final Logger log = LoggerFactory.getLogger(FxSmartTabManager.class);
 
 	private final Map<String, FxSmartTab> tabs = new LinkedHashMap<>();
 	private final Map<String, VirtualTreeGroup> virtualTreeGroups = new HashMap<>();
@@ -41,7 +45,11 @@ public class FxSmartTabManager {
 					FxSmartTab oldTab = tabs.get(oldValue.getId());
 					oldTab.unload();
 					VirtualTreeGroup group = virtualTreeGroups.get(oldValue.getId());
-					parentVtg.removeChild(group.id());
+					if (group == null) {
+						log.warn("Tried to remove group of {}, but its seemingly not registered", oldValue.getId());
+					} else {
+						parentVtg.removeChild(group.id());
+					}
 				}
 				if (newValue != null) {
 					FxSmartTab newTab = tabs.get(newValue.getId());
