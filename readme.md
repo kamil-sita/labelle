@@ -116,7 +116,7 @@ IF tag = "baz" THEN REPLACE USING foobar;
 
 You can also modify a sub-entity:
 ```sql
-IF IN tags EXISTS (tag = "foo") THEN IN tags DO (IF tag="foo" THEN REMOVE)
+IF IN tags EXISTS (tag = "foo") THEN IN tags DO (IF tag="foo" THEN REMOVE "foo")
 ```
 
 Which might be more useful if you're trying to do something based on multiple tags:
