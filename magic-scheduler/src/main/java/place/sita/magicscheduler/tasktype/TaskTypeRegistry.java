@@ -2,6 +2,7 @@ package place.sita.magicscheduler.tasktype;
 
 import com.google.common.collect.Sets;
 import jakarta.annotation.PostConstruct;
+import place.sita.magicscheduler.SerializerRegistry;
 import place.sita.magicscheduler.scheduler.TypeSpecificQueue;
 import place.sita.magicscheduler.scheduler.TypeSpecificQueueRegistry;
 
@@ -28,15 +29,18 @@ public class TaskTypeRegistry {
     private final Map<String, UUID> uuidByCode = new HashMap<>();
     private final ApplicationContext applicationContext;
     private final TypeSpecificQueueRegistry typeSpecificQueueRegistry;
+    private final SerializerRegistry serializerRegistry;
 
     public TaskTypeRegistry(DSLContext ctx,
             List<TaskTypeRef> taskTypeDefinitions,
 			ApplicationContext applicationContext,
-			TypeSpecificQueueRegistry typeSpecificQueueRegistry) {
+			TypeSpecificQueueRegistry typeSpecificQueueRegistry,
+            SerializerRegistry serializerRegistry) {
         this.ctx = ctx;
         this.taskTypeDefinitions = taskTypeDefinitions;
 		this.applicationContext = applicationContext;
 		this.typeSpecificQueueRegistry = typeSpecificQueueRegistry;
+		this.serializerRegistry = serializerRegistry;
 	}
 
     @PostConstruct
@@ -57,6 +61,9 @@ public class TaskTypeRegistry {
             TaskTypeRef ref = tasksByCode.get(taskDefinition.code());
             if (ref == null || ref.isHistoric()) {
                 tasksByCode.put(taskDefinition.code(), taskDefinition);
+                if (!taskDefinition.isHistoric() && taskDefinition instanceof TaskType tt) {
+                    serializerRegistry.register(taskDefinition.code(), x -> tt.serializeParam(x));
+                }
             } else {
                 throw new IllegalStateException("Expected task codes to be unique, but " + taskDefinition + " duplicates code " + taskDefinition.code());
             }

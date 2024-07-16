@@ -51,13 +51,13 @@ public non-sealed interface TaskType<ParameterT, AcceptedContextT, ResultT> exte
 
     List<Resource<?>> resources(ParameterT parameterT);
 
-    Class<AcceptedContextT> contextType(); // todo Spring should be able to resolve it itself
+    Class<AcceptedContextT> contextType();
 
     default ApiTaskExecutionResult resolveThrowableIntoResult(Throwable exception) {
         return FailResolver.resolve(exception);
     }
 
-    Class<ParameterT> paramType(); // todo Spring should be able to resolve it itself
+    Class<ParameterT> paramType();
 
 	Class<ResultT> resultType();
 

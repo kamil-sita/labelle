@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.utils.ExceptionUtil;
+import place.sita.magicscheduler.SerializerRegistry;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
 import place.sita.magicscheduler.tasktype.TaskType;
@@ -26,10 +27,13 @@ public class TaskExecutionEnvironment {
 
 	private final ApiRegistrar apiRegistrar;
 	private final ResourceHub resourceHub;
+	private final SerializerRegistry serializerRegistry;
 
-	public TaskExecutionEnvironment(ApiRegistrar apiRegistrar, ResourceHub resourceHub) {
+	public TaskExecutionEnvironment(ApiRegistrar apiRegistrar,
+			ResourceHub resourceHub, SerializerRegistry serializerRegistry) {
 		this.apiRegistrar = apiRegistrar;
 		this.resourceHub = resourceHub;
+		this.serializerRegistry = serializerRegistry;
 	}
 
 	public <ParameterT, AcceptedContextT, ResultT> TaskExecutionResults<ResultT> executeTask(
@@ -38,7 +42,8 @@ public class TaskExecutionEnvironment {
 		ParameterT parameter,
 		TaskStateContext taskStateContext
 	) {
-		return executeTask(internalExecutionId, type, parameter, taskStateContext, apiRegistrar, resourceHub);
+		return executeTask(internalExecutionId, type, parameter, taskStateContext, apiRegistrar, resourceHub,
+				serializerRegistry);
 	}
 
 	public static <ParameterT, AcceptedContextT, ResultT> TaskExecutionResults<ResultT> executeTask(
@@ -47,7 +52,8 @@ public class TaskExecutionEnvironment {
 		ParameterT parameter,
 		TaskStateContext taskStateContext,
 		ApiRegistrar apiRegistrar,
-		ResourceHub resourceHub
+		ResourceHub resourceHub,
+		SerializerRegistry serializerRegistry
 	) {
 		log.info("Starting {}", internalExecutionId);
 
@@ -60,9 +66,21 @@ public class TaskExecutionEnvironment {
 			@Override
 			public <OtherParameterT, OtherAcceptedContextT, OtherResultT> UUID submitAnotherTask(TaskType<OtherParameterT, OtherAcceptedContextT, OtherResultT> task, OtherParameterT parameterT, RunPolicy runPolicy) {
 				String stringParameter = task.serializeParam(parameterT);
+				return submitAnotherTask(task.code(), stringParameter, runPolicy);
+			}
+
+			@Override
+			public UUID submitAnotherTask(String code, Object parameter, RunPolicy runPolicy) {
+				String stringParameter = serializerRegistry.convert(code, parameter);
+				return submitAnotherTask(code, stringParameter, runPolicy);
+			}
+
+			private UUID submitAnotherTask(
+					String code,
+					String stringParameter, RunPolicy runPolicy) {
 				UUID uuid = UUID.randomUUID();
 				log("Submitted another task with UUID: " + uuid);
-				tasksToSubmit.add(new TaskToSubmitWithRunPolicy(uuid, task.code(), stringParameter, runPolicy));
+				tasksToSubmit.add(new TaskToSubmitWithRunPolicy(uuid, code, stringParameter, runPolicy));
 				return uuid;
 			}
 
