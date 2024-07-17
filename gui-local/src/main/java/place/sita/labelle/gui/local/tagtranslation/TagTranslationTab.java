@@ -8,12 +8,13 @@ import javafx.scene.input.KeyEvent;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
-import place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.inmemory.InMemoryTagContainerInvokee;
+import place.sita.labelle.core.repository.inrepository.tags.tagtranslation.tagcontainerinvokee.inmemory.InMemoryTagContainerInvokee;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.UnstableSceneEvent;
 import place.sita.modulefx.annotations.FxTab;
@@ -131,8 +132,13 @@ public class TagTranslationTab implements MainMenuTab {
 	private String getQuery() {
 		String query1 = tagLevelRulesTextArea.getText();
 		String query2 = containerLevelRulesTextArea.getText();
-		String query = query1 + "\n;" + query2;
-		return query;
+		if (Strings.isBlank(query1)) {
+			return query2;
+		} else if (Strings.isBlank(query2)) {
+			return query1;
+		} else {
+			return query1 + ";\n" + query2;
+		}
 	}
 
 	private void setResults(Set<Tag> results) {
