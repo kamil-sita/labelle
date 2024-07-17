@@ -1,6 +1,5 @@
 package place.sita.labelle.gui.local.tagtranslation;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
@@ -57,26 +56,7 @@ public class TagTranslationTab implements MainMenuTab {
 	@FXML
 	private TextArea validationResultsTextArea;
 
-	@FXML
-	public void doConversion(ActionEvent event) {
-		UUID id = UUID.randomUUID();
-		try {
-			messageSender.send(new UnstableSceneEvent.MarkSceneAsUnstable(id, "Testing tag transformation"));
-
-			Set<Tag> tags = getTags();
-
-			String query = getQuery();
-			InMemoryTagContainerInvokee invokee = new InMemoryTagContainerInvokee();
-			invokee.applyInstructions(query);
-			Set<Tag> results = invokee.applyToInvokee(tags);
-
-			setResults(results);
-		} finally {
-			messageSender.send(new UnstableSceneEvent.MarkSceneAsStable(id));
-		}
-	}
-
-	private KeyStone keyStone = keyStone();
+	private final KeyStone keyStone = keyStone();
 
 	@FXML
 	public void onKeyTyped(KeyEvent event) {
