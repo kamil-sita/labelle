@@ -4,15 +4,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.apache.logging.log4j.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.repository.automation.tagtranslation.tagcontainerinvokee.inmemory.InMemoryTagContainerInvokee;
+import place.sita.labelle.core.repository.automation.tagtranslation.TagTranslationService;
+import place.sita.labelle.core.repository.automation.tagtranslation.TagTranslationService.TagTranslationResult;
+import place.sita.labelle.core.repository.automation.tagtranslation.TagTranslationService.TagTranslationResult.Failure;
+import place.sita.labelle.core.repository.automation.tagtranslation.TagTranslationService.TagTranslationResult.Success;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.UnstableSceneEvent;
@@ -34,7 +31,10 @@ import static place.sita.modulefx.threading.Threading.keyStone;
 @Component
 @FxTab(resourceFile = "/fx/tag_translation_rules.fxml", order = 15, tabName = "Tag translation")
 public class TagTranslationTab implements MainMenuTab {
-	private static final Logger logger = LoggerFactory.getLogger(TagTranslationTab.class);
+
+	private final TagTranslationService tagTranslationService;
+
+
 	@FXML
 	private ChoiceBox<?> repositoryChoiceBox;
 
@@ -58,67 +58,54 @@ public class TagTranslationTab implements MainMenuTab {
 
 	private final KeyStone keyStone = keyStone();
 
+	public TagTranslationTab(TagTranslationService tagTranslationService) {
+		this.tagTranslationService = tagTranslationService;
+	}
+
 	@FXML
 	public void onKeyTyped(KeyEvent event) {
-		Threading.onSeparateThread(keyStone, toolkit -> {
-			UUID id = UUID.randomUUID();
-			try  {
-				messageSender.send(new UnstableSceneEvent.MarkSceneAsUnstable(id, "Validating tag transformation"));
+		UUID id = UUID.randomUUID();
+		messageSender.send(new UnstableSceneEvent.MarkSceneAsUnstable(id, "Validating tag transformation"));
+		onKeyTypedActual(id);
+	}
 
-				Set<Tag> tags = getTags();
-				String query = getQuery();
-				InMemoryTagContainerInvokee invokee = new InMemoryTagContainerInvokee();
-				StringBuilder errors = new StringBuilder();
-				try {
-					invokee.applyInstructions(query, new BaseErrorListener() {
-						@Override
-						public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-							errors.append("line ").append(line).append(":").append(charPositionInLine).append(" ").append(msg).append("\r\n");
-						}
-					});
-
-					if (errors.isEmpty()) {
-						toolkit.onFxThread(() -> {
-							validationResultsTextArea.setText("Validation OK");
-							toolkit.onSeparateThread(() -> {
-								Set<Tag> results = invokee.applyToInvokee(tags);
-								toolkit.onFxThread(() -> {
-									setResults(results);
-								});
-							});
+	private void onKeyTypedActual(UUID id) {
+		Set<Tag> tags;
+		try {
+			tags = getTags();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			// let's quietly ignore that - probably tags parsing error
+			markStable(id);
+			return;
+		}
+		String tagLevel = tagLevelRulesTextArea.getText();
+		String containerLevel = containerLevelRulesTextArea.getText();
+		Threading.onSeparateThread(keyStone, () -> markStable(id), toolkit -> {
+			TagTranslationResult result = tagTranslationService.performTagTranslation(tagLevel, containerLevel, tags);
+			switch (result) {
+				case Failure failure -> {
+					toolkit.onFxThread(() -> {
+						validationResultsTextArea.setText("Validation failed:\r\n" + failure.message());
+						toolkit.onSeparateThread(() -> {
+							markStable(id);
 						});
-					} else {
-						toolkit.onFxThread(() -> validationResultsTextArea.setText("Validation failed: \r\n" + errors));
-					}
-
-				} catch (Exception e) {
-					if (errors.isEmpty()) {
-						toolkit.onFxThread(() ->
-							validationResultsTextArea.setText("Validation failed: \n" + e.getClass() + ", " + e.getMessage())
-						);
-						logger.error("Validation failed", e);
-					} else {
-						toolkit.onFxThread(() -> validationResultsTextArea.setText("Validation failed: \n" + errors));
-					}
+					});
 				}
-			} catch (ArrayIndexOutOfBoundsException e) {
-				// let's quietly ignore that - probably tags parsing error
-			} finally {
-				messageSender.send(new UnstableSceneEvent.MarkSceneAsStable(id));
+				case Success success -> {
+					toolkit.onFxThread(() -> {
+						validationResultsTextArea.setText("Validation OK");
+						setResults(success.tags());
+						toolkit.onSeparateThread(() -> {
+							markStable(id);
+						});
+					});
+				}
 			}
 		});
 	}
 
-	private String getQuery() {
-		String query1 = tagLevelRulesTextArea.getText();
-		String query2 = containerLevelRulesTextArea.getText();
-		if (Strings.isBlank(query1)) {
-			return query2;
-		} else if (Strings.isBlank(query2)) {
-			return query1;
-		} else {
-			return query1 + ";\n" + query2;
-		}
+	private void markStable(UUID id) {
+		messageSender.send(new UnstableSceneEvent.MarkSceneAsStable(id));
 	}
 
 	private void setResults(Set<Tag> results) {

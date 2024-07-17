@@ -14,7 +14,11 @@ public class Threading {
 	}
 
 	public static Cancellable onFxThread(KeyStone keyStone, InFxThread inFx) {
-		CancellableImpl cancellable = new CancellableImpl();
+		return onFxThread(keyStone, null, inFx);
+	}
+
+	public static Cancellable onFxThread(KeyStone keyStone, OnCancellation onCancellation, InFxThread inFx) {
+		CancellableImpl cancellable = new CancellableImpl(onCancellation);
 		KeyStoneImpl impl = null;
 		if (keyStone != null) {
 			impl = (KeyStoneImpl) keyStone;
@@ -29,7 +33,11 @@ public class Threading {
 	}
 
 	public static Cancellable onSeparateThread(KeyStone keyStone, InSeparateThread inSeparate) {
-		CancellableImpl cancellable = new CancellableImpl();
+		return onSeparateThread(keyStone, null, inSeparate);
+	}
+
+	public static Cancellable onSeparateThread(KeyStone keyStone, OnCancellation onCancellation, InSeparateThread inSeparate) {
+		CancellableImpl cancellable = new CancellableImpl(onCancellation);
 		KeyStoneImpl impl = null;
 		if (keyStone != null) {
 			impl = (KeyStoneImpl) keyStone;
@@ -39,7 +47,7 @@ public class Threading {
 		return cancellable;
 	}
 
-	private static void doOnFxThread(Either<InFxThread, InFxThreadI> thread, CancellableImpl cancellable) {
+	private static void doOnFxThread(Either<InFxThread, InFxThreadInner> thread, CancellableImpl cancellable) {
 		if (Platform.isFxApplicationThread()) {
 			if (cancellable.continueExecution) {
 				if (thread.isLeft()) {
@@ -63,7 +71,7 @@ public class Threading {
 		}
 	}
 
-	private static void doOnSeparateThread(Either<InSeparateThread, InSeparateThreadI> left, CancellableImpl cancellable) {
+	private static void doOnSeparateThread(Either<InSeparateThread, InSeparateThreadInner> left, CancellableImpl cancellable) {
 		if (cancellable.continueExecution) {
 			ThreadingSupportSupplier.doRunLater(() -> {
 				if (cancellable.continueExecution) {
@@ -80,14 +88,14 @@ public class Threading {
 	private static Toolkit createToolkit(CancellableImpl cancellable) {
 		return new Toolkit() {
 			@Override
-			public void onFxThread(InFxThreadI inFxThread) {
+			public void onFxThread(InFxThreadInner inFxThread) {
 				if (cancellable.continueExecution) {
 					doOnFxThread(Either.right(inFxThread), cancellable);
 				}
 			}
 
 			@Override
-			public void onSeparateThread(InSeparateThreadI inSeparateThread) {
+			public void onSeparateThread(InSeparateThreadInner inSeparateThread) {
 				if (cancellable.continueExecution) {
 					doOnSeparateThread(Either.right(inSeparateThread), cancellable);
 				}
@@ -97,9 +105,9 @@ public class Threading {
 
 	public interface Toolkit {
 
-		void onFxThread(InFxThreadI inFxThread);
+		void onFxThread(InFxThreadInner inFxThread);
 
-		void onSeparateThread(InSeparateThreadI inSeparateThread);
+		void onSeparateThread(InSeparateThreadInner inSeparateThread);
 
 	}
 
@@ -138,7 +146,7 @@ public class Threading {
 	}
 
 	@FunctionalInterface
-	public interface InFxThreadI {
+	public interface InFxThreadInner {
 
 		void execute();
 
@@ -152,7 +160,7 @@ public class Threading {
 	}
 
 	@FunctionalInterface
-	public interface InSeparateThreadI {
+	public interface InSeparateThreadInner {
 
 		void execute();
 
@@ -161,11 +169,28 @@ public class Threading {
 	private static class CancellableImpl implements Cancellable {
 
 		private boolean continueExecution = true;
+		private final OnCancellation onCancellation;
+		private boolean firstTrigger = true;
+
+		private CancellableImpl(OnCancellation onCancellation) {
+			this.onCancellation = onCancellation;
+		}
 
 		@Override
-		public void cancelPropagation() {
+		public synchronized void cancelPropagation() {
+			if (onCancellation != null) {
+				if (firstTrigger) {
+					onCancellation.onCancel();
+				}
+			}
+			firstTrigger = false;
 			continueExecution = false;
 		}
+	}
+
+	@FunctionalInterface
+	public interface OnCancellation {
+		void onCancel();
 	}
 
 }

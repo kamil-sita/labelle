@@ -16,6 +16,8 @@ public class UnstableSceneReporter {
 			boolean wasStable = locksOnStableScene.isEmpty();
 			if (wasStable) {
 				log.info("Scene is now unstable due to \"{}\"", correlation);
+			} else {
+				log.info("Scene is unstable due to a new event \"{}\" and {} other events", correlation, correlationMap.size() - 1);
 			}
 			locksOnStableScene.add(id);
 			correlationMap.put(id, correlation);
@@ -24,10 +26,16 @@ public class UnstableSceneReporter {
 
 	public void markStable(UUID id) {
 		synchronized (this) {
-			locksOnStableScene.remove(id);
-			correlationMap.remove(id);
-			if (locksOnStableScene.isEmpty()) {
-				log.info("Scene is now stable");
+			if (locksOnStableScene.contains(id)) {
+				locksOnStableScene.remove(id);
+				correlationMap.remove(id);
+				if (locksOnStableScene.isEmpty()) {
+					log.info("Scene is now stable");
+				} else {
+					log.info("Scene is still unstable due to {} other events", correlationMap.size());
+				}
+			} else {
+				log.info("Scene was not marked as unstable with id {}, yet it was reported as stable", id);
 			}
 		}
 	}

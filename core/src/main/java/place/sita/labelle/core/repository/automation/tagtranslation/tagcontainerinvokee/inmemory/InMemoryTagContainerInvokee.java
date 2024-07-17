@@ -7,10 +7,7 @@ import place.sita.labelle.core.repository.automation.tagtranslation.tagcontainer
 import place.sita.labelle.core.repository.automation.tagtranslation.tagcontainerinvokee.action.*;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -35,10 +32,10 @@ public class InMemoryTagContainerInvokee implements TagContainerInvokee {
 		applyToInvokee(new LinkedHashSet<>());
 	}
 
-	public Set<Tag> applyToInvokee(Set<Tag> tags) {
+	public SequencedSet<Tag> applyToInvokee(Set<Tag> tags) {
 		Objects.requireNonNull(instructions, "Instructions not set");
 
-		Set<Tag> copy = new LinkedHashSet<>(tags);
+		SequencedSet<Tag> copy = new LinkedHashSet<>(tags);
 
 		for (OptimizedTciInstruction instruction : instructions) {
 			apply(instruction, copy);
