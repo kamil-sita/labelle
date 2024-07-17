@@ -42,7 +42,7 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TextArea fx:id="tagLevelRulesTextArea" onKeyTyped="#onKeyTyped" prefHeight="167.0" prefWidth="693.0" text="// detect if tag (ignoring category) has certain value, and then adding it to a category XYZ&#10;IF tag in (&quot;Tag 1&quot;, &quot;Tag2&quot;) THEN ADD (&quot;Xyz&quot;, MATCHED);&#10;&#10;// detect if category-tag pair &quot;Test category&quot;, &quot;Test tag&quot; exist and if so, add &quot;Test result&quot;, &quot;Passed&quot;&#10;IF (tag, category) = (&quot;Test category&quot;, &quot;Test tag&quot;) THEN ADD (&quot;Test result&quot;, &quot;Passed&quot;);" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
+                              <TextArea fx:id="tagLevelRulesTextArea" onKeyTyped="#onKeyTyped" prefHeight="167.0" prefWidth="693.0" text="// detect if tag (ignoring category) has certain value, and then adding it to a category XYZ&#10;IF tag in (&quot;Tag 1&quot;, &quot;Tag2&quot;) THEN ADD (&quot;Xyz&quot;, MATCHED);&#10;&#10;// detect if category-tag pair &quot;Test category&quot;, &quot;Test tag&quot; exist and if so, add &quot;Test result&quot;, &quot;Passed&quot;&#10;IF (category, tag) = (&quot;Test category&quot;, &quot;Test tag&quot;) THEN ADD (&quot;Test result&quot;, &quot;Passed&quot;);" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
                                  <font>
                                     <Font name="Consolas" size="12.0" />
                                  </font>

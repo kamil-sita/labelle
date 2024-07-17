@@ -20,7 +20,7 @@ import static place.sita.labelle.state.StateChange.withAction;
 import static place.sita.labelle.state.assertions.SimpleChangeAssertion.toBeTrueAfterAction;
 
 @ExtendWith(ApplicationExtension.class)
-public class TagTranslationTest extends GuiTest {
+public class TagTranslationTabTest extends GuiTest {
 
 	@Autowired
 	private StageConfiguration stageConfiguration;
@@ -31,7 +31,7 @@ public class TagTranslationTest extends GuiTest {
 	}
 
 	@Test
-	public void shouldPerformTagTranslation(FxRobot robot) throws IOException {
+	public void shouldValidateTagTranslation(FxRobot robot) throws IOException {
 		// visit tag translation
 		Node node = TabActions.getMainTab("Tag translation");
 
@@ -44,6 +44,7 @@ public class TagTranslationTest extends GuiTest {
 		// perform tag translation
 		withAction(() -> {
 			robot.clickOn(TagTranslationActions.tagLevelRulesTextArea());
+			robot.type(KeyCode.END);
 			robot.write("Something");
 		})
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
@@ -54,7 +55,6 @@ public class TagTranslationTest extends GuiTest {
 
 		// perform tag translation
 		withAction(() -> {
-			robot.clickOn(TagTranslationActions.tagLevelRulesTextArea());
 			for (int i = 0; i < 9; i++) {
 				robot.type(KeyCode.BACK_SPACE);
 			}
@@ -64,17 +64,32 @@ public class TagTranslationTest extends GuiTest {
 
 		validationText = TagTranslationActions.validationResultsTextArea().getText();
 		assertThat(validationText).startsWith("Validation OK");
+	}
 
+	@Test
+	public void shouldPerformTagTranslation(FxRobot robot) throws IOException {
+		// visit tag translation
+		Node node = TabActions.getMainTab("Tag translation");
+
+		withAction(() -> {
+			robot.clickOn(node);
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
 		// add some new tags in
 		withAction(() -> {
 			robot.clickOn(TagTranslationActions.testTagsBeforeTextArea());
+			robot.type(KeyCode.END);
 			robot.type(KeyCode.ENTER);
 			robot.write("Test category;Test tag");
 		})
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
 			.test();
 
-		validationText = TagTranslationActions.validationResultsTextArea().getText();
+		String validationText = TagTranslationActions.validationResultsTextArea().getText();
 		assertThat(validationText).startsWith("Validation OK");
+
+		String newTags = TagTranslationActions.testTagsAfterTextArea().getText();
+		assertThat(newTags).contains("Test result;Passed");
 	}
 }

@@ -21,4 +21,8 @@ public class TagTranslationActions {
 		return FxAssert.assertContext().getNodeFinder().lookup("#testTagsBeforeTextArea").query();
 	}
 
+	public static TextArea testTagsAfterTextArea() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#testTagsAfterTextArea").query();
+	}
+
 }

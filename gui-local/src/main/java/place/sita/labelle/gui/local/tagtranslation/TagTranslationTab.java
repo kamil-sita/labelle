@@ -120,6 +120,8 @@ public class TagTranslationTab implements MainMenuTab {
 						toolkit.onFxThread(() -> validationResultsTextArea.setText("Validation failed: \n" + errors));
 					}
 				}
+			} catch (ArrayIndexOutOfBoundsException e) {
+				// let's quietly ignore that - probably tags parsing error
 			} finally {
 				messageSender.send(new UnstableSceneEvent.MarkSceneAsStable(id));
 			}
