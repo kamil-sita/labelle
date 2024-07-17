@@ -1,5 +1,6 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
 import place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.action.TciAction;
 import place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.scope.TciScope;
 import place.sita.tflang.ConditionalChangeExpression;
@@ -11,7 +12,11 @@ import java.util.Objects;
 public class TfLangChangeExpressionToTciInstructionConverter {
 
 	public static List<TciInstruction> convert(String expression) {
-		return convert(StringToMultipleConditionalChangeExpressionParser.parse(expression));
+		return convert(expression, null);
+	}
+
+	public static List<TciInstruction> convert(String expression, ANTLRErrorListener errorListener) {
+		return convert(StringToMultipleConditionalChangeExpressionParser.parse(expression, errorListener));
 	}
 
 	public static List<TciInstruction> convert(List<ConditionalChangeExpression> expressions) {

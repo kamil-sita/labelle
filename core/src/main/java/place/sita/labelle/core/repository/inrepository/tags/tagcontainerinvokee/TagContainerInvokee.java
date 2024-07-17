@@ -1,5 +1,7 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
+
 import java.util.List;
 
 /**
@@ -15,6 +17,10 @@ public interface TagContainerInvokee {
 
 	default void applyInstructions(String expression) {
 		applyInstructions(TfLangChangeExpressionToTciInstructionConverter.convert(expression));
+	}
+
+	default void applyInstructions(String expression, ANTLRErrorListener errorListener) {
+		applyInstructions(TfLangChangeExpressionToTciInstructionConverter.convert(expression, errorListener));
 	}
 
 }

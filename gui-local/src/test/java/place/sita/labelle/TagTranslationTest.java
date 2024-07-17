@@ -1,6 +1,7 @@
 package place.sita.labelle;
 
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,21 +43,38 @@ public class TagTranslationTest extends GuiTest {
 
 		// perform tag translation
 		withAction(() -> {
-			TagTranslationActions.testTagTranslation(robot);
+			robot.clickOn(TagTranslationActions.tagLevelRulesTextArea());
+			robot.write("Something");
 		})
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
 			.test();
 
-		// test results
-		String results = TagTranslationActions.afterTranslationTextArea().getText();
-		assertThat(results).isEqualToIgnoringNewLines(
-			"""
-				Category 1;Tag 1
-				Category 2;Tag 2
-				Category 3;Tag 3
-				Xyz;Tag 1
-				Cat1;Tag1
-				"""
-		);
+		String validationText = TagTranslationActions.validationResultsTextArea().getText();
+		assertThat(validationText).startsWith("Validation failed");
+
+		// perform tag translation
+		withAction(() -> {
+			robot.clickOn(TagTranslationActions.tagLevelRulesTextArea());
+			for (int i = 0; i < 9; i++) {
+				robot.type(KeyCode.BACK_SPACE);
+			}
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
+
+		validationText = TagTranslationActions.validationResultsTextArea().getText();
+		assertThat(validationText).startsWith("Validation OK");
+
+		// add some new tags in
+		withAction(() -> {
+			robot.clickOn(TagTranslationActions.testTagsBeforeTextArea());
+			robot.type(KeyCode.ENTER);
+			robot.write("Test category;Test tag");
+		})
+			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
+			.test();
+
+		validationText = TagTranslationActions.validationResultsTextArea().getText();
+		assertThat(validationText).startsWith("Validation OK");
 	}
 }

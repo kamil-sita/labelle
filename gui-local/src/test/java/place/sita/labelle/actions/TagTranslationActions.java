@@ -2,20 +2,23 @@ package place.sita.labelle.actions;
 
 import javafx.scene.control.TextArea;
 import org.testfx.api.FxAssert;
-import org.testfx.api.FxRobot;
 
 public class TagTranslationActions {
 
-	public static void testTagTranslation(FxRobot robot) {
-		robot.clickOn("#doConversionButton");
+	public static TextArea tagLevelRulesTextArea() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#tagLevelRulesTextArea").query();
 	}
 
-	public static TextArea beforeTranslationTextArea() {
+	public static TextArea containerLevelRulesTextArea() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#containerLevelRulesTextArea").query();
+	}
+
+	public static TextArea validationResultsTextArea() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#validationResultsTextArea").query();
+	}
+
+	public static TextArea testTagsBeforeTextArea() {
 		return FxAssert.assertContext().getNodeFinder().lookup("#testTagsBeforeTextArea").query();
-	}
-
-	public static TextArea afterTranslationTextArea() {
-		return FxAssert.assertContext().getNodeFinder().lookup("#testTagsAfterTextArea").query();
 	}
 
 }
