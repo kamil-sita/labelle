@@ -1,6 +1,8 @@
 package place.sita.labelle.core.repository.inrepository.tags.tagcontainerinvokee.inmemory;
 
 import org.junit.jupiter.api.Test;
+import place.sita.labelle.core.repository.automation.tagtranslation.tagcontainerinvokee.inmemory.StringToTagFilter;
+import place.sita.labelle.core.repository.automation.tagtranslation.tagcontainerinvokee.inmemory.TagFilter;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 
 import static org.assertj.core.api.Assertions.assertThat;
