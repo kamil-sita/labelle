@@ -26,13 +26,13 @@
             <AnchorPane GridPane.columnIndex="1">
                <children>
                   <ChoiceBox fx:id="repositoryChoiceBox" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="201.0" />
-                  <TextArea fx:id="testTagsBeforeTextArea" layoutX="15.0" layoutY="82.0" prefHeight="95.0" prefWidth="167.0" text="Category 1;Tag 1">
+                  <TextArea fx:id="testTagsBeforeTextArea" layoutX="15.0" layoutY="82.0" prefHeight="95.0" prefWidth="167.0" text="Category 1;Tag 1&#10;Category 2;Tag 2&#10;Category 3;Tag 3">
                      <font>
                         <Font name="Consolas" size="12.0" />
                      </font>
                   </TextArea>
                   <Label layoutX="15.0" layoutY="57.0" text="Test tags, separate by semicolon" />
-                  <TextArea fx:id="testTagsAfterTextArea" layoutX="311.0" layoutY="82.0" prefHeight="95.0" prefWidth="167.0" text="Category 1; Tag 1">
+                  <TextArea fx:id="testTagsAfterTextArea" layoutX="311.0" layoutY="82.0" prefHeight="95.0" prefWidth="167.0">
                      <font>
                         <Font name="Consolas" size="12.0" />
                      </font>
@@ -42,7 +42,7 @@
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TextArea fx:id="tagLevelRulesTextArea" prefHeight="167.0" prefWidth="693.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
+                              <TextArea fx:id="tagLevelRulesTextArea" prefHeight="167.0" prefWidth="693.0" text="// detect if tag (ignoring category) has certain value, and then adding it to a category XYZ&#10;IF tag in (&quot;Tag 1&quot;, &quot;Tag2&quot;) THEN ADD (&quot;Xyz&quot;, MATCHED)" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
                                  <font>
                                     <Font name="Consolas" size="12.0" />
                                  </font>
@@ -53,7 +53,7 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
                               <Label layoutX="14.0" layoutY="5.0" text="Tag container-level rules" />
-                              <TextArea layoutX="-62.0" layoutY="41.0" prefHeight="167.0" prefWidth="693.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
+                              <TextArea fx:id="containerLevelRulesTextArea" layoutX="-62.0" layoutY="41.0" prefHeight="167.0" prefWidth="693.0" text="// detecting if two tags exist&#10;IF IN tags EXISTS (tag = &quot;Tag 1&quot;) AND IN tags EXISTS (tag = &quot;Tag 2&quot;) THEN IN tags DO (ADD (&quot;Cat1&quot;, &quot;Tag1&quot;))" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="25.0">
                                  <font>
                                     <Font name="Consolas" size="12.0" />
                                  </font>
@@ -62,7 +62,7 @@
                         </AnchorPane>
                     </items>
                   </SplitPane>
-                  <Button layoutX="227.0" layoutY="117.0" mnemonicParsing="false" onAction="#doConversion" text="&gt;&gt;" />
+                  <Button fx:id="doConversionButton" layoutX="227.0" layoutY="117.0" mnemonicParsing="false" onAction="#doConversion" text="&gt;&gt;" />
                   <Button layoutX="15.0" layoutY="195.0" mnemonicParsing="false" text="Validate" />
                   <Button layoutX="92.0" layoutY="195.0" mnemonicParsing="false" text="Save" />
                </children>

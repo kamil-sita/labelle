@@ -13,12 +13,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.shutdown.ShutdownRegistry;
-import place.sita.modulefx.UnstableSceneReporter;
-import place.sita.modulefx.ChildrenFactory;
-import place.sita.modulefx.FxControllerLoader;
-import place.sita.modulefx.FxSceneBuilderProcessors;
+import place.sita.modulefx.*;
 import place.sita.modulefx.threading.ThreadingSupportSupplier;
 import place.sita.labelle.gui.local.menu.Menu;
+import place.sita.modulefx.vtg.MessageListener;
 import place.sita.modulefx.vtg.VirtualTreeGroup;
 import place.sita.modulefx.vtg.VirtualTreeGroupElement;
 
@@ -90,6 +88,22 @@ public class StageConfiguration {
 				virtualTreeGroup.message(el.getId(), event);
 			}
 		};
+
+		el.addListener(new MessageListener() {
+			@Override
+			public void receive(Object message) {
+				if (message instanceof UnstableSceneEvent event) {
+					switch (event) {
+						case UnstableSceneEvent.MarkSceneAsStable markSceneAsStable -> {
+							unstableSceneReporter.markStable(markSceneAsStable.correlationId());
+						}
+						case UnstableSceneEvent.MarkSceneAsUnstable markSceneAsUnstable -> {
+							unstableSceneReporter.markUnstable(markSceneAsUnstable.correlationId(), markSceneAsUnstable.correlation());
+						}
+					}
+				}
+			}
+		});
 
 		UUID id = UUID.randomUUID();
 		ExistingStage thisStage = new ExistingStage(id, stage, eventListener);

@@ -21,7 +21,6 @@ public class MessageBusSupportProcessor implements FxSceneBuilderProcessor {
 		VirtualTreeGroupElement element = new VirtualTreeGroupElement();
 		AtomicBoolean addedToAnyVirtualTreeGroup = new AtomicBoolean(false);
 
-
 		Object controller = context.controller();
 
 		Class<?> controllerClass = controller.getClass();
