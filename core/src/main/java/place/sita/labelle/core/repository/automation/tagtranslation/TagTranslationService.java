@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.repository.automation.tagtranslation.tagcontainerinvokee.inmemory.InMemoryTagContainerInvokee;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.jooq.Tables;
+import place.sita.tflang.TheFilteringLang;
 
 import java.util.Optional;
 import java.util.SequencedSet;
@@ -35,17 +36,35 @@ public class TagTranslationService {
 				.map(record -> new TagTranslation(record.get(Tables.TAG_TRANSLATION.TAG_LEVEL_TRANSLATION), record.get(Tables.TAG_TRANSLATION.TAGS_LEVEL_TRANSLATION), record.get(Tables.TAG_TRANSLATION.VALIDATION)));
 	}
 
+	@Transactional
+	public void saveTagTranslation(UUID repositoryId, String tagLevel, String tagsLevel) {
+		String effectiveQuery = calculateEffectiveQuery(tagLevel, tagsLevel);
+		InMemoryTagContainerInvokee invokee = new InMemoryTagContainerInvokee();
+		StringBuilder errors = new StringBuilder();
+		Integer validationVersion = null;
+		try {
+			applyInstructions(invokee, effectiveQuery, errors);
+			validationVersion = TheFilteringLang.VERSION;
+		} catch (Exception e) {
+			// ignore exceptions - we failed validation, but we're going to save the query anyway
+		}
+
+		dslContext
+			.insertInto(Tables.TAG_TRANSLATION, Tables.TAG_TRANSLATION.REPOSITORY_ID, Tables.TAG_TRANSLATION.TAG_LEVEL_TRANSLATION, Tables.TAG_TRANSLATION.TAGS_LEVEL_TRANSLATION, Tables.TAG_TRANSLATION.VALIDATION)
+			.values(repositoryId, tagLevel, tagsLevel, validationVersion)
+			.onDuplicateKeyUpdate()
+			.set(Tables.TAG_TRANSLATION.TAG_LEVEL_TRANSLATION, tagLevel)
+			.set(Tables.TAG_TRANSLATION.TAGS_LEVEL_TRANSLATION, tagsLevel)
+			.set(Tables.TAG_TRANSLATION.VALIDATION, validationVersion)
+			.execute();
+	}
+
 	public TagTranslationResult performTagTranslation(String tagLevel, String tagsLevel, Set<Tag> tags) {
 		String effectiveQuery = calculateEffectiveQuery(tagLevel, tagsLevel);
 		InMemoryTagContainerInvokee invokee = new InMemoryTagContainerInvokee();
 		StringBuilder errors = new StringBuilder();
 		try {
-			invokee.applyInstructions(effectiveQuery, new BaseErrorListener() {
-				@Override
-				public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-					errors.append("line ").append(line).append(":").append(charPositionInLine).append(" ").append(msg).append("\r\n");
-				}
-			});
+			applyInstructions(invokee, effectiveQuery, errors);
 			SequencedSet<Tag> results = invokee.applyToInvokee(tags);
 			if (!errors.isEmpty()) {
 				return new TagTranslationResult.Failure(errors.toString());
@@ -59,6 +78,15 @@ public class TagTranslationService {
 				return new TagTranslationResult.Failure(e.getClass() + ", " + e.getMessage());
 			}
 		}
+	}
+
+	private static void applyInstructions(InMemoryTagContainerInvokee invokee, String effectiveQuery, StringBuilder errors) {
+		invokee.applyInstructions(effectiveQuery, new BaseErrorListener() {
+			@Override
+			public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+				errors.append("line ").append(line).append(":").append(charPositionInLine).append(" ").append(msg).append("\r\n");
+			}
+		});
 	}
 
 	private String calculateEffectiveQuery(String tagLevel, String tagsLevel) {

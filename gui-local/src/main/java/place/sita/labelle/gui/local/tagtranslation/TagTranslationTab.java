@@ -120,7 +120,10 @@ public class TagTranslationTab implements MainMenuTab {
 
 	@FXML
 	public void onSavePress(ActionEvent event) {
-
+		if (selectedRepository != null) {
+			tagTranslationService.saveTagTranslation(selectedRepository.id(), tagLevelRulesTextArea.getText(), containerLevelRulesTextArea.getText());
+			unsavedChangesLabel.setText("");
+		}
 	}
 
 	@FXML
