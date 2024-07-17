@@ -1,7 +1,13 @@
 package place.sita.labelle.gui.local.tagtranslation;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
 import org.springframework.context.annotation.Scope;
@@ -11,10 +17,13 @@ import place.sita.labelle.core.repository.automation.tagtranslation.TagTranslati
 import place.sita.labelle.core.repository.automation.tagtranslation.TagTranslationService.TagTranslationResult.Failure;
 import place.sita.labelle.core.repository.automation.tagtranslation.TagTranslationService.TagTranslationResult.Success;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
+import place.sita.labelle.core.repository.repositories.Repository;
+import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
 import place.sita.modulefx.UnstableSceneEvent;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.ModuleFx;
+import place.sita.modulefx.annotations.PostFxConstruct;
 import place.sita.modulefx.messagebus.MessageSender;
 import place.sita.modulefx.threading.Threading;
 import place.sita.modulefx.threading.Threading.KeyStone;
@@ -32,11 +41,9 @@ import static place.sita.modulefx.threading.Threading.keyStone;
 @FxTab(resourceFile = "/fx/tag_translation_rules.fxml", order = 15, tabName = "Tag translation")
 public class TagTranslationTab implements MainMenuTab {
 
-	private final TagTranslationService tagTranslationService;
-
 
 	@FXML
-	private ChoiceBox<?> repositoryChoiceBox;
+	private ChoiceBox<Repository> repositoryChoiceBox;
 
 	@FXML
 	private TextArea tagLevelRulesTextArea;
@@ -56,20 +63,76 @@ public class TagTranslationTab implements MainMenuTab {
 	@FXML
 	private TextArea validationResultsTextArea;
 
-	private final KeyStone keyStone = keyStone();
+	@FXML
+	private Button saveButton;
 
-	public TagTranslationTab(TagTranslationService tagTranslationService) {
+	@FXML
+	private Label validationFailedLabel;
+
+	@FXML
+	private Label unsavedChangesLabel;
+
+	private final KeyStone keyStone = keyStone();
+	private final RepositoryService repositoryService;
+
+	private final TagTranslationService tagTranslationService;
+
+	public TagTranslationTab(TagTranslationService tagTranslationService, RepositoryService repositoryService) {
 		this.tagTranslationService = tagTranslationService;
+		this.repositoryService = repositoryService;
+	}
+
+	@PostFxConstruct
+	public void setupRepositories() {
+		ObservableList<Repository> repositories = FXCollections.observableArrayList();
+		repositories.addAll(repositoryService.getRepositories());
+		Platform.runLater(() -> {
+			repositoryChoiceBox.setItems(repositories);
+		});
+	}
+
+	private Repository selectedRepository;
+
+	@PostFxConstruct
+	public void onChangeOfRepository() {
+		repositoryChoiceBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			selectedRepository = newValue;
+			saveButton.setDisable(newValue == null);
+			fetchRules(newValue);
+		});
+	}
+
+	private void fetchRules(Repository newValue) {
+		String tagLevel = "";
+		String containerLevel = "";
+		if (newValue != null) {
+			var optionalTagTranslation = tagTranslationService.getTagTranslation(newValue.id());
+			if (optionalTagTranslation.isPresent()) {
+				tagLevel = optionalTagTranslation.get().tagLevel();
+				containerLevel = optionalTagTranslation.get().tagsLevel();
+			}
+		}
+		tagLevelRulesTextArea.setText(tagLevel);
+		containerLevelRulesTextArea.setText(containerLevel);
+		unsavedChangesLabel.setText("");
+		doValidateActual();
+	}
+
+	@FXML
+	public void onSavePress(ActionEvent event) {
+
 	}
 
 	@FXML
 	public void onKeyTyped(KeyEvent event) {
-		UUID id = UUID.randomUUID();
-		messageSender.send(new UnstableSceneEvent.MarkSceneAsUnstable(id, "Validating tag transformation"));
-		onKeyTypedActual(id);
+		unsavedChangesLabel.setText("Changing repo will lose unsaved changes");
+		doValidateActual();
 	}
 
-	private void onKeyTypedActual(UUID id) {
+	private void doValidateActual() {
+		UUID id = UUID.randomUUID();
+		messageSender.send(new UnstableSceneEvent.MarkSceneAsUnstable(id, "Validating tag transformation"));
+		validationFailedLabel.setText(null);
 		Set<Tag> tags;
 		try {
 			tags = getTags();
@@ -89,6 +152,7 @@ public class TagTranslationTab implements MainMenuTab {
 						toolkit.onSeparateThread(() -> {
 							markStable(id);
 						});
+						validationFailedLabel.setText("Validation failed - those rules cannot be executed.");
 					});
 				}
 				case Success success -> {

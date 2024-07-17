@@ -12,3 +12,7 @@
 .background3 {
     -fx-background-color: #1d1d1d;
 }
+
+.warning {
+    -fx-text-fill: #ff0000;
+}

@@ -64,7 +64,9 @@
                   </SplitPane>
                   <Button disable="true" layoutX="227.0" layoutY="117.0" mnemonicParsing="false" text="&gt;&gt;" />
                   <TextArea fx:id="validationResultsTextArea" editable="false" layoutX="15.0" layoutY="250.0" maxHeight="70.0" prefHeight="70.0" prefWidth="770.0" text="Validation OK" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" />
-                  <Button layoutX="23.0" layoutY="198.0" mnemonicParsing="false" text="Save" />
+                  <Button fx:id="saveButton" disable="true" layoutX="23.0" layoutY="198.0" mnemonicParsing="false" onAction="#onSavePress" text="Save" />
+                  <Label fx:id="unsavedChangesLabel" layoutX="229.0" layoutY="19.0" styleClass="warning" text="Changing repo will lose unsaved changes" textFill="RED" />
+                  <Label fx:id="validationFailedLabel" layoutX="73.0" layoutY="202.0" styleClass="warning" textFill="RED" />
                </children>
             </AnchorPane>
          </children>
