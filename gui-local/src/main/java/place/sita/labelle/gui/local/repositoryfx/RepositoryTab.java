@@ -29,10 +29,7 @@ import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
-import place.sita.modulefx.annotations.FxChild;
-import place.sita.modulefx.annotations.FxTab;
-import place.sita.modulefx.annotations.ModuleFx;
-import place.sita.modulefx.annotations.PostFxConstruct;
+import place.sita.modulefx.annotations.*;
 import place.sita.modulefx.messagebus.MessageSender;
 import place.sita.modulefx.threading.Threading;
 import place.sita.modulefx.threading.Threading.KeyStone;
@@ -297,9 +294,15 @@ public class RepositoryTab implements MainMenuTab {
             });
     }
 
+    @FxMessageListener
+    public void onRequestSelect(SelectImageEvent selectImageEvent) {
+        ImageResponse imageResponse = inRepositoryService.images().process().filterByImageId(selectImageEvent.imageId()).getOne();
+        labPaginator.insertSelectInto(inRepositoryService.images().process().filterByRepository(selectedRepository.id()).indexOf(imageResponse), imageResponse);
+    }
+
     private void onUserAdded(List<ImageResponse> image) {
         if (!image.isEmpty()) {
-            ImageResponse first = image.get(0);
+            ImageResponse first = image.getFirst();
             labPaginator.insertSelectInto(inRepositoryService.images().process().filterByRepository(selectedRepository.id()).indexOf(first), first);
         }
     }

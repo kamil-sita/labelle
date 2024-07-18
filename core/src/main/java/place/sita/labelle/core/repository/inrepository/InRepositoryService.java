@@ -157,7 +157,48 @@ public class InRepositoryService {
             .execute();
     }
 
-    private enum CopyOrRefer {
+    @Transactional
+    public UUID duplicateImage(UUID selectedImageId) {
+        UUID newId = UUID.randomUUID();
+        UUID newReference = UUID.randomUUID();
+
+        var originalImage = dslContext.select(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE, IMAGE.VISIBLE_TO_CHILDREN)
+            .from(IMAGE)
+            .where(IMAGE.ID.eq(selectedImageId))
+            .fetch()
+            .getFirst();
+
+
+        dslContext.insertInto(IMAGE)
+            .columns(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE, IMAGE.VISIBLE_TO_CHILDREN)
+            .values(newId, originalImage.value2(), originalImage.value3(), newReference.toString(), originalImage.value5(), originalImage.value6())
+            .execute();
+
+        PersistableImagesTags pit = new PersistableImagesTags(originalImage.value3());
+        getTags(selectedImageId).forEach(tag -> pit.addTag(newId, tag));
+        addTags(pit);
+
+        var originalDelta = dslContext.select(TAG_DELTA.IMAGE_ID, TAG_DELTA.ADDS, TAG_DELTA.CATEGORY, TAG_DELTA.TAG)
+            .from(TAG_DELTA)
+            .where(TAG_DELTA.IMAGE_ID.eq(selectedImageId))
+            .fetch();
+
+        var ongoingTagDelta =
+            dslContext.insertInto(TAG_DELTA)
+                .columns(TAG_DELTA.IMAGE_ID, TAG_DELTA.ADDS, TAG_DELTA.CATEGORY, TAG_DELTA.TAG);
+
+        for (var delta : originalDelta) {
+            ongoingTagDelta = ongoingTagDelta.values(newId, delta.value2(), delta.value3(), delta.value4());
+        }
+
+        ongoingTagDelta.execute();
+
+        // todo image delta
+
+        return newId;
+    }
+
+	private enum CopyOrRefer {
         COPY,
         REFER;
     }

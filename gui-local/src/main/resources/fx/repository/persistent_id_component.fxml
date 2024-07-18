@@ -44,6 +44,7 @@
          <children>
               <CheckBox fx:id="isVisibleForChildrenCheckBox" minWidth="15.0" mnemonicParsing="false" selected="true" text="Visible to children" />
               <Button disable="true" mnemonicParsing="false" onAction="#onSavePress" text="Save" />
+            <Button fx:id="duplicateButton" disable="true" mnemonicParsing="false" onAction="#onDuplicatePress" text="Duplicate" />
          </children>
          <padding>
             <Insets left="5.0" right="5.0" />

@@ -1,5 +1,10 @@
 package place.sita.labelle.gui.local.repositoryfx;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.repository.inrepository.Ids;
@@ -7,12 +12,11 @@ import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.modulefx.annotations.FxDictatesHeight;
 import place.sita.modulefx.annotations.FxMessageListener;
 import place.sita.modulefx.annotations.FxNode;
-
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
+import place.sita.modulefx.annotations.ModuleFx;
+import place.sita.modulefx.messagebus.MessageSender;
 import place.sita.modulefx.threading.Threading;
+
+import java.util.UUID;
 
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
@@ -36,24 +40,38 @@ public class PersistentIdController {
     @FXML
     private TextField persistentIdTextField;
 
+    @FXML
+    private Button duplicateButton;
+
+    @ModuleFx
+    private MessageSender messageSender;
+
 	public PersistentIdController(InRepositoryService inRepositoryService) {
 		this.inRepositoryService = inRepositoryService;
 	}
 
-
 	@FXML
-    void onSavePress(ActionEvent event) {
+    public void onSavePress(ActionEvent event) {
+        // todo
+    }
 
+    @FXML
+    public void onDuplicatePress(ActionEvent event) {
+        UUID id = inRepositoryService.duplicateImage(selectedImageId);
+        messageSender.send(new SelectImageEvent(id));
     }
 
     private final Threading.KeyStone keyStone = Threading.keyStone();
+    private UUID selectedImageId;
 
     @FxMessageListener
     public void onImageSelected(ImageSelectedEvent event) {
         disable();
+        selectedImageId = event.imageId();
         if (event.imageId() != null) {
             internalIdTextField.setText(event.imageId().toString());
             internalIdTextField.setDisable(false);
+            duplicateButton.setDisable(false);
 
             Threading.onSeparateThread(keyStone, toolkit -> {
                 Ids id = inRepositoryService.getIds(event.imageId());
@@ -71,6 +89,8 @@ public class PersistentIdController {
                     persistentIdTextField.setEditable(true);
                 });
             });
+        } else {
+            duplicateButton.setDisable(true);
         }
     }
 
