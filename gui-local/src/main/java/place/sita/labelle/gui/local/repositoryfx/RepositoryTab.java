@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
+import place.sita.labelle.core.images.loading.ImagePtrToFile;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
@@ -181,6 +182,11 @@ public class RepositoryTab implements MainMenuTab {
     private final KeyStone loadImageKeyStone = Threading.keyStone();
 
     private void loadImage(ImageResponse selected) {
+        scalableImageDisplayController.clear();
+        var optionalFile = ImagePtrToFile.toFile(selected.toPtr());
+        if (optionalFile.isPresent()) {
+            scalableImageDisplayController.setFile(optionalFile.get());
+        }
         if (currentFutureImage != null) {
             currentFutureImage.cancel(true);
         }

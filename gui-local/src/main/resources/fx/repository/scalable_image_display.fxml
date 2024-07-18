@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane fx:id="imageViewContainer" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <children>
-        <ImageView fx:id="imageView" fitHeight="226.0" fitWidth="394.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
-    </children>
+<AnchorPane prefHeight="297.0" prefWidth="427.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane fx:id="imageViewContainer" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <children>
+              <ImageView fx:id="imageView" fitHeight="226.0" fitWidth="394.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+          </children>
+      </AnchorPane>
+      <Button fx:id="openButton" disable="true" layoutX="14.0" layoutY="257.0" mnemonicParsing="false" onAction="#openButtonPress" text="Open" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="7.0" />
+      <Button fx:id="openFileExplorerButton" disable="true" layoutX="62.0" layoutY="264.0" mnemonicParsing="false" onAction="#openFileExplorerButtonPress" text="Open in file explorer" AnchorPane.bottomAnchor="7.399999999999977" AnchorPane.leftAnchor="62.0" />
+   </children>
 </AnchorPane>
