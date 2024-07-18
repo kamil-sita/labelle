@@ -26,6 +26,7 @@ public abstract class GuiTest extends TestContainersTest {
 
 	@AfterEach
 	public void cleanup() {
+		context.delete(Tables.TAG_TRANSLATION).execute();
 		context.delete(Tables.TAG_DELTA).execute();
 
 		context.delete(Tables.TAG_IMAGE).execute();

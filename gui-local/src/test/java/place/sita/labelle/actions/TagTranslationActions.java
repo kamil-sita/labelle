@@ -1,7 +1,11 @@
 package place.sita.labelle.actions;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import org.testfx.api.FxAssert;
+import org.testfx.service.query.NodeQuery;
 
 public class TagTranslationActions {
 
@@ -25,4 +29,23 @@ public class TagTranslationActions {
 		return FxAssert.assertContext().getNodeFinder().lookup("#testTagsAfterTextArea").query();
 	}
 
+	public static ChoiceBox repositoryChoiceBox() {
+		return repositoryChoiceBoxQuery().query();
+	}
+
+	public static NodeQuery repositoryChoiceBoxQuery() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#repositoryChoiceBox");
+	}
+
+	public static Label unsavedChangesLabel() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#unsavedChangesLabel").query();
+	}
+
+	public static Label validationFailedLabel() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#validationFailedLabel").query();
+	}
+
+	public static Button saveButton() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#saveButton").query();
+	}
 }
