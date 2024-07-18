@@ -105,14 +105,14 @@ public class TagTranslationTabTest extends GuiTest {
 		// visit tag translation
 		Node node = TabActions.getMainTab("Tag translation");
 
-		assertThat(TagTranslationActions.unsavedChangesLabel().getText()).isEqualTo("Changing repo will lose unsaved changes");
-		assertThat(TagTranslationActions.validationFailedLabel().getText()).isNullOrEmpty();
-
 		withAction(() -> {
 			robot.clickOn(node);
 		})
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
 			.test();
+
+		assertThat(TagTranslationActions.unsavedChangesLabel().getText()).isEqualTo("Changing repo will lose unsaved changes");
+		assertThat(TagTranslationActions.validationFailedLabel().getText()).isNullOrEmpty();
 
 		robot.clickOn(RepositoryActions.repositoryChoiceBox());
 		robot.type(KeyCode.DOWN);
