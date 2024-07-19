@@ -215,11 +215,6 @@ public class TagDeltasComponentController {
 	}
 
 	@FXML
-	void applyTagsDeltaButtonPress(ActionEvent event) {
-
-	}
-
-	@FXML
 	void calculateTagsDeltaButtonPress(ActionEvent event) {
 		if (selected != null) {
 			Threading.onSeparateThread(toolkit -> {
