@@ -17,7 +17,7 @@
                         <Label layoutX="22.0" layoutY="16.0" text="Task result" />
                         <ChoiceBox fx:id="taskResultChoiceBox" disable="true" layoutX="88.0" layoutY="12.0" prefHeight="26.0" prefWidth="236.0" />
                         <Label layoutX="22.0" layoutY="52.0" text="Configuration" />
-                        <TextArea fx:id="configurationTextArea" layoutX="22.0" layoutY="76.8" prefHeight="530.0" prefWidth="454.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="77.0" />
+                        <TextArea fx:id="configurationTextArea" layoutX="22.0" layoutY="76.8" prefHeight="530.0" prefWidth="454.0" styleClass="monofont" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="77.0" />
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">

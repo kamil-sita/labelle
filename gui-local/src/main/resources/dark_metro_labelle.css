@@ -16,3 +16,7 @@
 .warning {
     -fx-text-fill: #ff0000;
 }
+
+.monofont {
+    -fx-font-family: "Consolas";
+}
