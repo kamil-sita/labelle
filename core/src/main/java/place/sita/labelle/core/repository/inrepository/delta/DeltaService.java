@@ -10,8 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static place.sita.labelle.jooq.Tables.TAG_DELTA;
-import static place.sita.labelle.jooq.Tables.TAG_DELTA_CALC;
+import static place.sita.labelle.jooq.Tables.*;
 
 @Service
 public class DeltaService {
@@ -66,5 +65,22 @@ public class DeltaService {
 				})
 				.collect(Collectors.toList())
 		).execute();
+	}
+
+	@Transactional
+	public void enableTagDelta(UUID imageId, boolean selected) {
+		dslContext.update(IMAGE)
+			.set(IMAGE.USE_TAG_DELTA, selected)
+			.where(IMAGE.ID.eq(imageId))
+			.execute();
+	}
+
+	@Transactional(readOnly = true)
+	public boolean isTagDeltaEnabled(UUID id) {
+		return dslContext.select(IMAGE.USE_TAG_DELTA)
+			.from(IMAGE)
+			.where(IMAGE.ID.eq(id))
+			.fetchOne()
+			.value1();
 	}
 }

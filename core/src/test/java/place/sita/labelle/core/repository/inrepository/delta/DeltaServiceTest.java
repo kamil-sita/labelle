@@ -342,4 +342,30 @@ public class DeltaServiceTest extends TestContainersTest {
 		assertThat(tagDeltas2.get(0).category()).isEqualTo("Some category");
 		assertThat(tagDeltas2.get(0).type()).isEqualTo(TagDeltaType.REMOVE);
 	}
+
+	@Test
+	public void shouldSetTagDeltaToEnabled() {
+		// given
+		Repository repo = repositoryService.addRepository("Repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.enableTagDelta(imageId, true);
+
+		// then
+		assertThat(deltaService.isTagDeltaEnabled(imageId)).isTrue();
+	}
+
+	@Test
+	public void shouldSetTagDeltaToDisabled() {
+		// given
+		Repository repo = repositoryService.addRepository("Repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.enableTagDelta(imageId, false);
+
+		// then
+		assertThat(deltaService.isTagDeltaEnabled(imageId)).isFalse();
+	}
 }

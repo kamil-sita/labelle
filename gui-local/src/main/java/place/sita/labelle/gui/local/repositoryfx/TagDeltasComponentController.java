@@ -10,6 +10,9 @@ import place.sita.labelle.core.repository.inrepository.delta.DeltaService;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaType;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.gui.local.fx.ButtonCell;
+import place.sita.labelle.gui.local.menu.UpdateStatusLabelEvent;
+import place.sita.modulefx.annotations.ModuleFx;
+import place.sita.modulefx.messagebus.MessageSender;
 import place.sita.modulefx.threading.Threading;
 import place.sita.modulefx.annotations.FxNode;
 import javafx.event.ActionEvent;
@@ -30,13 +33,16 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 public class TagDeltasComponentController {
 
 	private final DeltaService deltaService;
+	private final InRepositoryService inRepositoryService;
+
 
 	public TagDeltasComponentController(InRepositoryService inRepositoryService, DeltaService deltaService) {
 		this.inRepositoryService = inRepositoryService;
 		this.deltaService = deltaService;
 	}
 
-	private final InRepositoryService inRepositoryService;
+	@ModuleFx
+	private MessageSender messageSender;
 
 	@FXML
 	private TextField deltaEntryTextField;
@@ -48,6 +54,9 @@ public class TagDeltasComponentController {
 		this.selected = selected;
 		reloadDeltas();
 		reloadParentTags();
+		if (selected != null) {
+			enableTagDeltaCheckBox.setSelected(deltaService.isTagDeltaEnabled(selected.id()));
+		}
 	}
 
 	/*
@@ -225,6 +234,20 @@ public class TagDeltasComponentController {
 		}
 	}
 
+	/*
+	 * Enable tag delta
+	 */
+
 	@FXML
 	private CheckBox enableTagDeltaCheckBox;
+
+	@FXML
+	public void onEnableTagDeltaCheckBoxAction(ActionEvent event) {
+		if (selected != null) {
+			Threading.onSeparateThread(toolkit -> {
+				deltaService.enableTagDelta(selected.id(), enableTagDeltaCheckBox.isSelected());
+				messageSender.send(new UpdateStatusLabelEvent("Tag delta " + (enableTagDeltaCheckBox.isSelected() ? "enabled" : "disabled")));
+			});
+		}
+	}
 }

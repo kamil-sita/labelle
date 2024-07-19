@@ -50,6 +50,11 @@ public class Menu {
 		updateProgressBar();
 	}
 
+	@FxMessageListener
+	public void updateLabel(UpdateStatusLabelEvent event) {
+		Threading.onFxThread(toolkit -> statusLabel.setText(event.message()));
+	}
+
 	private void updateProgressBar() {
 		Threading.onFxThread(toolkit -> {
 			double progress = 1.0 * done.get() / scheduled.get();;
