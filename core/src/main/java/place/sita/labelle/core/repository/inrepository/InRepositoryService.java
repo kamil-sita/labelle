@@ -21,7 +21,7 @@ import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval
 import place.sita.labelle.jooq.Tables;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.File;
 import java.util.*;
 
 import static place.sita.labelle.jooq.Tables.*;
@@ -120,6 +120,35 @@ public class InRepositoryService {
     @Transactional
     public UUID referImage(UUID newRepoId, UUID originalImageId, String persistentId) {
         return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.REFER, persistentId);
+    }
+
+    @Transactional
+    public UpdateIdsResult updateIds(UUID imageId, String persistentId, String parentPersistentId, boolean isVisibleToChildren) {
+        UUID imageRepoId = JqRepo.fetchOne(() ->
+            dslContext
+                .select(IMAGE.REPOSITORY_ID)
+                .from(IMAGE)
+                .where(IMAGE.ID.eq(imageId))
+                .fetch()
+        );
+        boolean exists = dslContext.fetchExists(IMAGE,
+            IMAGE.REFERENCE_ID.eq(persistentId)
+            .and(IMAGE.REPOSITORY_ID.eq(imageRepoId))
+            .and(IMAGE.ID.ne(imageId))
+        );
+        if (exists) {
+            return new UpdateIdsResult.IdReuse();
+        }
+
+        setPersistentId(imageId, persistentId);
+        setVisibility(imageId, isVisibleToChildren);
+        setParentPersistentId(imageId, parentPersistentId);
+        return new UpdateIdsResult.Success();
+    }
+
+    public sealed interface UpdateIdsResult {
+        record Success() implements UpdateIdsResult {}
+        record IdReuse() implements UpdateIdsResult {}
     }
 
     @Transactional // todo make this one throw if something goes wrong - unless it already does?

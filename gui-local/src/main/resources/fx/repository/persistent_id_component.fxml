@@ -43,7 +43,7 @@
       <FlowPane hgap="10.0" maxWidth="180.0" minWidth="140.0" prefWidth="180.0" vgap="10.0" GridPane.columnIndex="3">
          <children>
               <CheckBox fx:id="isVisibleForChildrenCheckBox" minWidth="15.0" mnemonicParsing="false" selected="true" text="Visible to children" />
-              <Button disable="true" mnemonicParsing="false" onAction="#onSavePress" text="Save" />
+              <Button fx:id="saveButton" disable="true" mnemonicParsing="false" onAction="#onSavePress" text="Save" />
             <Button fx:id="duplicateButton" disable="true" mnemonicParsing="false" onAction="#onDuplicatePress" text="Duplicate" />
          </children>
          <padding>

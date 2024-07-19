@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.repository.inrepository.Ids;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.gui.local.fx.Alerts;
 import place.sita.modulefx.annotations.FxDictatesHeight;
 import place.sita.modulefx.annotations.FxMessageListener;
 import place.sita.modulefx.annotations.FxNode;
@@ -46,13 +47,27 @@ public class PersistentIdController {
     @ModuleFx
     private MessageSender messageSender;
 
+    @FXML
+    private Button saveButton;
+
 	public PersistentIdController(InRepositoryService inRepositoryService) {
 		this.inRepositoryService = inRepositoryService;
 	}
 
 	@FXML
     public void onSavePress(ActionEvent event) {
-        // todo
+        InRepositoryService.UpdateIdsResult result = inRepositoryService.updateIds(
+            selectedImageId,
+            persistentIdTextField.getText(),
+            parentPersistentIdTextField.getText(),
+            isVisibleForChildrenCheckBox.isSelected()
+        );
+        switch (result) {
+	        case InRepositoryService.UpdateIdsResult.Success success -> { } // what we wanted, so let's ignore it
+            case InRepositoryService.UpdateIdsResult.IdReuse idReuse -> {
+                Alerts.error("Persistent ID is already in use");
+            }
+        }
     }
 
     @FXML
@@ -72,6 +87,7 @@ public class PersistentIdController {
             internalIdTextField.setText(event.imageId().toString());
             internalIdTextField.setDisable(false);
             duplicateButton.setDisable(false);
+            saveButton.setDisable(false);
 
             Threading.onSeparateThread(keyStone, toolkit -> {
                 Ids id = inRepositoryService.getIds(event.imageId());
@@ -99,6 +115,7 @@ public class PersistentIdController {
         isVisibleForChildrenCheckBox.setSelected(false);
         parentPersistentIdTextField.setText("");
         persistentIdTextField.setText("");
+        saveButton.setDisable(true);
 
         internalIdTextField.setDisable(true);
         isVisibleForChildrenCheckBox.setDisable(true);
