@@ -21,10 +21,7 @@ public class DeltasComponentController {
 		this.tagDeltasComponentController = tagDeltasComponentController;
 	}
 
-	private ImageResponse selected;
-
 	public void onImageSelected(ImageResponse selected) {
-		this.selected = selected;
 		tagDeltasComponentController.onImageSelected(selected);
 	}
 
