@@ -47,7 +47,7 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 				var img = result.getSuccess();
 				images.add(img.id());
 				tagsToImages.put(img.id(), new HashSet<>());
-				List<String> tags = getDirectoriesInPath(file.getPath(), directory);
+				List<String> tags = getTagsInPath(file.getPath(), directory);
 				for (String tag : tags) {
 					tagsToImages.get(img.id()).add(tag);
 					taskContext.getApi().getInRepositoryService().addTag(img.id(), parameter.repositoryId, new Tag("folder", tag));
@@ -74,8 +74,8 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 		}
 	}
 
-	private static List<String> getDirectoriesInPath(String filePath, String basePath) {
-		List<String> directories = new ArrayList<>();
+	private static List<String> getTagsInPath(String filePath, String basePath) {
+		List<String> tags = new ArrayList<>();
 		File file = new File(filePath);
 		File base = new File(basePath);
 
@@ -85,12 +85,14 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 
 			// Climb up the directory tree until reaching the base
 			while (parent != null && !parent.equals(base)) {
-				directories.add(0, parent.getName()); // Add at the beginning of the list
+				String unprocessedTags = parent.getName();
+				Arrays.stream(unprocessedTags.split(","))
+						.forEach(tag -> tags.add(tag.trim()));
 				parent = parent.getParentFile();
 			}
 		}
 
-		return directories;
+		return tags;
 	}
 
 	@Override
