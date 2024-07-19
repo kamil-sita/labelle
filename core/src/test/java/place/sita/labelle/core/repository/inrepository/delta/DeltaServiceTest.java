@@ -226,4 +226,120 @@ public class DeltaServiceTest extends TestContainersTest {
 		var tagDeltas = inRepositoryService.getTagDeltas(childImageId);
 		assertThat(tagDeltas).isEmpty();
 	}
+
+	@Test
+	public void shouldManuallyAddPositiveDelta() {
+		// given
+		Repository repo = repositoryService.addRepository("Repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.ADD);
+
+		// then
+		var tagDeltas = inRepositoryService.getTagDeltas(imageId);
+		assertThat(tagDeltas).hasSize(1);
+		assertThat(tagDeltas.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tagDeltas.get(0).category()).isEqualTo("Some category");
+		assertThat(tagDeltas.get(0).type()).isEqualTo(TagDeltaType.ADD);
+	}
+
+	@Test
+	public void shouldManuallyAddNegativeDelta() {
+		// given
+		Repository repo = repositoryService.addRepository("Repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.REMOVE);
+
+		// then
+		var tagDeltas = inRepositoryService.getTagDeltas(imageId);
+		assertThat(tagDeltas).hasSize(1);
+		assertThat(tagDeltas.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tagDeltas.get(0).category()).isEqualTo("Some category");
+		assertThat(tagDeltas.get(0).type()).isEqualTo(TagDeltaType.REMOVE);
+	}
+
+	@Test
+	public void shouldManuallyAddManyDeltas() {
+		// given
+		Repository repo = repositoryService.addRepository("Repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.ADD);
+		deltaService.addTagDelta(imageId, "Some tag 2", "Some category", TagDeltaType.REMOVE);
+
+		// then
+		var tagDeltas = inRepositoryService.getTagDeltas(imageId);
+		assertThat(tagDeltas).hasSize(2);
+		assertThat(tagDeltas.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tagDeltas.get(0).category()).isEqualTo("Some category");
+		assertThat(tagDeltas.get(0).type()).isEqualTo(TagDeltaType.ADD);
+		assertThat(tagDeltas.get(1).tag()).isEqualTo("Some tag 2");
+		assertThat(tagDeltas.get(1).category()).isEqualTo("Some category");
+		assertThat(tagDeltas.get(1).type()).isEqualTo(TagDeltaType.REMOVE);
+	}
+
+	@Test
+	public void shouldAddingNegativeDeltaRemovePositiveDelta() {
+		// given
+		Repository repo = repositoryService.addRepository("repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.ADD);
+		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.REMOVE);
+
+		// then
+		var tagDeltas = inRepositoryService.getTagDeltas(imageId);
+		assertThat(tagDeltas).hasSize(1);
+		assertThat(tagDeltas.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tagDeltas.get(0).category()).isEqualTo("Some category");
+		assertThat(tagDeltas.get(0).type()).isEqualTo(TagDeltaType.REMOVE);
+	}
+
+	@Test
+	public void shouldAddingPositiveDeltaRemoveNegativeDelta() {
+		// given
+		Repository repo = repositoryService.addRepository("repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.REMOVE);
+		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.ADD);
+
+		// then
+		var tagDeltas = inRepositoryService.getTagDeltas(imageId);
+		assertThat(tagDeltas).hasSize(1);
+		assertThat(tagDeltas.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tagDeltas.get(0).category()).isEqualTo("Some category");
+		assertThat(tagDeltas.get(0).type()).isEqualTo(TagDeltaType.ADD);
+	}
+
+	@Test
+	public void shouldAddingAPositiveDeltaNotAccidentallyRemoveADeltaFromAnotherImage() {
+		// given
+		Repository repo = repositoryService.addRepository("Repo");
+		UUID imageId1 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		deltaService.addTagDelta(imageId1, "Some tag", "Some category", TagDeltaType.ADD);
+		deltaService.addTagDelta(imageId2, "Some tag", "Some category", TagDeltaType.REMOVE);
+
+		// then
+		var tagDeltas1 = inRepositoryService.getTagDeltas(imageId1);
+		assertThat(tagDeltas1).hasSize(1);
+		assertThat(tagDeltas1.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tagDeltas1.get(0).category()).isEqualTo("Some category");
+		assertThat(tagDeltas1.get(0).type()).isEqualTo(TagDeltaType.ADD);
+
+		var tagDeltas2 = inRepositoryService.getTagDeltas(imageId2);
+		assertThat(tagDeltas2).hasSize(1);
+		assertThat(tagDeltas2.get(0).tag()).isEqualTo("Some tag");
+		assertThat(tagDeltas2.get(0).category()).isEqualTo("Some category");
+		assertThat(tagDeltas2.get(0).type()).isEqualTo(TagDeltaType.REMOVE);
+	}
 }
