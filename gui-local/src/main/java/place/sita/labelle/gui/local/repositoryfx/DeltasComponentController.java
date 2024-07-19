@@ -1,6 +1,5 @@
 package place.sita.labelle.gui.local.repositoryfx;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import org.springframework.context.annotation.Scope;
@@ -40,15 +39,5 @@ public class DeltasComponentController {
 
 	@FxChild(patchNode = "deltasTagAnchorPane")
 	private final TagDeltasComponentController tagDeltasComponentController;
-
-	@FXML
-	void applyAllEnabledDeltasButtonPress(ActionEvent event) {
-
-	}
-
-	@FXML
-	void calculateAllEnabledDeltasButtonPress(ActionEvent event) {
-
-	}
 
 }
