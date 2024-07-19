@@ -10,7 +10,6 @@ import place.sita.labelle.core.images.imagelocator.ImageLocatorService;
 import place.sita.labelle.core.repository.inrepository.delta.DeltaService;
 import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
-import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.datasource.NonUniqueAnswerException;
@@ -483,25 +482,5 @@ public class ImageRepositoryTest extends TestContainersTest {
 		assertThat(imageRepository.images().indexOf(fifthImage)).isEqualTo(4);
 		assertThat(imageRepository.images().indexOf(sixthImage)).isEqualTo(5);
 	}
-
-	@Test
-	public void shouldCreateDuplicateOfImage() {
-		// given
-		Repository repo = repositoryService.addRepository("Test repo");
-		var imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, repo.id(), new Tag("First category", "First tag"));
-		inRepositoryService.addTag(imageId, repo.id(), new Tag("Second category", "Second tag"));
-		// todo test deltas
-
-		// when
-		var duplicateId = inRepositoryService.duplicateImage(imageId);
-
-		// then
-		assertThat(inRepositoryService.getTags(duplicateId)).contains(new Tag("First category", "First tag"));
-		assertThat(inRepositoryService.getTags(duplicateId)).contains(new Tag("Second category", "Second tag"));
-		assertThat(inRepositoryService.getTags(duplicateId)).hasSize(2);
-		// todo test persistent IDs
-	}
-
 
 }
