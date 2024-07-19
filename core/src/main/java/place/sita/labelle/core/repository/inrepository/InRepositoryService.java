@@ -159,6 +159,7 @@ public class InRepositoryService {
 
     @Transactional
     public UUID duplicateImage(UUID selectedImageId) {
+        // todo consider rewriting this to be event-based.
         UUID newId = UUID.randomUUID();
         UUID newReference = UUID.randomUUID();
 
