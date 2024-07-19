@@ -188,10 +188,10 @@ public class TagDeltasComponentController {
 		parentTagsTableView.setItems(parentTagsData);
 
 		parentsTagsCategoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().category()));
-		parentsTagsEntryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().value()));
+		parentsTagsEntryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().tag()));
 	}
 
-	private record ParentTags(String category, String value) {
+	private record ParentTags(String category, String tag) {
 
 	}
 

@@ -400,7 +400,7 @@ public class InRepositoryService {
             .where(PARENT_CHILD_IMAGE.CHILD_IMAGE_ID.eq(imageId))
             .fetchSet(PARENT_CHILD_IMAGE.PARENT_IMAGE_ID);
 
-        List<Tag> tags = dslContext.select(IMAGE_TAGS.TAG, IMAGE_TAGS.TAG_CATEGORY)
+        List<Tag> tags = dslContext.select(IMAGE_TAGS.TAG_CATEGORY, IMAGE_TAGS.TAG)
             .from(IMAGE_TAGS)
             .where(IMAGE_TAGS.IMAGE_ID.in(parents))
             .fetch()

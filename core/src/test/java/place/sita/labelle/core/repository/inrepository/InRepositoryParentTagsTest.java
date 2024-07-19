@@ -87,10 +87,10 @@ public class InRepositoryParentTagsTest extends TestContainersTest {
 
 		// then
 		assertThat(parentTags).containsExactlyInAnyOrder(
-				new Tag("TAG1", "CATEGORY1"),
-				new Tag("TAG2", "CATEGORY2"),
-				new Tag("TAG3", "CATEGORY3"),
-				new Tag("TAG4", "CATEGORY4")
+				new Tag("CATEGORY1", "TAG1"),
+				new Tag("CATEGORY2", "TAG2"),
+				new Tag("CATEGORY3", "TAG3"),
+				new Tag("CATEGORY4", "TAG4")
 		);
 	}
 
