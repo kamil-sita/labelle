@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static place.sita.labelle.jooq.Tables.TAG_DELTA;
 import static place.sita.labelle.jooq.Tables.TAG_DELTA_CALC;
 
 @Service
@@ -19,6 +20,23 @@ public class DeltaService {
 
 	public DeltaService(DSLContext dslContext) {
 		this.dslContext = dslContext;
+	}
+
+	@Transactional
+	public void addTagDelta(UUID imageId, String tag, String category, TagDeltaType added) {
+		// does tag delta for this image id, tag and category already exist?
+		dslContext.deleteFrom(TAG_DELTA)
+			.where(TAG_DELTA.IMAGE_ID.eq(imageId)
+				.and(TAG_DELTA.TAG.eq(tag))
+				.and(TAG_DELTA.CATEGORY.eq(category))
+			).execute();
+
+		dslContext.insertInto(TagDelta.TAG_DELTA)
+			.set(TagDelta.TAG_DELTA.IMAGE_ID, imageId)
+			.set(TagDelta.TAG_DELTA.TAG, tag)
+			.set(TagDelta.TAG_DELTA.CATEGORY, category)
+			.set(TagDelta.TAG_DELTA.ADDS, added == TagDeltaType.ADD)
+			.execute();
 	}
 
 	@Transactional

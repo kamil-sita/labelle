@@ -143,12 +143,23 @@ public class TagDeltasComponentController {
 	}
 
 	@FXML
-	void addDeltaButtonPress(ActionEvent event) {
-
+	public void addDeltaButtonPress(ActionEvent event) {
+		addDelta(DeltaType.ADD, deltaCategoryTextField.getText(), deltaEntryTextField.getText());
 	}
 
 	@FXML
-	void removeDeltaButtonPress(ActionEvent event) {
+	public void removeDeltaButtonPress(ActionEvent event) {
+		addDelta(DeltaType.REMOVE, deltaCategoryTextField.getText(), deltaEntryTextField.getText());
+	}
+
+	private void addDelta(DeltaType deltaType, String category, String tag) {
+		Threading.onSeparateThread(toolkit -> {
+			deltaService.addTagDelta(selected.id(), tag, category, map(deltaType));
+			toolkit.onFxThread(() -> {
+				// adding deltas has side effects that are too bothersome to calculate in view context
+				reloadDeltas();
+			});
+		});
 
 	}
 
