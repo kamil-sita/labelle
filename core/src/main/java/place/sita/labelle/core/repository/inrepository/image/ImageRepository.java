@@ -1,14 +1,15 @@
 package place.sita.labelle.core.repository.inrepository.image;
 
-import org.jooq.*;
 import org.jooq.Record;
+import org.jooq.*;
 import org.springframework.stereotype.Component;
-import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;
-import place.sita.labelle.datasource.impl.cross.UnderlyingIdDataSourceWithRemoval;
-import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilder;
+import place.sita.labelle.datasource.IllegalApiUseException;
 import place.sita.labelle.datasource.Page;
 import place.sita.labelle.datasource.cross.PreprocessableDataSourceWithRemoval;
+import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;
 import place.sita.labelle.datasource.impl.*;
+import place.sita.labelle.datasource.impl.cross.UnderlyingIdDataSourceWithRemoval;
+import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilder;
 import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilderWithRemovalAndId;
 import place.sita.labelle.datasource.impl.jooq.TableFieldAndValue;
 import place.sita.labelle.jooq.tables.records.ImageFileRecord;
@@ -101,7 +102,6 @@ public class ImageRepository {
 						case PagingPreprocessor pagingPreprocessor -> {
 							// no op
 						}
-						case null, default -> throw new IllegalStateException();
 					}
 
 				}
@@ -117,11 +117,10 @@ public class ImageRepository {
 						case FilterByImageIdsPreprocessor filterByImageIdsPreprocessor -> { /* no op */ }
 						case PagingPreprocessor pagingPreprocessor -> {
 							if (limit != null) {
-								throw new IllegalStateException();
+								throw new IllegalApiUseException("Limit redefinition");
 							}
 							limit = pagingPreprocessor.page().limit();
 						}
-						case null, default -> throw new IllegalStateException();
 					}
 
 				}
@@ -137,11 +136,10 @@ public class ImageRepository {
 						case FilterByImageIdsPreprocessor filterByImageIdsPreprocessor -> { /* no op */ }
 						case PagingPreprocessor pagingPreprocessor -> {
 							if (offset != null) {
-								throw new IllegalStateException();
+								throw new IllegalApiUseException("Offset redefinition");
 							}
 							offset = pagingPreprocessor.page().offset();
 						}
-						case null, default -> throw new IllegalStateException();
 					}
 
 				}
