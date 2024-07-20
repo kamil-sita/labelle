@@ -16,6 +16,7 @@ public abstract class FilteringExpressionBaseVisitor<T> {
 		return switch (expression) {
 			case AndExpression andExpression -> visitAnd(andExpression);
 			case EqualExpression equalExpression -> visitEqual(equalExpression);
+			// todo redundant?
 			case EverythingExpression everythingExpression -> visitEverything(everythingExpression);
 			case InExpression inExpression -> visitIn(inExpression);
 			case InTupleExpression inTupleExpression -> visitInTuple(inTupleExpression);
