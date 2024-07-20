@@ -93,14 +93,15 @@ public class ImageRepository {
 			public Collection<? extends Condition> where(List<PreprocessingType> preprocessing) {
 				List<Condition> conditions = new ArrayList<>();
 				for (PreprocessingType preprocessingType : preprocessing) {
-					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
-						conditions.add(IMAGE.REPOSITORY_ID.equal(filterByRepositoryPreprocessor.repositoryUuid));
-					} else if (preprocessingType instanceof FilterByImageIdsPreprocessor filterByImageIdsPreprocessor) {
-						conditions.add(IMAGE.ID.in(filterByImageIdsPreprocessor.imageIds));
-					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
-						// no op
-					} else {
-						throw new IllegalStateException();
+					switch (preprocessingType) {
+						case FilterByRepositoryPreprocessor filterByRepositoryPreprocessor ->
+							conditions.add(IMAGE.REPOSITORY_ID.equal(filterByRepositoryPreprocessor.repositoryUuid));
+						case FilterByImageIdsPreprocessor filterByImageIdsPreprocessor ->
+							conditions.add(IMAGE.ID.in(filterByImageIdsPreprocessor.imageIds));
+						case PagingPreprocessor pagingPreprocessor -> {
+							// no op
+						}
+						case null, default -> throw new IllegalStateException();
 					}
 
 				}
@@ -111,17 +112,16 @@ public class ImageRepository {
 			public Integer limit(List<PreprocessingType> preprocessing) {
 				Integer limit = null;
 				for (PreprocessingType preprocessingType : preprocessing) {
-					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
-						// no op
-					} else if (preprocessingType instanceof FilterByImageIdsPreprocessor filterByImageIdsPreprocessor) {
-						// no op
-					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
-						if (limit != null) {
-							throw new IllegalStateException();
+					switch (preprocessingType) {
+						case FilterByRepositoryPreprocessor filterByRepositoryPreprocessor -> { /* no op */ }
+						case FilterByImageIdsPreprocessor filterByImageIdsPreprocessor -> { /* no op */ }
+						case PagingPreprocessor pagingPreprocessor -> {
+							if (limit != null) {
+								throw new IllegalStateException();
+							}
+							limit = pagingPreprocessor.page().limit();
 						}
-						limit = pagingPreprocessor.page().limit();
-					} else {
-						throw new IllegalStateException();
+						case null, default -> throw new IllegalStateException();
 					}
 
 				}
@@ -132,17 +132,16 @@ public class ImageRepository {
 			public Integer offset(List<PreprocessingType> preprocessing) {
 				Integer offset = null;
 				for (PreprocessingType preprocessingType : preprocessing) {
-					if (preprocessingType instanceof FilterByRepositoryPreprocessor filterByRepositoryPreprocessor) {
-						// no op
-					} else if (preprocessingType instanceof FilterByImageIdsPreprocessor filterByImageIdsPreprocessor) {
-						// no op
-					} else if (preprocessingType instanceof PagingPreprocessor pagingPreprocessor) {
-						if (offset != null) {
-							throw new IllegalStateException();
+					switch (preprocessingType) {
+						case FilterByRepositoryPreprocessor filterByRepositoryPreprocessor -> { /* no op */ }
+						case FilterByImageIdsPreprocessor filterByImageIdsPreprocessor -> { /* no op */ }
+						case PagingPreprocessor pagingPreprocessor -> {
+							if (offset != null) {
+								throw new IllegalStateException();
+							}
+							offset = pagingPreprocessor.page().offset();
 						}
-						offset = pagingPreprocessor.page().offset();
-					} else {
-						throw new IllegalStateException();
+						case null, default -> throw new IllegalStateException();
 					}
 
 				}
