@@ -38,4 +38,17 @@ public class LogicalPath {
 	public String toString() {
 		return String.join(".", path);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof LogicalPath) {
+			return path.equals(((LogicalPath) obj).path);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return path.hashCode();
+	}
 }

@@ -22,8 +22,8 @@ import place.sita.labelle.jooq.Tables;
 import place.sita.labelle.jooq.tables.records.ImageFileRecord;
 import place.sita.labelle.jooq.tables.records.ImageRecord;
 import place.sita.labelle.jooq.tables.records.RootRecord;
-import place.sita.tflang.TFLang_searchingLexer;
-import place.sita.tflang.TFLang_searchingParser;
+import place.sita.tflang.TFLangLexer;
+import place.sita.tflang.TFLangParser;
 import place.sita.tflang.filteringexpression.fillteringexpression.FilteringExpression;
 import place.sita.tflang.filteringexpression.parsing.TFlangFilteringExpressionParser;
 
@@ -43,14 +43,14 @@ public class ImageRepository {
 	public static FilteringExpression parse(String query, ANTLRErrorListener errorListener) {
 		CharStream charStream = CharStreams.fromString(query);
 
-		TFLang_searchingLexer lexer = new TFLang_searchingLexer(charStream);
+		TFLangLexer lexer = new TFLangLexer(charStream);
 		lexer.removeErrorListeners();
 		if (errorListener != null) {
 			lexer.addErrorListener(errorListener);
 		}
 
 		TokenStream tokenStream = new CommonTokenStream(lexer);
-		TFLang_searchingParser parser = new TFLang_searchingParser(tokenStream);
+		TFLangParser parser = new TFLangParser(tokenStream);
 		parser.removeErrorListeners();
 		if (errorListener != null) {
 			parser.addErrorListener(errorListener);
@@ -149,6 +149,10 @@ public class ImageRepository {
 							// no op
 						}
 						case FilterUsingTfLang filterUsingTfLang -> {
+							String query = filterUsingTfLang.query;
+							if (query != null && !query.isBlank()) {
+								conditions.add(parseToCondition(filterUsingTfLang.query(), null));
+							}
 						}
 					}
 

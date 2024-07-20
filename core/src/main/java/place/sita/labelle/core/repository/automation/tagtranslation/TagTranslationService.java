@@ -1,12 +1,10 @@
 package place.sita.labelle.core.repository.automation.tagtranslation;
 
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.apache.logging.log4j.util.Strings;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import place.sita.labelle.core.jooq.StringBuilderErrorListener;
 import place.sita.labelle.core.repository.automation.tagtranslation.tagcontainerinvokee.inmemory.InMemoryTagContainerInvokee;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.jooq.Tables;
@@ -81,12 +79,7 @@ public class TagTranslationService {
 	}
 
 	private static void applyInstructions(InMemoryTagContainerInvokee invokee, String effectiveQuery, StringBuilder errors) {
-		invokee.applyInstructions(effectiveQuery, new BaseErrorListener() {
-			@Override
-			public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-				errors.append("line ").append(line).append(":").append(charPositionInLine).append(" ").append(msg).append("\r\n");
-			}
-		});
+		invokee.applyInstructions(effectiveQuery, new StringBuilderErrorListener(errors));
 	}
 
 	private String calculateEffectiveQuery(String tagLevel, String tagsLevel) {

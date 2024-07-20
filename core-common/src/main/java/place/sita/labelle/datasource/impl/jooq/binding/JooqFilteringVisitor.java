@@ -37,6 +37,12 @@ public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Conditi
 			bindings
 		).visit(inSubEntityExpression.expression());
 
+		Condition join = bindings.getTableJoin(LogicalPath.path(path, inSubEntityExpression.subEntity()));
+
+		if (join != null) {
+			subEntityCondition = DSL.and(subEntityCondition, join);
+		}
+
 		return DSL.exists(
 			DSL.selectOne()
 				.from(table)

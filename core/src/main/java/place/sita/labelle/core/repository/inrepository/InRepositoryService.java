@@ -48,12 +48,6 @@ public class InRepositoryService {
         this.deltaRepository = deltaRepository;
     }
 
-
-    public int count(UUID repositoryUuid, String query) {
-        return dslContext
-            .fetchCount(IMAGE, IMAGE.REPOSITORY_ID.eq(repositoryUuid));
-    }
-
     public <Self extends PreprocessableIdDataSourceWithRemoval<UUID, ImageResponse, ImageRepository.FilteringApi<Self>, Self>> Self images() {
         return imageRepository.images();
     }

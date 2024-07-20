@@ -12,6 +12,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import org.jooq.Condition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +20,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
 import place.sita.labelle.core.images.loading.ImagePtrToFile;
+import place.sita.labelle.core.jooq.StringBuilderErrorListener;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
@@ -55,6 +58,7 @@ public class RepositoryTab implements MainMenuTab {
     private final RepositoryService repositoryService;
     private final InRepositoryService inRepositoryService;
     private final ApplicationContext context;
+    private final ImageCachingLoader imageCachingLoader;
 
     public RepositoryTab(RepositoryService repositoryService, InRepositoryService inRepositoryService, ApplicationContext context, ImageCachingLoader imageCachingLoader) {
         this.repositoryService = repositoryService;
@@ -110,6 +114,12 @@ public class RepositoryTab implements MainMenuTab {
     @FxChild(patchNode = "deltasComponent")
     private DeltasComponentController deltasComponentController;
 
+    @FXML
+    private TextArea filteringTextArea;
+
+    @FXML
+    private TextField filteringTextAreaFeedback;
+
     @PostFxConstruct
     public void setupRepositories() {
         ObservableList<Repository> repositories = FXCollections.observableArrayList();
@@ -121,19 +131,25 @@ public class RepositoryTab implements MainMenuTab {
 
     private LabPaginator<ImageResponse, FilteringParameters> labPaginator;
 
-    private record FilteringParameters(UUID repositoryId) {
+    private record FilteringParameters(UUID repositoryId, String query) {
 
     }
-
-    private final ImageCachingLoader imageCachingLoader;
 
     @PostFxConstruct
     public void setupOnChangeOfRepository() {
         labPaginator = LabPaginatorFactory.factory(
             paginator,
             pageSize,
-            filteringParameters ->  inRepositoryService.count(getRepositoryId(filteringParameters), ""),
-            (paging, filtering) ->  inRepositoryService.images().process().filterByRepository(getRepositoryId(filtering)).getPage(new Page(paging.offset(), paging.pageSize())).getAll(),
+            filteringParameters ->  inRepositoryService.images().process()
+                .filterByRepository(getRepositoryId(filteringParameters))
+                .process()
+                .filterUsingTfLang(validatedQuery)
+                .count(),
+            (paging, filtering) ->  inRepositoryService.images().process()
+                .filterByRepository(getRepositoryId(filtering))
+                .process()
+                .filterUsingTfLang(validatedQuery)
+                .getPage(new Page(paging.offset(), paging.pageSize())).getAll(),
             selected -> {
                 broadcastSelected(selected);
                 loadImage(selected);
@@ -145,7 +161,7 @@ public class RepositoryTab implements MainMenuTab {
             @Override
             public void changed(ObservableValue<? extends Repository> observable, Repository oldValue, Repository newValue) {
                 selectedRepository = newValue;
-                labPaginator.hardReload(new FilteringParameters(newValue.id()));
+                labPaginator.hardReload(new FilteringParameters(selectedRepository.id(), validatedQuery));
             }
         });
     }
@@ -319,9 +335,53 @@ public class RepositoryTab implements MainMenuTab {
 
     }
 
+    private final KeyStone parseFilterKeyStone = Threading.keyStone();
+
+    private String validatedQuery;
+
     @FXML
     public void filteringTextAreaOnKeyTyped(KeyEvent event) {
-
+        validatedQuery = null;
+        String query = filteringTextArea.getText();
+        if (query == null || query.isBlank()) {
+            filteringTextAreaFeedback.setText("Validation OK");
+            validatedQuery = query;
+            labPaginator.hardReload(new FilteringParameters(selectedRepository.id(), validatedQuery));
+            return;
+        }
+        Threading.onSeparateThread(parseFilterKeyStone, toolkit -> {
+            StringBuilder errors = new StringBuilder();
+            boolean generated = false;
+            Exception exception = null;
+            try {
+                Condition condition = ImageRepository.parseToCondition(query, new StringBuilderErrorListener(errors));
+                if (condition != null) {
+                    generated = true;
+                }
+            } catch (Exception e) {
+                exception = e;
+            }
+            if (!errors.isEmpty()) {
+                toolkit.onFxThread(() -> {
+                    filteringTextAreaFeedback.setText("Validation failed: " + errors);
+                });
+            } else if (exception != null) {
+                Exception finalException = exception;
+                toolkit.onFxThread(() -> {
+                    filteringTextAreaFeedback.setText("Validation failed: " + finalException.getClass() + ", " + finalException.getMessage());
+                });
+            } else if (!generated) {
+                toolkit.onFxThread(() -> {
+                    filteringTextAreaFeedback.setText("Validation failed: No condition generated");
+                });
+            } else {
+                toolkit.onFxThread(() -> {
+                    filteringTextAreaFeedback.setText("Validation OK");
+                    validatedQuery = query;
+                    labPaginator.hardReload(new FilteringParameters(selectedRepository.id(), validatedQuery));
+                });
+            }
+        });
     }
 
 }
