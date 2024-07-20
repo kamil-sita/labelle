@@ -1,7 +1,6 @@
 package place.sita.labelle.gui.local.repositoryfx;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -9,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -21,12 +21,10 @@ import place.sita.labelle.core.images.loading.ImageCachingLoader;
 import place.sita.labelle.core.images.loading.ImagePtrToFile;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
-import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.datasource.Page;
-import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory;
 import place.sita.labelle.gui.local.fx.LabPaginatorFactory.LabPaginator;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
@@ -83,18 +81,6 @@ public class RepositoryTab implements MainMenuTab {
     private TableView<?> markersTable;
 
     @FXML
-    private TableView<Tag> tagsTable;
-
-    @FXML
-    private CheckBox sharedCheckBox;
-
-    @FXML
-    private TextField tagTagTextField;
-
-    @FXML
-    private TextField tagCategoryTextField;
-
-    @FXML
     private TextField entryCategoryTextField;
 
     @FXML
@@ -111,6 +97,12 @@ public class RepositoryTab implements MainMenuTab {
 
     @FxChild(patchNode = "persistentIdComponent")
     private PersistentIdController persistentIdController;
+
+    @FXML
+    private AnchorPane tagsPane;
+
+    @FxChild(patchNode = "tagsPane")
+    private RepositoryTagController repositoryTagController;
 
     @FXML
     private AnchorPane deltasComponent;
@@ -135,8 +127,6 @@ public class RepositoryTab implements MainMenuTab {
 
     private final ImageCachingLoader imageCachingLoader;
 
-    private ImageResponse selectedImage;
-
     @PostFxConstruct
     public void setupOnChangeOfRepository() {
         labPaginator = LabPaginatorFactory.factory(
@@ -145,10 +135,8 @@ public class RepositoryTab implements MainMenuTab {
             filteringParameters ->  inRepositoryService.count(getRepositoryId(filteringParameters), ""),
             (paging, filtering) ->  inRepositoryService.images().process().filterByRepository(getRepositoryId(filtering)).getPage(new Page(paging.offset(), paging.pageSize())).getAll(),
             selected -> {
-                this.selectedImage = selected;
                 broadcastSelected(selected);
                 loadImage(selected);
-                loadTags(selected);
                 pass(selected);
             }
         );
@@ -222,46 +210,6 @@ public class RepositoryTab implements MainMenuTab {
         });
     }
 
-    private ObservableList<Tag> tagsTableData = FXCollections.observableArrayList();
-
-    @FXML
-    private TableColumn<Tag, String> tagsCategoryColumn;
-
-    @FXML
-    private TableColumn<Tag, String> tagsTagColumn;
-
-    @FXML
-    private TableColumn<Tag, String> tagXColumn;
-
-    @PostFxConstruct
-    public void setupTagsTable() {
-        tagsTable.setItems(tagsTableData);
-        tagsCategoryColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().category()));
-        tagsTagColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().tag()));
-        tagXColumn.setCellFactory(cb -> {
-            return new ButtonCell<>("X", tr -> {
-                Threading.onSeparateThread(toolkit -> {
-                   inRepositoryService.removeTag(selectedImage.id(), selectedRepository.id(), tr);
-                   toolkit.onFxThread(() -> {
-                       tagsTableData.remove(tr);
-                   });
-                });
-            });
-        });
-    }
-
-    private final KeyStone loadTagsKeyStone = Threading.keyStone();
-
-    private void loadTags(ImageResponse selected) {
-        Threading.onSeparateThread(loadTagsKeyStone, toolkit -> {
-            List<Tag> tags = inRepositoryService.getTags(selected.id());
-            toolkit.onFxThread(() -> {
-                tagsTableData.clear();
-                tagsTableData.addAll(tags);
-            });
-        });
-    }
-
     private UUID getRepositoryId(FilteringParameters filtering) {
         if (filtering == null) {
             return null;
@@ -324,18 +272,6 @@ public class RepositoryTab implements MainMenuTab {
     }
 
     @FXML
-    void addTagPress(ActionEvent event) {
-        String categoryText = tagCategoryTextField.getText();
-        String tagText = tagTagTextField.getText();
-        Threading.onSeparateThread(toolkit -> {
-            inRepositoryService.addTag(selectedImage.id(), selectedRepository.id(), new Tag(categoryText, tagText));
-            toolkit.onFxThread(() -> {
-                tagsTableData.add(new Tag(categoryText, tagText));
-            });
-        });
-    }
-
-    @FXML
     void bulkAddButtonPress(ActionEvent event) {
         ifSelected(repositoryChoiceBox)
             .then(repo -> {
@@ -384,7 +320,7 @@ public class RepositoryTab implements MainMenuTab {
     }
 
     @FXML
-    void updateTagPress(ActionEvent event) {
+    public void filteringTextAreaOnKeyTyped(KeyEvent event) {
 
     }
 
