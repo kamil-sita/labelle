@@ -72,7 +72,7 @@ public class ImageRepository {
 		bindings.addTableJoin(LogicalPath.path("tags"), Tables.IMAGE_TAGS.IMAGE_ID.eq(IMAGE.ID));
 		bindings.addBinding(LogicalPath.path("tags", "tag"), Tables.IMAGE_TAGS.TAG);
 		bindings.addBinding(LogicalPath.path("tags", "category"), Tables.IMAGE_TAGS.TAG_CATEGORY);
-		bindings.addBinding(LogicalPath.path("path"), DSL.concat(IMAGE.imageResolvable().imageFile().root().ROOT_DIR, DSL.val("/"), IMAGE.imageResolvable().imageFile().RELATIVE_DIR));
+		bindings.addBinding(LogicalPath.path("path"), DSL.concat(IMAGE.imageResolvable().imageFile().root().ROOT_DIR, IMAGE.imageResolvable().imageFile().RELATIVE_DIR));
 		return bindings;
 	}
 

@@ -10,6 +10,7 @@ import place.sita.labelle.core.images.imagelocator.ImageLocatorService;
 import place.sita.labelle.core.repository.inrepository.delta.DeltaService;
 import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 import place.sita.labelle.datasource.NonUniqueAnswerException;
@@ -483,4 +484,352 @@ public class ImageRepositoryTest extends TestContainersTest {
 		assertThat(imageRepository.images().indexOf(sixthImage)).isEqualTo(5);
 	}
 
+	@Test
+	public void shouldFilterByEqualPathUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang("path = \"C:/dir_2/image1.jpg\"").getAll();
+
+		// then
+		assertThat(images).containsExactly(thirdImage);
+	}
+
+	@Test
+	public void shouldFilterByPathLikeUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang("path like \"%dir_2%\"").getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(thirdImage, fourthImage);
+	}
+
+	@Test
+	public void shouldFilterByCategoryOfTagInImageUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang("IN tags EXISTS (category = \"category2\")").getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(secondImage, fourthImage);
+	}
+
+	@Test
+	public void shouldFilterByTagInImageUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang("IN tags EXISTS (tag = \"tag1\")").getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(firstImage, fourthImage);
+	}
+
+	@Test
+	public void shouldFilterByCategoryTagTupleOfImageUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang("IN tags EXISTS ((category, tag) = (\"category1\", \"tag1\"))").getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(firstImage);
+	}
+
+	@Test
+	public void shouldFilterByCategoryInOfImageUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category3", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category3", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category4", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category4", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang("IN tags EXISTS (category in (\"category2\", \"category4\"))").getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(secondImage, fourthImage);
+	}
+
+	@Test
+	public void shouldFilterByInTupleOfImageUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang(
+			"""
+				IN tags EXISTS (
+					(category, tag) in (
+						("category1", "tag1"),
+						("category2", "tag2")
+					)
+				)
+				"""
+		).getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(firstImage, fourthImage);
+	}
+
+	@Test
+	public void shouldFilterUsingNotStatementUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang(
+			"""
+				NOT (
+					IN tags EXISTS (
+						(category, tag) in (
+							("category1", "tag1"),
+							("category2", "tag2")
+						)
+					)
+				)
+				"""
+		).getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(secondImage, thirdImage);
+	}
+
+	@Test
+	public void shouldFilterUsingAndStatementUsingTfLang_1() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang(
+			"""
+				IN tags EXISTS (
+					(category, tag) in (
+						("category1", "tag1"),
+						("category2", "tag2")
+					)
+				)
+				AND
+				IN tags EXISTS (
+					(category, tag) in (
+						("category2", "tag2"),
+						("category1", "tag4")
+					)
+				)
+				"""
+		).getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(firstImage);
+	}
+
+	@Test
+	public void shouldFilterUsingOrStatementUsingTfLang() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang(
+			"""
+				IN tags EXISTS (
+					(category, tag) in (
+						("category1", "tag1"),
+						("category2", "tag2")
+					)
+				)
+				OR
+				IN tags EXISTS (
+					(category, tag) in (
+						("category2", "tag2"),
+						("category1", "tag4")
+					)
+				)
+				"""
+		).getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(firstImage, thirdImage, fourthImage);
+	}
+
+	@Test
+	public void shouldFilterUsingAndStatementUsingTfLang_2() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), null, new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), null, new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag3"));
+		inRepositoryService.addTag(thirdImage.id(), null, new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), null, new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang(
+			"""
+				IN tags EXISTS (
+					(category, tag) in (
+						("category1", "tag1"),
+						("category2", "tag2")
+					)
+				)
+				AND
+				IN tags EXISTS (
+					(category, tag) in (
+						("category2", "tag1"),
+						("category1", "tag4")
+					)
+				)
+				"""
+		).getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(firstImage);
+	}
 }

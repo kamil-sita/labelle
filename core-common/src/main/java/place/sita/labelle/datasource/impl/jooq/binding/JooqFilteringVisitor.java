@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static place.sita.labelle.datasource.impl.jooq.binding.TypeUtil.withCommonType;
+import static place.sita.labelle.datasource.impl.jooq.binding.TypeUtil.withCommonTypes;
 
 public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Condition> {
 
@@ -84,7 +85,7 @@ public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Conditi
 		if (binding == null) {
 			throw new UnknownPropertyException("Unknown property: " + path);
 		}
-		return withCommonType(binding, inExpression.values(), (field, value) -> field.in(value));
+		return withCommonTypes(binding, (List<Object>) (List) inExpression.values(), (field, value) -> field.in(value));
 	}
 
 	@Override

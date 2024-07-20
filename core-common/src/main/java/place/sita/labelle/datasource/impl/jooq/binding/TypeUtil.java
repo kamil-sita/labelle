@@ -12,24 +12,12 @@ public class TypeUtil {
 
 	}
 
-	public static <TypeT> TypeT toCommonType(Field<TypeT> field, Object value) {
-		return convert(value, field.getType());
-	}
-
-	public static <TypeT> List<TypeT> toCommonType(Field<TypeT> field, List<Object> value) {
-		List<TypeT> collectionInType = new ArrayList<>();
-		for (Object object : value) {
-			collectionInType.add(convert(object, field.getType()));
-		}
-		return collectionInType;
-	}
-
 	public static <TypeT, ResultT> ResultT withCommonType(Field<TypeT> field, Object value, FunctionOnCommonType<ResultT, TypeT> function) {
 		TypeT valueInType = convert(value, field.getType());
 		return function.apply(field, valueInType);
 	}
 
-	public static <TypeT, ResultT> ResultT withCommonType(Field<TypeT> field, List<Object> value, FunctionOnCommonTypeCollection<ResultT, TypeT> function) {
+	public static <TypeT, ResultT> ResultT withCommonTypes(Field<TypeT> field, List<Object> value, FunctionOnCommonTypeCollection<ResultT, TypeT> function) {
 		List<TypeT> collectionInType = new ArrayList<>();
 		for (Object object : value) {
 			collectionInType.add(convert(object, field.getType()));
