@@ -73,7 +73,7 @@ public class InRepositoryService {
 
     @Transactional
     public Result3<ImageResponse, DoesNotMatchAnyRoot, InsertFailedUnexpected> addImage(UUID repoId, File file) {
-        String fileDir = file.getAbsolutePath();
+        String fileDir = file.getPath();
         return addImage(repoId, fileDir);
     }
 
