@@ -379,11 +379,6 @@ public class RepositoryTab implements MainMenuTab {
     }
 
     @FXML
-    void removeTagPress(ActionEvent event) {
-
-    }
-
-    @FXML
     void updateMarkerPress(ActionEvent event) {
 
     }

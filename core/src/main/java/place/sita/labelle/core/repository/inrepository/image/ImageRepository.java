@@ -1,7 +1,10 @@
 package place.sita.labelle.core.repository.inrepository.image;
 
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.jooq.Record;
 import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.datasource.IllegalApiUseException;
 import place.sita.labelle.datasource.Page;
@@ -12,9 +15,17 @@ import place.sita.labelle.datasource.impl.cross.UnderlyingIdDataSourceWithRemova
 import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilder;
 import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilderWithRemovalAndId;
 import place.sita.labelle.datasource.impl.jooq.TableFieldAndValue;
+import place.sita.labelle.datasource.impl.jooq.binding.JooqFilteringVisitor;
+import place.sita.labelle.datasource.impl.jooq.binding.JooqPropertyBindings;
+import place.sita.labelle.datasource.impl.jooq.binding.LogicalPath;
+import place.sita.labelle.jooq.Tables;
 import place.sita.labelle.jooq.tables.records.ImageFileRecord;
 import place.sita.labelle.jooq.tables.records.ImageRecord;
 import place.sita.labelle.jooq.tables.records.RootRecord;
+import place.sita.tflang.TFLang_searchingLexer;
+import place.sita.tflang.TFLang_searchingParser;
+import place.sita.tflang.filteringexpression.fillteringexpression.FilteringExpression;
+import place.sita.tflang.filteringexpression.parsing.TFlangFilteringExpressionParser;
 
 import java.util.*;
 
@@ -29,6 +40,41 @@ public class ImageRepository {
 		this.dslContext = dslContext;
 	}
 
+	public static FilteringExpression parse(String query, ANTLRErrorListener errorListener) {
+		CharStream charStream = CharStreams.fromString(query);
+
+		TFLang_searchingLexer lexer = new TFLang_searchingLexer(charStream);
+		lexer.removeErrorListeners();
+		if (errorListener != null) {
+			lexer.addErrorListener(errorListener);
+		}
+
+		TokenStream tokenStream = new CommonTokenStream(lexer);
+		TFLang_searchingParser parser = new TFLang_searchingParser(tokenStream);
+		parser.removeErrorListeners();
+		if (errorListener != null) {
+			parser.addErrorListener(errorListener);
+		}
+
+		ParseTree parseTree = parser.parseMatchExpression();
+
+		return new TFlangFilteringExpressionParser().visit(parseTree);
+	}
+
+	public static Condition parseToCondition(String query, ANTLRErrorListener errorListener) {
+		FilteringExpression filteringExpression = parse(query, errorListener);
+		return new JooqFilteringVisitor(List.of(), bindings()).visit(filteringExpression);
+	}
+
+	public static JooqPropertyBindings bindings() {
+		JooqPropertyBindings bindings = new JooqPropertyBindings();
+		bindings.addTable(LogicalPath.path("tags"), Tables.IMAGE_TAGS);
+		bindings.addTableJoin(LogicalPath.path("tags"), Tables.IMAGE_TAGS.IMAGE_ID.eq(IMAGE.ID));
+		bindings.addBinding(LogicalPath.path("tags", "tag"), Tables.IMAGE_TAGS.TAG);
+		bindings.addBinding(LogicalPath.path("tags", "category"), Tables.IMAGE_TAGS.TAG_CATEGORY);
+		bindings.addBinding(LogicalPath.path("path"), DSL.concat(IMAGE.imageResolvable().imageFile().root().ROOT_DIR, DSL.val("/"), IMAGE.imageResolvable().imageFile().RELATIVE_DIR));
+		return bindings;
+	}
 
 	public <Self extends PreprocessableIdDataSourceWithRemoval<UUID, ImageResponse, FilteringApi<Self>, Self>> Self images() {
 		return DataSourceBuilder.build(
@@ -102,6 +148,8 @@ public class ImageRepository {
 						case PagingPreprocessor pagingPreprocessor -> {
 							// no op
 						}
+						case FilterUsingTfLang filterUsingTfLang -> {
+						}
 					}
 
 				}
@@ -121,6 +169,8 @@ public class ImageRepository {
 							}
 							limit = pagingPreprocessor.page().limit();
 						}
+						case FilterUsingTfLang filterUsingTfLang -> {
+						}
 					}
 
 				}
@@ -139,6 +189,8 @@ public class ImageRepository {
 								throw new IllegalApiUseException("Offset redefinition");
 							}
 							offset = pagingPreprocessor.page().offset();
+						}
+						case FilterUsingTfLang filterUsingTfLang -> {
 						}
 					}
 
@@ -180,6 +232,11 @@ public class ImageRepository {
 					public Self filterByImageId(UUID imageUuid) {
 						return adapter.accept(new FilterByImageIdsPreprocessor(List.of(imageUuid)));
 					}
+
+					@Override
+					public Self filterUsingTfLang(String query) {
+						return adapter.accept(new FilterUsingTfLang(query));
+					}
 				};
 			}
 		};
@@ -201,11 +258,17 @@ public class ImageRepository {
 
 	}
 
+	private record FilterUsingTfLang(String query) implements PreprocessingType {
+
+	}
+
 	public interface FilteringApi<ReturnT> {
 
 		ReturnT filterByRepository(UUID repositoryUuid);
 
 		ReturnT filterByImageId(UUID imageUuid);
+
+		ReturnT filterUsingTfLang(String query);
 
 	}
 

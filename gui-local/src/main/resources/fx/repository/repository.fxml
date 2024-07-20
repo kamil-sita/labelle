@@ -19,13 +19,14 @@
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
             <ChoiceBox fx:id="repositoryChoiceBox" layoutX="13.0" layoutY="14.0" prefWidth="150.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-            <TextArea layoutX="14.0" layoutY="46.0" prefHeight="126.0" prefWidth="150.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="46.0" />
+            <TextArea fx:id="filteringTextArea" layoutX="14.0" layoutY="46.0" onKeyTyped="#filteringTextAreaOnKeyTyped" prefHeight="126.0" prefWidth="150.0" styleClass="monofont" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="46.0" />
             <Button layoutX="14.0" layoutY="779.0" mnemonicParsing="false" onAction="#onAddImageAction" prefHeight="34.0" prefWidth="193.0" text="Add" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="85.0" />
             <Button layoutX="14.0" layoutY="633.0" mnemonicParsing="false" onAction="#removeButtonPress" prefHeight="25.0" prefWidth="240.0" text="Remove" AnchorPane.bottomAnchor="98.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.0" />
             <Separator layoutX="14.0" layoutY="768.0" prefHeight="3.0" prefWidth="240.0" AnchorPane.bottomAnchor="88.79999999999995" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.399999999999977" />
             <Button layoutX="14.0" layoutY="825.0" mnemonicParsing="false" onAction="#bulkAddButtonPress" prefHeight="26.0" prefWidth="271.0" text="Bulk add" AnchorPane.bottomAnchor="8.600000000000001" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="6.400000000000034" />
-            <Pagination fx:id="paginator" layoutX="10.0" layoutY="181.0" prefHeight="536.0" prefWidth="271.0" AnchorPane.bottomAnchor="143.20000000000005" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="181.0" />
+            <Pagination fx:id="paginator" layoutX="11.2" layoutY="211.2" prefHeight="506.0" prefWidth="271.0" AnchorPane.bottomAnchor="143.0" AnchorPane.leftAnchor="11.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="211.0" />
             <Button layoutX="216.0" layoutY="778.0" mnemonicParsing="false" onAction="#onAddSyntheticImageAction" prefHeight="34.0" prefWidth="61.0" text="Synth" AnchorPane.bottomAnchor="47.200000000000024" AnchorPane.rightAnchor="14.399999999999977" />
+            <TextField fx:id="filteringTextAreaFeedback" editable="false" layoutX="15.0" layoutY="186.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="178.0" />
          </children></AnchorPane>
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
