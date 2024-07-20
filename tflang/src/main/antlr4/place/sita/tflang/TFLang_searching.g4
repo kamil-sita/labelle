@@ -2,7 +2,7 @@ grammar TFLang_searching;
 import TFLang_lexing;
 
 parseMatchExpression
-    : matchExpression EOF
+    : (matchExpression)? EOF
     ;
 
 matchExpression

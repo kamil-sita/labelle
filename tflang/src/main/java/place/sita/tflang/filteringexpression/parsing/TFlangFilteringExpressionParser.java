@@ -17,18 +17,20 @@ import static place.sita.tflang.TFlangUtil.stripQuotes;
 
 public class TFlangFilteringExpressionParser extends TFLangBaseVisitor<FilteringExpression> {
 
-
+	@Override
+	public FilteringExpression visitParseMatchExpression(TFLangParser.ParseMatchExpressionContext ctx) {
+		if (ctx.matchExpression() != null) {
+			return visit(ctx.matchExpression());
+		} else {
+			return FilteringExpression.MATCH_EVERYTHING;
+		}
+	}
 
 	@Override
 	public FilteringExpression visitMatchInnerExpression(TFLangParser.MatchInnerExpressionContext ctx) {
 		FilteringExpression expression = visit(ctx.matchExpression());
 		Objects.requireNonNull(expression);
 		return new InSubEntityExpressionImpl(ctx.NAME().getText(), expression);
-	}
-
-	@Override
-	public FilteringExpression visitParseMatchExpression(TFLangParser.ParseMatchExpressionContext ctx) {
-		return visit(ctx.matchExpression());
 	}
 
 	@Override
