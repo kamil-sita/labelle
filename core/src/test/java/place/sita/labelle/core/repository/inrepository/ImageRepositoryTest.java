@@ -744,7 +744,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		).getAll();
 
 		// then
-		assertThat(images).containsExactlyInAnyOrder(firstImage);
+		assertThat(images).containsExactlyInAnyOrder(fourthImage);
 	}
 
 	@Test
@@ -830,6 +830,6 @@ public class ImageRepositoryTest extends TestContainersTest {
 		).getAll();
 
 		// then
-		assertThat(images).containsExactlyInAnyOrder(firstImage);
+		assertThat(images).containsExactlyInAnyOrder(fourthImage);
 	}
 }
