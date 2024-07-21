@@ -1,9 +1,7 @@
 package place.sita.labelle.actions;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import org.testfx.api.FxAssert;
 import org.testfx.service.query.NodeQuery;
@@ -30,6 +28,10 @@ public class RepositoryActions {
 		return FxAssert.assertContext().getNodeFinder().lookup("#paginator").lookup(".list-view").lookup(".list-cell").nth(i).query();
 	}
 
+	public static ListView paginatorList() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#paginator").lookup(".list-view").query();
+	}
+
 	public static TextField categoryTextField() {
 		return FxAssert.assertContext().getNodeFinder().lookup("#tagCategoryTextField").query();
 	}
@@ -52,5 +54,13 @@ public class RepositoryActions {
 
 	public static ImageView imageView() {
 		return FxAssert.assertContext().getNodeFinder().lookup("#imageView").query();
+	}
+
+	public static TextArea filteringTextArea() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#filteringTextArea").query();
+	}
+
+	public static TextField filteringTextAreaFeedback() {
+		return FxAssert.assertContext().getNodeFinder().lookup("#filteringTextAreaFeedback").query();
 	}
 }
