@@ -4,6 +4,7 @@ import org.jooq.Condition;
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
+import place.sita.labelle.datasource.impl.jooq.binding.binding.PropertyBindingContext;
 import place.sita.tflang.filteringexpression.FilteringExpressionBaseVisitor;
 import place.sita.tflang.filteringexpression.fillteringexpression.*;
 
@@ -15,30 +16,25 @@ import static place.sita.labelle.datasource.impl.jooq.binding.TypeUtil.withCommo
 
 public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Condition> {
 
-	private final List<String> path;
-	private final JooqPropertyBindings bindings;
+	private final PropertyBindingContext bindings;
 
-	public JooqFilteringVisitor(List<String> path, JooqPropertyBindings bindings) {
-		this.path = path;
+	public JooqFilteringVisitor(PropertyBindingContext bindings) {
 		this.bindings = bindings;
 	}
 
 	@Override
 	protected Condition visitInSubEntity(InSubEntityExpression inSubEntityExpression) {
-		Table table = bindings.getTable(LogicalPath.path(path, inSubEntityExpression.subEntity()));
-		if (table == null) {
+		var subEntityContext = bindings.getSubEntityContext(inSubEntityExpression.subEntity());
+		if (subEntityContext == null) {
 			throw new UnknownPropertyException("Unknown sub-entity: " + inSubEntityExpression.subEntity());
 		}
-
-		List<String> newPath = new ArrayList<>(path);
-		newPath.add(inSubEntityExpression.subEntity());
+		Table table = subEntityContext.getTable();
 
 		Condition subEntityCondition = new JooqFilteringVisitor(
-			newPath,
-			bindings
+			subEntityContext
 		).visit(inSubEntityExpression.expression());
 
-		Condition join = bindings.getTableJoin(LogicalPath.path(path, inSubEntityExpression.subEntity()));
+		Condition join = subEntityContext.getTableBindCondition();
 
 		if (join != null) {
 			subEntityCondition = DSL.and(subEntityCondition, join);
@@ -64,10 +60,9 @@ public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Conditi
 	@Override
 	protected Condition visitEqual(EqualExpression equalExpression) {
 		String property = equalExpression.key();
-		LogicalPath path = LogicalPath.path(this.path, property);
-		Field<?> binding = bindings.getBinding(path);
+		Field<?> binding = bindings.getBinding(property);
 		if (binding == null) {
-			throw new UnknownPropertyException("Unknown property: " + path);
+			throw new UnknownPropertyException("Unknown property: " + property);
 		}
 		return withCommonType(binding, equalExpression.value(), (field, value) -> field.eq(value));
 	}
@@ -80,10 +75,9 @@ public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Conditi
 	@Override
 	protected Condition visitIn(InExpression inExpression) {
 		String property = inExpression.key();
-		LogicalPath path = LogicalPath.path(this.path, property);
-		Field<?> binding = bindings.getBinding(path);
+		Field<?> binding = bindings.getBinding(property);
 		if (binding == null) {
-			throw new UnknownPropertyException("Unknown property: " + path);
+			throw new UnknownPropertyException("Unknown property: " + property);
 		}
 		return withCommonTypes(binding, (List<Object>) (List) inExpression.values(), (field, value) -> field.in(value));
 	}
@@ -94,10 +88,9 @@ public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Conditi
 		List<Field> resolvedBindings = new ArrayList<>();
 		List<Condition> ors = new ArrayList<>();
 		for (String property : properties) {
-			LogicalPath path = LogicalPath.path(this.path, property);
-			Field binding = bindings.getBinding(path);
+			Field binding = bindings.getBinding(property);
 			if (binding == null) {
-				throw new UnknownPropertyException("Unknown property: " + path);
+				throw new UnknownPropertyException("Unknown property: " + property);
 			}
 			resolvedBindings.add(binding);
 		}
@@ -116,10 +109,9 @@ public class JooqFilteringVisitor extends FilteringExpressionBaseVisitor<Conditi
 	@Override
 	protected Condition visitLike(LikeExpression likeExpression) {
 		String property = likeExpression.key();
-		LogicalPath path = LogicalPath.path(this.path, property);
-		Field binding = bindings.getBinding(path);
+		Field binding = bindings.getBinding(property);
 		if (binding == null) {
-			throw new UnknownPropertyException("Unknown property: " + path);
+			throw new UnknownPropertyException("Unknown property: " + property);
 		}
 		return binding.like(likeExpression.value());
 	}

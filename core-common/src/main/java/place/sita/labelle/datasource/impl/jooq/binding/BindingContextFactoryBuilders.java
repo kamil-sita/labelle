@@ -20,7 +20,7 @@ import java.util.function.Function;
 
 public class BindingContextFactoryBuilders {
 
-	public <TableT extends Table> BindingContextFactoryBuilder<TableT> forTable(TableT table) {
+	public static <TableT extends Table> ParentBindingContextFactoryBuilder<TableT> forTable(Class<TableT> clazz) {
 		return new FactoryBuilderClass<>(new UnderlyingContext(), new AtomicBoolean(true), true);
 	}
 

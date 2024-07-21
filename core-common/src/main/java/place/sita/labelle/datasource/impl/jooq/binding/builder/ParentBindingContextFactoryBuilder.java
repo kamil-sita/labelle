@@ -5,5 +5,5 @@ import place.sita.labelle.datasource.impl.jooq.binding.binding.BindingContextFac
 
 public interface ParentBindingContextFactoryBuilder<TableT extends Table> extends BindingContextFactoryBuilder<TableT> {
 
-	BindingContextFactory build();
+	BindingContextFactory<TableT> build();
 }

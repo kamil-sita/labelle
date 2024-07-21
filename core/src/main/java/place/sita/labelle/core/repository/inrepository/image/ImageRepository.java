@@ -15,10 +15,11 @@ import place.sita.labelle.datasource.impl.cross.UnderlyingIdDataSourceWithRemova
 import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilder;
 import place.sita.labelle.datasource.impl.jooq.JooqUnderlyingDataSourceBuilderWithRemovalAndId;
 import place.sita.labelle.datasource.impl.jooq.TableFieldAndValue;
+import place.sita.labelle.datasource.impl.jooq.binding.BindingContextFactoryBuilders;
 import place.sita.labelle.datasource.impl.jooq.binding.JooqFilteringVisitor;
-import place.sita.labelle.datasource.impl.jooq.binding.JooqPropertyBindings;
-import place.sita.labelle.datasource.impl.jooq.binding.LogicalPath;
+import place.sita.labelle.datasource.impl.jooq.binding.binding.PropertyBindingContext;
 import place.sita.labelle.jooq.Tables;
+import place.sita.labelle.jooq.tables.Image;
 import place.sita.labelle.jooq.tables.records.ImageFileRecord;
 import place.sita.labelle.jooq.tables.records.ImageRecord;
 import place.sita.labelle.jooq.tables.records.RootRecord;
@@ -63,17 +64,22 @@ public class ImageRepository {
 
 	public static Condition parseToCondition(String query, ANTLRErrorListener errorListener) {
 		FilteringExpression filteringExpression = parse(query, errorListener);
-		return new JooqFilteringVisitor(List.of(), bindings()).visit(filteringExpression);
+		return new JooqFilteringVisitor(bindings(IMAGE)).visit(filteringExpression);
 	}
 
-	public static JooqPropertyBindings bindings() {
-		JooqPropertyBindings bindings = new JooqPropertyBindings();
-		bindings.addTable(LogicalPath.path("tags"), Tables.IMAGE_TAGS);
-		bindings.addTableJoin(LogicalPath.path("tags"), Tables.IMAGE_TAGS.IMAGE_ID.eq(IMAGE.ID));
-		bindings.addBinding(LogicalPath.path("tags", "tag"), Tables.IMAGE_TAGS.TAG);
-		bindings.addBinding(LogicalPath.path("tags", "category"), Tables.IMAGE_TAGS.TAG_CATEGORY);
-		bindings.addBinding(LogicalPath.path("path"), DSL.concat(IMAGE.imageResolvable().imageFile().root().ROOT_DIR, IMAGE.imageResolvable().imageFile().RELATIVE_DIR));
-		return bindings;
+	public static PropertyBindingContext bindings(Image image) {
+		var factoryBuilder = BindingContextFactoryBuilders.forTable(Image.class);
+		factoryBuilder.addField("path", im -> DSL.concat(im.imageResolvable().imageFile().root().ROOT_DIR, im.imageResolvable().imageFile().RELATIVE_DIR));
+		var tagsSubEntity = factoryBuilder.addSubEntity(
+			"tags",
+			im -> Tables.IMAGE_TAGS,
+			(im, tags) -> tags.IMAGE_ID.eq(im.ID)
+		);
+		tagsSubEntity.addField("tag", tags -> tags.TAG);
+		tagsSubEntity.addField("category", tags -> tags.TAG_CATEGORY);
+
+		var contextBuilder = factoryBuilder.build(); // we can cache this!
+		return contextBuilder.startContext(image);
 	}
 
 	public <Self extends PreprocessableIdDataSourceWithRemoval<UUID, ImageResponse, FilteringApi<Self>, Self>> Self images() {
