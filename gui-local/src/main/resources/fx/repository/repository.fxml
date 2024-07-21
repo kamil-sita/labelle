@@ -19,7 +19,7 @@
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
          <children>
             <ChoiceBox fx:id="repositoryChoiceBox" layoutX="13.0" layoutY="14.0" prefWidth="150.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-            <TextArea fx:id="filteringTextArea" layoutX="14.0" layoutY="46.0" onKeyTyped="#filteringTextAreaOnKeyTyped" prefHeight="126.0" prefWidth="150.0" styleClass="monofont" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="46.0" />
+            <TextArea fx:id="filteringTextArea" layoutX="14.0" layoutY="46.0" onKeyTyped="#filteringTextAreaOnKeyTyped" prefHeight="126.0" prefWidth="150.0" styleClass="monofont" text="// properties you can filter by: path, tags -&gt; tag, tags -&gt; category" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="46.0" />
             <Button layoutX="14.0" layoutY="779.0" mnemonicParsing="false" onAction="#onAddImageAction" prefHeight="34.0" prefWidth="193.0" text="Add" AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="85.0" />
             <Button layoutX="14.0" layoutY="633.0" mnemonicParsing="false" onAction="#removeButtonPress" prefHeight="25.0" prefWidth="240.0" text="Remove" AnchorPane.bottomAnchor="98.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.0" />
             <Separator layoutX="14.0" layoutY="768.0" prefHeight="3.0" prefWidth="240.0" AnchorPane.bottomAnchor="88.79999999999995" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="8.399999999999977" />
@@ -51,7 +51,7 @@
                      <children>
                         <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <items>
-                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" fx:id="tagsPane">
+                              <AnchorPane fx:id="tagsPane" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
 
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
