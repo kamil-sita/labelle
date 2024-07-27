@@ -96,7 +96,7 @@ public class RepositoryTagController {
 		String categoryText = tagCategoryTextField.getText();
 		String tagText = tagTagTextField.getText();
 		Threading.onSeparateThread(toolkit -> {
-			inRepositoryService.addTag(selectedImageId, null, new Tag(categoryText, tagText));
+			inRepositoryService.addTag(selectedImageId, new Tag(categoryText, tagText));
 			toolkit.onFxThread(() -> {
 				tagsTableData.add(new Tag(categoryText, tagText));
 			});

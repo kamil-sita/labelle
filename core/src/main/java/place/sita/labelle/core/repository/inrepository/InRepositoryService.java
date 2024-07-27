@@ -198,7 +198,7 @@ public class InRepositoryService {
             .values(newId, originalImage.value2(), originalImage.value3(), newReference.toString(), originalImage.value5(), originalImage.value6())
             .execute();
 
-        PersistableImagesTags pit = new PersistableImagesTags(originalImage.value3());
+        PersistableImagesTags pit = new PersistableImagesTags();
         getTags(selectedImageId).forEach(tag -> pit.addTag(newId, tag));
         addTags(pit);
 
@@ -348,8 +348,8 @@ public class InRepositoryService {
     }
 
     @Transactional
-    public void addTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
-        tagRepository.addTag(imageId, repositoryId, tag);
+    public void addTag(UUID imageId, Tag tag) {
+        tagRepository.addTag(imageId, tag);
     }
 
     @Transactional

@@ -50,7 +50,7 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 				List<String> tags = getTagsInPath(file.getPath(), directory);
 				for (String tag : tags) {
 					tagsToImages.get(img.id()).add(tag);
-					taskContext.getApi().getInRepositoryService().addTag(img.id(), parameter.repositoryId, new Tag("folder", tag));
+					taskContext.getApi().getInRepositoryService().addTag(img.id(), new Tag("folder", tag));
 				}
 			} else {
 				taskContext.log("Failed to add image: " + file.getAbsolutePath());

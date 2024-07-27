@@ -119,10 +119,10 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 		// given
 		Repository repository = repositoryService.addRepository("Test repo");
 		UUID firstImage = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(firstImage, null, new Tag("category", "tag"));
-		inRepositoryService.addTag(firstImage, null, new Tag("category", "some other tag"));
+		inRepositoryService.addTag(firstImage, new Tag("category", "tag"));
+		inRepositoryService.addTag(firstImage, new Tag("category", "some other tag"));
 		UUID secondImage = inRepositoryService.addEmptySyntheticImage(repository.id());
-		inRepositoryService.addTag(secondImage, null, new Tag("of different category", "another tag"));
+		inRepositoryService.addTag(secondImage, new Tag("of different category", "another tag"));
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(

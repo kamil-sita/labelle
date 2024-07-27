@@ -4,6 +4,7 @@ import org.jooq.DSLContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.repositories.Repository;
@@ -13,6 +14,7 @@ import place.sita.labelle.jooq.Tables;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 public class TagRepositoryTest extends TestContainersTest {
 
@@ -27,6 +29,9 @@ public class TagRepositoryTest extends TestContainersTest {
 
 	@Autowired
 	private InRepositoryService inRepositoryService;
+
+	@SpyBean
+	private TagRepositoryProperties tagRepositoryProperties;
 
 	@AfterEach
 	public void cleanup() {
@@ -47,7 +52,7 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
+		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -63,8 +68,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category 2", "Some tag 2"));
+		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
+		tagRepository.addTag(imageId, new Tag("Some category 2", "Some tag 2"));
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -82,8 +87,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag 2"));
+		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
+		tagRepository.addTag(imageId, new Tag("Some category", "Some tag 2"));
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -101,8 +106,8 @@ public class TagRepositoryTest extends TestContainersTest {
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
+		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
+		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// then
 		var tags = tagRepository.getTags(imageId);
@@ -116,7 +121,7 @@ public class TagRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		tagRepository.addTag(imageId, repo.id(), new Tag("Some category", "Some tag"));
+		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// when
 		tagRepository.deleteTag(imageId, null, new Tag("Some category", "Some tag"));
@@ -146,22 +151,146 @@ public class TagRepositoryTest extends TestContainersTest {
 	}
 
 	@Test
-	public void shouldAddMultipleTagsUsingPersistableImageTagsWithKnownRepoId() {
+	public void shouldAddNumberOfTagsEqualToBulkSize() {
 		// given
+		when(tagRepositoryProperties.getTagBulkSize()).thenReturn(5);
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
 
 		// when
-		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(repo.id());
+		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
 		persistableImagesTags.addTag(imageId, "Some category", "Some tag");
 		persistableImagesTags.addTag(imageId, "Some category 2", "Some tag 2");
+		persistableImagesTags.addTag(imageId, "Some category 3", "Some tag 3");
+		persistableImagesTags.addTag(imageId, "Some category 4", "Some tag 4");
+		persistableImagesTags.addTag(imageId, "Some category 5", "Some tag 5");
 		tagRepository.addTags(persistableImagesTags);
 
 		// then
 		var tags = tagRepository.getTags(imageId);
-		assertThat(tags).hasSize(2);
+		assertThat(tags).hasSize(5);
 		assertThat(tags).contains(new Tag("Some category", "Some tag"));
 		assertThat(tags).contains(new Tag("Some category 2", "Some tag 2"));
+		assertThat(tags).contains(new Tag("Some category 3", "Some tag 3"));
+		assertThat(tags).contains(new Tag("Some category 4", "Some tag 4"));
+		assertThat(tags).contains(new Tag("Some category 5", "Some tag 5"));
 	}
 
+	@Test
+	public void shouldAddNumberOfTagsBiggerThanBulkSize() {
+		// given
+		when(tagRepositoryProperties.getTagBulkSize()).thenReturn(5);
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
+		persistableImagesTags.addTag(imageId, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId, "Some category 2", "Some tag 2");
+		persistableImagesTags.addTag(imageId, "Some category 3", "Some tag 3");
+		persistableImagesTags.addTag(imageId, "Some category 4", "Some tag 4");
+		persistableImagesTags.addTag(imageId, "Some category 5", "Some tag 5");
+		persistableImagesTags.addTag(imageId, "Some category 6", "Some tag 6");
+		tagRepository.addTags(persistableImagesTags);
+
+		// then
+		var tags = tagRepository.getTags(imageId);
+		assertThat(tags).hasSize(6);
+		assertThat(tags).contains(new Tag("Some category", "Some tag"));
+		assertThat(tags).contains(new Tag("Some category 2", "Some tag 2"));
+		assertThat(tags).contains(new Tag("Some category 3", "Some tag 3"));
+		assertThat(tags).contains(new Tag("Some category 4", "Some tag 4"));
+		assertThat(tags).contains(new Tag("Some category 5", "Some tag 5"));
+		assertThat(tags).contains(new Tag("Some category 6", "Some tag 6"));
+	}
+
+	@Test
+	public void shouldTagNumberOfImagesEqualToBulkSize() {
+		// given
+		when(tagRepositoryProperties.getImageBulkSize()).thenReturn(5);
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID imageId1 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId3 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId4 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId5 = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
+		persistableImagesTags.addTag(imageId1, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId2, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId3, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId4, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId5, "Some category", "Some tag");
+		tagRepository.addTags(persistableImagesTags);
+
+		// then
+		var tags1 = tagRepository.getTags(imageId1);
+		assertThat(tags1).hasSize(1);
+		assertThat(tags1).contains(new Tag("Some category", "Some tag"));
+
+		var tags2 = tagRepository.getTags(imageId2);
+		assertThat(tags2).hasSize(1);
+		assertThat(tags2).contains(new Tag("Some category", "Some tag"));
+
+		var tags3 = tagRepository.getTags(imageId3);
+		assertThat(tags3).hasSize(1);
+		assertThat(tags3).contains(new Tag("Some category", "Some tag"));
+
+		var tags4 = tagRepository.getTags(imageId4);
+		assertThat(tags4).hasSize(1);
+		assertThat(tags4).contains(new Tag("Some category", "Some tag"));
+
+		var tags5 = tagRepository.getTags(imageId5);
+		assertThat(tags5).hasSize(1);
+		assertThat(tags5).contains(new Tag("Some category", "Some tag"));
+	}
+
+	@Test
+	public void shouldTagNumberOfImagesBiggerThanBulkSize() {
+		// given
+		when(tagRepositoryProperties.getImageBulkSize()).thenReturn(5);
+		Repository repo = repositoryService.addRepository("Test repo");
+		UUID imageId1 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId3 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId4 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId5 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId6 = inRepositoryService.addEmptySyntheticImage(repo.id());
+
+		// when
+		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
+		persistableImagesTags.addTag(imageId1, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId2, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId3, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId4, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId5, "Some category", "Some tag");
+		persistableImagesTags.addTag(imageId6, "Some category", "Some tag");
+		tagRepository.addTags(persistableImagesTags);
+
+		// then
+		var tags1 = tagRepository.getTags(imageId1);
+		assertThat(tags1).hasSize(1);
+		assertThat(tags1).contains(new Tag("Some category", "Some tag"));
+
+		var tags2 = tagRepository.getTags(imageId2);
+		assertThat(tags2).hasSize(1);
+		assertThat(tags2).contains(new Tag("Some category", "Some tag"));
+
+		var tags3 = tagRepository.getTags(imageId3);
+		assertThat(tags3).hasSize(1);
+		assertThat(tags3).contains(new Tag("Some category", "Some tag"));
+
+		var tags4 = tagRepository.getTags(imageId4);
+		assertThat(tags4).hasSize(1);
+		assertThat(tags4).contains(new Tag("Some category", "Some tag"));
+
+		var tags5 = tagRepository.getTags(imageId5);
+		assertThat(tags5).hasSize(1);
+		assertThat(tags5).contains(new Tag("Some category", "Some tag"));
+
+		var tags6 = tagRepository.getTags(imageId6);
+		assertThat(tags6).hasSize(1);
+		assertThat(tags6).contains(new Tag("Some category", "Some tag"));
+	}
 }

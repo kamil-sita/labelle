@@ -49,8 +49,8 @@ public class InRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		var imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, repo.id(), new Tag("First category", "First tag"));
-		inRepositoryService.addTag(imageId, repo.id(), new Tag("Second category", "Second tag"));
+		inRepositoryService.addTag(imageId, new Tag("First category", "First tag"));
+		inRepositoryService.addTag(imageId, new Tag("Second category", "Second tag"));
 		// todo test deltas
 
 		// when

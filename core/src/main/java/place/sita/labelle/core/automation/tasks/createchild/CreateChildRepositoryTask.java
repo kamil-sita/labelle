@@ -39,7 +39,7 @@ public class CreateChildRepositoryTask implements TaskType<CreateChildRepository
 
 		Map<String, UUID> referenceToNewImageId = createImagesInNewRepo(taskContext, parentImagesReferences, newRepoId);
 
-		addTagsToNewImages(taskContext, parentImagesReferences, newRepoId, referenceToNewImageId);
+		addTagsToNewImages(taskContext, parentImagesReferences, referenceToNewImageId);
 
 		return TaskResult.success(newRepoId);
 	}
@@ -53,10 +53,10 @@ public class CreateChildRepositoryTask implements TaskType<CreateChildRepository
 		return taskContext.getApi().getAcrossRepositoryService().getTags(allReferencedImages);
 	}
 
-	private static void addTagsToNewImages(TaskContext<RepositoryApi> taskContext, Map<String, List<UUID>> parentImagesReferences, UUID newRepoId, Map<String, UUID> referenceToNewImageId) {
+	private static void addTagsToNewImages(TaskContext<RepositoryApi> taskContext, Map<String, List<UUID>> parentImagesReferences, Map<String, UUID> referenceToNewImageId) {
 		Map<UUID, List<Tag>> tags = getTagsOfParents(taskContext, parentImagesReferences);
 
-		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(newRepoId);
+		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
 
 		for (var newImage : referenceToNewImageId.entrySet()) {
 			String newImageReference = newImage.getKey();

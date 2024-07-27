@@ -48,10 +48,10 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, new Tag("Some category", "Some tag"));
+		inRepositoryService.addTag(imageId, new Tag("Some category", "Some tag"));
 		UUID anotherImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(anotherImageId, null, new Tag("Some category", "Some tag"));
-		inRepositoryService.addTag(anotherImageId, null, new Tag("Some category 2", "Some tag"));
+		inRepositoryService.addTag(anotherImageId, new Tag("Some category", "Some tag"));
+		inRepositoryService.addTag(anotherImageId, new Tag("Some category 2", "Some tag"));
 
 		// when
 		taskExecutionEnvironment.executeTask(
@@ -71,10 +71,10 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(imageId, null, new Tag("Some category", "Some tag"));
+		inRepositoryService.addTag(imageId, new Tag("Some category", "Some tag"));
 		UUID anotherImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addTag(anotherImageId, null, new Tag("Some category", "Some tag"));
-		inRepositoryService.addTag(anotherImageId, null, new Tag("Some category 2", "Some tag"));
+		inRepositoryService.addTag(anotherImageId, new Tag("Some category", "Some tag"));
+		inRepositoryService.addTag(anotherImageId, new Tag("Some category 2", "Some tag"));
 
 		Repository unrelatedRepo = repositoryService.addRepository("Unrelated test repo");
 		inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());

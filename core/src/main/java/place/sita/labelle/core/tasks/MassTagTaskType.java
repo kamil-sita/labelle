@@ -35,7 +35,7 @@ public class MassTagTaskType implements TaskType<MassTagTaskType.Config, Reposit
 
 		Set<UUID> image = new HashSet<>();
 		InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
-		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(parameter.repositoryId);
+		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
 
 		try (CloseableIterator<ImageResponse> images = inRepositoryService.images().process().filterByRepository(parameter.repositoryId()).getIterator()) {
 			images.forEachRemaining(ir -> {

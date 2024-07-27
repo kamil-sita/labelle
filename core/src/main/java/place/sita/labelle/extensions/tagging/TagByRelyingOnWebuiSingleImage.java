@@ -126,12 +126,12 @@ public class TagByRelyingOnWebuiSingleImage implements TaskType<TagByRelyingOnWe
 		List<String> tags = new ArrayList<>();
 		if (tagger.equals("clip")) {
 			ctx.log("Got description: " + resp.caption);
-			repositoryApi.getInRepositoryService().addTag(imageId, null, new Tag(tagger, resp.caption));
+			repositoryApi.getInRepositoryService().addTag(imageId, new Tag(tagger, resp.caption));
 			tags.add(resp.caption);
 		} else {
 			Arrays.stream(resp.caption.split(", ")).forEach(tag -> {
 				ctx.log("Adding a tag: " + tag);
-				repositoryApi.getInRepositoryService().addTag(imageId, null, new Tag(tagger, tag));
+				repositoryApi.getInRepositoryService().addTag(imageId, new Tag(tagger, tag));
 				tags.add(tag);
 			});
 		}

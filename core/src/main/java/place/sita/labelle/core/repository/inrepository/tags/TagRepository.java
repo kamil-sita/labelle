@@ -7,6 +7,8 @@ import place.sita.labelle.jooq.Tables;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static org.jooq.impl.DSL.row;
 import static place.sita.labelle.jooq.Tables.TAG;
@@ -18,9 +20,11 @@ public class TagRepository {
 	// todo this TagRepository assumes that *something* will clean up tags, families after they are no longer needed. Write vacuuming process
 
 	private final DSLContext dslContext;
+	private final TagRepositoryProperties tagRepositoryProperties;
 
-	public TagRepository(DSLContext dslContext) {
+	public TagRepository(DSLContext dslContext, TagRepositoryProperties tagRepositoryProperties) {
 		this.dslContext = dslContext;
+		this.tagRepositoryProperties = tagRepositoryProperties;
 	}
 
 	@Transactional
@@ -30,18 +34,41 @@ public class TagRepository {
 			return;
 		}
 
-		UUID anyImage = images.iterator().next();
+		Map<UUID, List<UUID>> reposImages = getReposImages(images);
 
-		// if they're not in the same repository that's like the weirdest usage of this API ever, but might be worth to check if that's the case TODO
-		UUID actualRepositoryId = resolveRepositoryId(anyImage, persistableImagesTags.repoId());
+		for (var entry : reposImages.entrySet()) {
+			applyChangesToRepo(entry.getKey(), entry.getValue(), persistableImagesTags);
+		}
+	}
 
-		Set<String> uniqueFamilies = persistableImagesTags.categories();
-		Map<String, UUID> categoryIds = getOrCreateCategoryIds(actualRepositoryId, uniqueFamilies);
+	private void applyChangesToRepo(UUID repoId, List<UUID> imagesIds, PersistableImagesTags persistableImagesTags) {
+		Set<String> uniqueCategories = new HashSet<>();
+		Set<Tag> uniqueTags = new HashSet<>();
+		for (var image : imagesIds) {
+			for (var change : persistableImagesTags.tags(image)) {
+				uniqueCategories.add(change.category());
+				uniqueTags.add(new Tag(change.category(), change.tag()));
+			}
+		}
 
-		Set<Tag> uniqueTags = persistableImagesTags.tags();
+		Map<String, UUID> categoryIds = getOrCreateCategoryIds(repoId, uniqueCategories);
 		Map<Tag, UUID> tagIds = getOrCreateTagIds(categoryIds, uniqueTags);
 
-		assignTagsToImages(persistableImagesTags, tagIds);
+		assignTagsToImages(persistableImagesTags, tagIds, imagesIds);
+	}
+
+	private Map<UUID, List<UUID>> getReposImages(Set<UUID> images) {
+		var results = dslContext.select(Tables.IMAGE.REPOSITORY_ID, Tables.IMAGE.ID)
+			.from(Tables.IMAGE)
+			.where(Tables.IMAGE.ID.in(images))
+			.fetch();
+
+		Map<UUID, List<UUID>> reposImages = new HashMap<>();
+		for (var result : results) {
+			reposImages.computeIfAbsent(result.value1(), k -> new ArrayList<>()).add(result.value2());
+		}
+
+		return reposImages;
 	}
 
 	private Map<String, UUID> getOrCreateCategoryIds(UUID actualRepositoryId, Set<String> uniqueCategories) {
@@ -129,14 +156,36 @@ public class TagRepository {
 		return tagIds;
 	}
 
-	private void assignTagsToImages(PersistableImagesTags persistableImagesTags, Map<Tag, UUID> tagIds) {
+	private void assignTagsToImages(PersistableImagesTags persistableImagesTags, Map<Tag, UUID> tagIds, List<UUID> imagesIdsScope) {
+		int i = 0;
+		while (i < imagesIdsScope.size()) {
+			List<UUID> batchOfImages = imagesIdsScope.subList(i, Math.min(i + tagRepositoryProperties.getImageBulkSize(), imagesIdsScope.size()));
+			assignTagsToImagesBatch(persistableImagesTags, tagIds, batchOfImages);
+			i += tagRepositoryProperties.getImageBulkSize();
+		}
+	}
+
+	private record ImageTag(UUID imageId, String category, String tag) {
+
+	}
+
+	private void assignTagsToImagesBatch(PersistableImagesTags persistableImagesTags, Map<Tag, UUID> tagIds, List<UUID> batchOfImages) {
 		Map<UUID, Set<Tag>> existingTags = new HashMap<>();
+
+		List<ImageTag> imageTags = batchOfImages.stream()
+				.mapMulti(new BiConsumer<UUID, Consumer<ImageTag>>() {
+					@Override
+					public void accept(UUID uuid, Consumer<ImageTag> consumer) {
+						persistableImagesTags.tags(uuid).forEach(tag -> consumer.accept(new ImageTag(uuid, tag.category(), tag.tag())));
+					}
+				})
+				.toList();
 
 		dslContext.select(Tables.IMAGE_TAGS.IMAGE_ID, Tables.IMAGE_TAGS.TAG, Tables.IMAGE_TAGS.TAG_CATEGORY)
 			.from(Tables.IMAGE_TAGS)
 			.where(
 				row(Tables.IMAGE_TAGS.IMAGE_ID, Tables.IMAGE_TAGS.TAG, Tables.IMAGE_TAGS.TAG_CATEGORY)
-				.in(persistableImagesTags.imageTags().stream().map(imageTag -> row(imageTag.imageId(), imageTag.tag(), imageTag.category())).toList())
+					.in(imageTags.stream().map(imageTag -> row(imageTag.imageId(), imageTag.tag(), imageTag.category())).toList())
 			)
 			.fetch()
 			.forEach(rr -> {
@@ -150,7 +199,7 @@ public class TagRepository {
 			.columns(Tables.TAG_IMAGE.TAG_ID, Tables.TAG_IMAGE.IMAGE_ID);
 
 		int toPersist = 0;
-		for (var tag : persistableImagesTags.imageTags()) {
+		for (var tag : imageTags) {
 			UUID imageId = tag.imageId();
 
 			if (existingTags.getOrDefault(imageId, Collections.emptySet()).contains(new Tag(tag.tag(), tag.category()))) {
@@ -160,17 +209,28 @@ public class TagRepository {
 			UUID tagId = tagIds.get(new Tag(tag.category(), tag.tag()));
 			ongoing = ongoing.values(tagId, imageId);
 			toPersist++;
+			if (toPersist > tagRepositoryProperties.getTagBulkSize()) {
+				int c = ongoing.execute();
+				if (c != toPersist) {
+					throw new RuntimeException();
+				}
+				toPersist = 0;
+				ongoing = dslContext.insertInto(Tables.TAG_IMAGE)
+					.columns(Tables.TAG_IMAGE.TAG_ID, Tables.TAG_IMAGE.IMAGE_ID);
+			}
 		}
 
-		int c = ongoing.execute();
-		if (c != toPersist) {
-			throw new RuntimeException();
+		if (toPersist > 0) {
+			int c = ongoing.execute();
+			if (c != toPersist) {
+				throw new RuntimeException();
+			}
 		}
 	}
 
 	@Transactional
-	public void addTag(UUID imageId, @Nullable UUID repositoryId, Tag tag) {
-		PersistableImagesTags persistableImagesTags = new PersistableImagesTags(repositoryId);
+	public void addTag(UUID imageId, Tag tag) {
+		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
 		persistableImagesTags.addTag(imageId, tag);
 		addTags(persistableImagesTags);
 	}

@@ -51,13 +51,13 @@ public class CloneRepositoryTask implements TaskType<CloneRepositoryTaskInput, R
             imageIterator.forEachRemaining(image -> {
                 UUID imageId = copyImage(taskContext, newRepoId, image);
 
-                addTags(taskContext, newRepoId, image, imageId);
+                addTags(taskContext, image, imageId);
             });
         }
     }
 
-    private static void addTags(TaskContext<RepositoryApi> taskContext, UUID newRepoId, ImageResponse image, UUID imageId) {
-        PersistableImagesTags persistableImagesTags = new PersistableImagesTags(newRepoId);
+    private static void addTags(TaskContext<RepositoryApi> taskContext, ImageResponse image, UUID imageId) {
+        PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
 
         taskContext.getApi()
                 .getInRepositoryService()
