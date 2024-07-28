@@ -52,7 +52,7 @@ public class ImportOldLabelleData implements TaskType<ImportOldLabelleDataInput,
 
 		imagesCategories.imageCategories().forEach(imageCategory -> {
 			String path = parameter.root() + imageCategory.path();
-			var result = inRepositoryService.addImage(parameter.repositoryId(), Paths.get(path).toFile());
+			var result = inRepositoryService.images().addImage(parameter.repositoryId(), Paths.get(path).toFile());
 			if (result.isSuccess()) {
 				UUID imageId = result.getSuccess().getId();
 				PersistableImagesTags persistableImagesTags = new PersistableImagesTags();

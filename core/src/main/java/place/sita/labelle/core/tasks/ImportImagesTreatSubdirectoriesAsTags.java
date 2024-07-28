@@ -2,6 +2,7 @@ package place.sita.labelle.core.tasks;
 
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.images.imagelocator.Root;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;
@@ -40,8 +41,8 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 		Map<UUID, Set<String>> tagsToImages = new HashMap<>();
 
 		for (File file : fileList) {
-			var result = taskContext.getApi().getInRepositoryService()
-				.addImage(parameter.repositoryId, file);
+			InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
+			var result = inRepositoryService.images().addImage(parameter.repositoryId, file);
 
 			if (result.isSuccess()) {
 				var img = result.getSuccess();

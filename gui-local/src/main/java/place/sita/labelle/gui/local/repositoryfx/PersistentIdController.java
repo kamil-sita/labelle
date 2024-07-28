@@ -57,12 +57,10 @@ public class PersistentIdController {
 
 	@FXML
     public void onSavePress(ActionEvent event) {
-        ImageService.UpdateIdsResult result = inRepositoryService.updateIds(
-            selectedImageId,
-            persistentIdTextField.getText(),
-            parentPersistentIdTextField.getText(),
-            isVisibleForChildrenCheckBox.isSelected()
-        );
+        String persistentId = persistentIdTextField.getText();
+        String parentPersistentId = parentPersistentIdTextField.getText();
+        boolean isVisibleToChildren = isVisibleForChildrenCheckBox.isSelected();
+        ImageService.UpdateIdsResult result = inRepositoryService.images().updateIds(selectedImageId, persistentId, parentPersistentId, isVisibleToChildren);
         switch (result) {
 	        case ImageService.UpdateIdsResult.Success success -> { } // what we wanted, so let's ignore it
             case ImageService.UpdateIdsResult.IdReuse idReuse -> {
@@ -73,7 +71,7 @@ public class PersistentIdController {
 
     @FXML
     public void onDuplicatePress(ActionEvent event) {
-        UUID id = inRepositoryService.duplicateImage(selectedImageId);
+        UUID id = inRepositoryService.images().duplicateImage(selectedImageId);
         messageSender.send(new SelectImageEvent(id));
     }
 
@@ -91,7 +89,7 @@ public class PersistentIdController {
             saveButton.setDisable(false);
 
             Threading.onSeparateThread(keyStone, toolkit -> {
-                Ids id = inRepositoryService.getIds(event.imageId());
+                Ids id = inRepositoryService.images().getIds(event.imageId());
 
                 toolkit.onFxThread(() -> {
                     isVisibleForChildrenCheckBox.setSelected(id.visibleToChildren());

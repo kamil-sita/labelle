@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.automation.tasks.AutomationTasksCommon;
 import place.sita.labelle.core.repository.acrossrepository.PullableImageResponse;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
@@ -77,7 +78,8 @@ public class CreateChildRepositoryTask implements TaskType<CreateChildRepository
 		Map<String, UUID> referenceToNewImageId = new HashMap<>();
 
 		parentImagesReferences.forEach((reference, parents) -> {
-			UUID imageId = taskContext.getApi().getInRepositoryService().referImage(newRepoId, parents.get(0), reference);
+			InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
+			UUID imageId = inRepositoryService.images().referImage(newRepoId, parents.get(0), reference);
 			referenceToNewImageId.put(reference, imageId);
 		});
 		return referenceToNewImageId;

@@ -84,7 +84,7 @@ public class ImageService {
 	/**
 	 * Copies this image definition to another repository.
 	 *
-	 * Note that this should not be used for children-parent repositories, but only for clones of repositories. See {@link InRepositoryService#referImage(UUID, UUID, String)}
+	 * Note that this should not be used for children-parent repositories, but only for clones of repositories. See {@link ImageService#referImage(UUID, UUID, String)}
 	 */
 	@Transactional
 	public UUID copyImage(UUID newRepoId, UUID originalImageId) {

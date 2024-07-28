@@ -4,25 +4,19 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import place.sita.labelle.core.images.imagelocator.ImagePtr;
 import place.sita.labelle.core.images.imagelocator.Root;
 import place.sita.labelle.core.repository.RootRepository;
 import place.sita.labelle.core.repository.inrepository.delta.DeltaRepository;
 import place.sita.labelle.core.repository.inrepository.delta.TagDeltaResponse;
-import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
 import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
 import place.sita.labelle.core.repository.inrepository.image.ImageService;
-import place.sita.labelle.core.repository.inrepository.image.ImageService.UpdateIdsResult;
 import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
-import place.sita.labelle.core.utils.Result3;
 import place.sita.labelle.datasource.cross.PreprocessableDataSourceWithRemoval;
-import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;
 import place.sita.labelle.jooq.Tables;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.util.*;
 
 import static place.sita.labelle.jooq.Tables.IMAGE_TAGS;
@@ -42,7 +36,6 @@ public class InRepositoryService {
 	    DSLContext dslContext,
 	    RootRepository rootRepository,
 	    TagRepository tagRepository,
-	    ImageRepository imageRepository,
         DeltaRepository deltaRepository,
         ImageService imageService) {
         this.dslContext = dslContext;
@@ -56,10 +49,6 @@ public class InRepositoryService {
         return imageService;
     }
 
-    public <Self extends PreprocessableIdDataSourceWithRemoval<UUID, ImageResponse, ImageRepository.FilteringApi<Self>, Self>> Self imagesFiltering() {
-        return images().images();
-    }
-
     public <Self extends PreprocessableDataSourceWithRemoval<TagDeltaResponse, DeltaRepository.FilteringApi<Self>, Self>> Self  tagDeltas() {
         return deltaRepository.tagDeltas();
     }
@@ -67,79 +56,6 @@ public class InRepositoryService {
     @Transactional
     public List<Root> roots() {
         return rootRepository.getRoots();
-    }
-
-    @Transactional
-    public Result3<ImageResponse, DoesNotMatchAnyRoot, InsertFailedUnexpected> addImage(UUID repoId, File file) {
-        return images().addImage(repoId, file);
-    }
-
-    @Transactional
-    public Result3<ImageResponse, DoesNotMatchAnyRoot, InsertFailedUnexpected> addImage(UUID repoId, String absolutePath) {
-        return images().addImage(repoId, absolutePath);
-    }
-
-    /**
-     * Copies this image definition to another repository.
-     *
-     * Note that this should not be used for children-parent repositories, but only for clones of repositories. See {@link InRepositoryService#referImage(UUID, UUID, String)}
-     */
-    @Transactional
-    public UUID copyImage(UUID newRepoId, UUID originalImageId) {
-        return images().copyImage(newRepoId, originalImageId);
-    }
-
-    @Transactional
-    public UUID referImage(UUID newRepoId, UUID originalImageId, String persistentId) {
-        return images().referImage(newRepoId, originalImageId, persistentId);
-    }
-
-    @Transactional
-    public UpdateIdsResult updateIds(UUID imageId, String persistentId, String parentPersistentId, boolean isVisibleToChildren) {
-        return images().updateIds(imageId, persistentId, parentPersistentId, isVisibleToChildren);
-    }
-
-    @Transactional // todo make this one throw if something goes wrong - unless it already does?
-    public void setPersistentId(UUID imageId, String persistentId) {
-        images().setPersistentId(imageId, persistentId);
-    }
-
-    @Transactional
-    public void setParentPersistentId(UUID imageId, String parentPersistentId) {
-        images().setParentPersistentId(imageId, parentPersistentId);
-    }
-
-    @Transactional(readOnly = true)
-    public Ids getIds(UUID imageId) {
-        return images().getIds(imageId);
-    }
-
-    @Transactional
-    public void setVisibility(UUID imageId, boolean value) {
-        images().setVisibility(imageId, value);
-    }
-
-    @Transactional
-    public UUID duplicateImage(UUID selectedImageId) {
-        return images().duplicateImage(selectedImageId);
-    }
-
-    public ImagePtr getImagePtr(UUID imageId) {
-        return images().getImagePtr(imageId);
-    }
-
-    /**
-     * This is currently mostly a test method, and will fail most executions against actual code,
-     * but long term it should be a supported operation to add an (non-empty) synthethic image to a repository.
-     */
-    @Transactional
-    public UUID addEmptySyntheticImage(UUID repoId) {
-        return images().addEmptySyntheticImage(repoId);
-    }
-
-    @Transactional
-    public ImageResponse addEmptySyntheticImageWrap(UUID repoId) {
-        return images().addEmptySyntheticImageWrap(repoId);
     }
 
     public void addTags(PersistableImagesTags persistableImagesTags) {

@@ -64,7 +64,7 @@ public class StatisticsServiceTest extends TestContainersTest {
 	public void shouldReturnTagCountForSingleTag() {
 		// given
 		var repository = repositoryService.addRepository("test");
-		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
+		var image = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 		inRepositoryService.addTag(image, new Tag("category", "tag"));
 
 		// when
@@ -81,10 +81,10 @@ public class StatisticsServiceTest extends TestContainersTest {
 	public void shouldReturnTagCountForMultipleTags() {
 		// given
 		var repository = repositoryService.addRepository("test");
-		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
+		var image = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 		inRepositoryService.addTag(image, new Tag("category", "tag"));
 		inRepositoryService.addTag(image, new Tag("category", "tag2"));
-		var image2 = inRepositoryService.addEmptySyntheticImage(repository.id());
+		var image2 = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 		inRepositoryService.addTag(image2, new Tag("category", "tag"));
 
 		// when
@@ -105,7 +105,7 @@ public class StatisticsServiceTest extends TestContainersTest {
 		// given
 		var repository = repositoryService.addRepository("test");
 		var repository2 = repositoryService.addRepository("test2");
-		var image = inRepositoryService.addEmptySyntheticImage(repository.id());
+		var image = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 		inRepositoryService.addTag(image, new Tag("category", "tag"));
 
 		// when

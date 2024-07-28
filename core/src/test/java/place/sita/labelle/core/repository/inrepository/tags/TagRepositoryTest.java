@@ -49,7 +49,7 @@ public class TagRepositoryTest extends TestContainersTest {
 	public void shouldAddTag() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
@@ -65,7 +65,7 @@ public class TagRepositoryTest extends TestContainersTest {
 	public void shouldAddMultipleTags() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
@@ -84,7 +84,7 @@ public class TagRepositoryTest extends TestContainersTest {
 	public void shouldAddMultipleTagsWithinSameCategory() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
@@ -103,7 +103,7 @@ public class TagRepositoryTest extends TestContainersTest {
 	public void shouldAddingSameTagBeIdempotent() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
@@ -120,7 +120,7 @@ public class TagRepositoryTest extends TestContainersTest {
 	public void shouldDeleteTagFromImage() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// when
@@ -135,7 +135,7 @@ public class TagRepositoryTest extends TestContainersTest {
 	public void shouldAddMultipleTagsUsingPersistableImageTags() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
@@ -155,7 +155,7 @@ public class TagRepositoryTest extends TestContainersTest {
 		// given
 		when(tagRepositoryProperties.getTagBulkSize()).thenReturn(5);
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
@@ -181,7 +181,7 @@ public class TagRepositoryTest extends TestContainersTest {
 		// given
 		when(tagRepositoryProperties.getTagBulkSize()).thenReturn(5);
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
@@ -209,11 +209,11 @@ public class TagRepositoryTest extends TestContainersTest {
 		// given
 		when(tagRepositoryProperties.getImageBulkSize()).thenReturn(5);
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId1 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId2 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId3 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId4 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId5 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId1 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId2 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId3 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId4 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId5 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
@@ -251,12 +251,12 @@ public class TagRepositoryTest extends TestContainersTest {
 		// given
 		when(tagRepositoryProperties.getImageBulkSize()).thenReturn(5);
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId1 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId2 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId3 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId4 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId5 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId6 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId1 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId2 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId3 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId4 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId5 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId6 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		PersistableImagesTags persistableImagesTags = new PersistableImagesTags();

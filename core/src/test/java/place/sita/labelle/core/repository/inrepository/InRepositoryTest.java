@@ -49,13 +49,13 @@ public class InRepositoryTest extends TestContainersTest {
 	public void shouldCreateDuplicateOfImage() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		var imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		var imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		inRepositoryService.addTag(imageId, new Tag("First category", "First tag"));
 		inRepositoryService.addTag(imageId, new Tag("Second category", "Second tag"));
 		// todo test deltas
 
 		// when
-		var duplicateId = inRepositoryService.duplicateImage(imageId);
+		var duplicateId = inRepositoryService.images().duplicateImage(imageId);
 
 		// then
 		assertThat(inRepositoryService.getTags(duplicateId)).contains(new Tag("First category", "First tag"));
@@ -68,19 +68,14 @@ public class InRepositoryTest extends TestContainersTest {
 	public void shouldChangeIdsOfAnImage() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		var imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		var imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
-		var result = inRepositoryService.updateIds(
-			imageId,
-			"newPersistentId",
-			"newParentPersistentId",
-			true
-		);
+		var result = inRepositoryService.images().updateIds(imageId, "newPersistentId", "newParentPersistentId", true);
 
 		// then
 		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.Success.class);
-		var ids = inRepositoryService.getIds(imageId);
+		var ids = inRepositoryService.images().getIds(imageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("newParentPersistentId");
 		assertThat(ids.visibleToChildren()).isTrue();
@@ -90,31 +85,21 @@ public class InRepositoryTest extends TestContainersTest {
 	public void shouldNotChangeIdsOfAnImageIfItDuplicatesSomeOtherIdInThisRepo() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		var firstImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		var secondImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.updateIds(
-			firstImageId,
-			"newPersistentId",
-			"newParentPersistentId",
-			true
-		);
+		var firstImageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		var secondImageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		inRepositoryService.images().updateIds(firstImageId, "newPersistentId", "newParentPersistentId", true);
 
 		// when
-		var result = inRepositoryService.updateIds(
-			secondImageId,
-			"newPersistentId",
-			"something",
-			true
-		);
+		var result = inRepositoryService.images().updateIds(secondImageId, "newPersistentId", "something", true);
 
 		// then
 		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.IdReuse.class);
-		var ids = inRepositoryService.getIds(firstImageId);
+		var ids = inRepositoryService.images().getIds(firstImageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("newParentPersistentId");
 		assertThat(ids.visibleToChildren()).isTrue();
 
-		var ids2 = inRepositoryService.getIds(secondImageId);
+		var ids2 = inRepositoryService.images().getIds(secondImageId);
 		assertThat(ids2.persistentId()).isNotEqualTo("newPersistentId");
 		assertThat(ids2.parentPersistentId()).isNotEqualTo("something");
 		assertThat(ids2.visibleToChildren()).isTrue();
@@ -125,26 +110,16 @@ public class InRepositoryTest extends TestContainersTest {
 		// given
 		Repository firstRepo = repositoryService.addRepository("Test repo");
 		Repository secondRepo = repositoryService.addRepository("Test repo 2");
-		var firstImageId = inRepositoryService.addEmptySyntheticImage(firstRepo.id());
-		var secondImageId = inRepositoryService.addEmptySyntheticImage(secondRepo.id());
-		inRepositoryService.updateIds(
-			firstImageId,
-			"newPersistentId",
-			"newParentPersistentId",
-			true
-		);
+		var firstImageId = inRepositoryService.images().addEmptySyntheticImage(firstRepo.id());
+		var secondImageId = inRepositoryService.images().addEmptySyntheticImage(secondRepo.id());
+		inRepositoryService.images().updateIds(firstImageId, "newPersistentId", "newParentPersistentId", true);
 
 		// when
-		var result = inRepositoryService.updateIds(
-			secondImageId,
-			"newPersistentId",
-			"something",
-			true
-		);
+		var result = inRepositoryService.images().updateIds(secondImageId, "newPersistentId", "something", true);
 
 		// then
 		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.Success.class);
-		var ids = inRepositoryService.getIds(firstImageId);
+		var ids = inRepositoryService.images().getIds(firstImageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("newParentPersistentId");
 		assertThat(ids.visibleToChildren()).isTrue();
@@ -154,25 +129,15 @@ public class InRepositoryTest extends TestContainersTest {
 	public void shouldChangeIdsOfAnImageKeepingPersistentId() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		var imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.updateIds(
-			imageId,
-			"newPersistentId",
-			"newParentPersistentId",
-			true
-		);
+		var imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		inRepositoryService.images().updateIds(imageId, "newPersistentId", "newParentPersistentId", true);
 
 		// when
-		var result = inRepositoryService.updateIds(
-			imageId,
-			"newPersistentId",
-			"something",
-			true
-		);
+		var result = inRepositoryService.images().updateIds(imageId, "newPersistentId", "something", true);
 
 		// then
 		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.Success.class);
-		var ids = inRepositoryService.getIds(imageId);
+		var ids = inRepositoryService.images().getIds(imageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("something");
 		assertThat(ids.visibleToChildren()).isTrue();

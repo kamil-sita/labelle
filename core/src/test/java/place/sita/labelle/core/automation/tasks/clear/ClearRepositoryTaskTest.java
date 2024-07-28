@@ -47,9 +47,9 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 	public void shouldClearRepository() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		inRepositoryService.addTag(imageId, new Tag("Some category", "Some tag"));
-		UUID anotherImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID anotherImageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		inRepositoryService.addTag(anotherImageId, new Tag("Some category", "Some tag"));
 		inRepositoryService.addTag(anotherImageId, new Tag("Some category 2", "Some tag"));
 
@@ -62,7 +62,7 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		int imageCount = inRepositoryService.imagesFiltering().count();
+		int imageCount = (inRepositoryService.images().images()).count();
 		assertThat(imageCount).isZero();
 	}
 
@@ -70,14 +70,14 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 	public void shouldNotClearUnrelatedRepository() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		inRepositoryService.addTag(imageId, new Tag("Some category", "Some tag"));
-		UUID anotherImageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID anotherImageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		inRepositoryService.addTag(anotherImageId, new Tag("Some category", "Some tag"));
 		inRepositoryService.addTag(anotherImageId, new Tag("Some category 2", "Some tag"));
 
 		Repository unrelatedRepo = repositoryService.addRepository("Unrelated test repo");
-		inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());
+		inRepositoryService.images().addEmptySyntheticImage(unrelatedRepo.id());
 
 		// when
 		taskExecutionEnvironment.executeTask(
@@ -88,10 +88,10 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		int imageCount = inRepositoryService.imagesFiltering().process().filterByRepository(repo.id()).count();
+		int imageCount = (inRepositoryService.images().images()).process().filterByRepository(repo.id()).count();
 		assertThat(imageCount).isZero();
 
-		int imageCountInUnrelatedRepo = inRepositoryService.imagesFiltering().process().filterByRepository(unrelatedRepo.id()).count();
+		int imageCountInUnrelatedRepo = (inRepositoryService.images().images()).process().filterByRepository(unrelatedRepo.id()).count();
 		assertThat(imageCountInUnrelatedRepo).isOne();
 	}
 

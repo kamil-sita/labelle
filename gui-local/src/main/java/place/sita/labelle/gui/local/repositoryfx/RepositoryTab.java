@@ -140,12 +140,12 @@ public class RepositoryTab implements MainMenuTab {
         labPaginator = LabPaginatorFactory.factory(
             paginator,
             pageSize,
-            filteringParameters ->  inRepositoryService.imagesFiltering().process()
+            filteringParameters -> (inRepositoryService.images().images()).process()
                 .filterByRepository(getRepositoryId(filteringParameters))
                 .process()
                 .filterUsingTfLang(validatedQuery)
                 .count(),
-            (paging, filtering) ->  inRepositoryService.imagesFiltering().process()
+            (paging, filtering) -> (inRepositoryService.images().images()).process()
                 .filterByRepository(getRepositoryId(filtering))
                 .process()
                 .filterUsingTfLang(validatedQuery)
@@ -243,7 +243,7 @@ public class RepositoryTab implements MainMenuTab {
                 fileChooser.setTitle("Open Resource File");
                 File file = fileChooser.showOpenDialog(getWindow());
                 // todo this can be null
-                inRepositoryService.addImage(repo.id(), file)
+                inRepositoryService.images().addImage(repo.id(), file)
                     .onSuccess(image -> {
                         onUserAdded(List.of(image));
                     })
@@ -259,21 +259,21 @@ public class RepositoryTab implements MainMenuTab {
     public void onAddSyntheticImageAction(ActionEvent event) {
         ifSelected(repositoryChoiceBox)
             .then(repo -> {
-                ImageResponse response = inRepositoryService.addEmptySyntheticImageWrap(repo.id());
+                ImageResponse response = inRepositoryService.images().addEmptySyntheticImageWrap(repo.id());
                 onUserAdded(List.of(response));
             });
     }
 
     @FxMessageListener
     public void onRequestSelect(SelectImageEvent selectImageEvent) {
-        ImageResponse imageResponse = inRepositoryService.imagesFiltering().process().filterByImageId(selectImageEvent.imageId()).getOne();
-        labPaginator.insertSelectInto(inRepositoryService.imagesFiltering().process().filterByRepository(selectedRepository.id()).indexOf(imageResponse), imageResponse);
+        ImageResponse imageResponse = (inRepositoryService.images().images()).process().filterByImageId(selectImageEvent.imageId()).getOne();
+        labPaginator.insertSelectInto((inRepositoryService.images().images()).process().filterByRepository(selectedRepository.id()).indexOf(imageResponse), imageResponse);
     }
 
     private void onUserAdded(List<ImageResponse> image) {
         if (!image.isEmpty()) {
             ImageResponse first = image.getFirst();
-            labPaginator.insertSelectInto(inRepositoryService.imagesFiltering().process().filterByRepository(selectedRepository.id()).indexOf(first), first);
+            labPaginator.insertSelectInto((inRepositoryService.images().images()).process().filterByRepository(selectedRepository.id()).indexOf(first), first);
         }
     }
 
@@ -301,7 +301,7 @@ public class RepositoryTab implements MainMenuTab {
                     List<ImageResponse> added = new ArrayList<>();
                     int failures = 0;
                     for (var file : files) {
-                        var res = inRepositoryService.addImage(repo.id(), file);
+                        var res = inRepositoryService.images().addImage(repo.id(), file);
                         if (res.isSuccess()) {
                             added.add(res.getSuccess());
                         } else {

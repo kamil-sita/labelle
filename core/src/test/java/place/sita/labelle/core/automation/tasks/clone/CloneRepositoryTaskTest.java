@@ -48,7 +48,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 	public void shouldCloneRepository() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		inRepositoryService.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// when
@@ -65,7 +65,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		var images = inRepositoryService.imagesFiltering().process().filterByRepository(results.result()).getAll();
+		var images = (inRepositoryService.images().images()).process().filterByRepository(results.result()).getAll();
 		assertThat(images).hasSize(1);
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(1);

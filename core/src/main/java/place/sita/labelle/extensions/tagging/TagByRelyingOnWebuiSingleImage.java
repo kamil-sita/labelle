@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.springframework.stereotype.Component;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.utils.Result2;
 import place.sita.labelle.core.images.loading.ImageCachingLoader;
@@ -50,7 +51,8 @@ public class TagByRelyingOnWebuiSingleImage implements TaskType<TagByRelyingOnWe
 
 	@Override
 	public TaskResult<TaggingResult> runTask(WebuiSingleImageArgs parameter, TaskContext<RepositoryApi> taskContext) { // todo shouldn't it just accept all exceptions?
-		var futureImage = imageCachingLoader.load(taskContext.getApi().getInRepositoryService().getImagePtr(parameter.imageId));
+		InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
+		var futureImage = imageCachingLoader.load(inRepositoryService.images().getImagePtr(parameter.imageId));
 		Result2<BufferedImage, Exception> results;
 		try {
 			results = futureImage.get(30, TimeUnit.SECONDS);

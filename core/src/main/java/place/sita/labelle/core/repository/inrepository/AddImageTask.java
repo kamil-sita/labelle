@@ -32,10 +32,8 @@ public class AddImageTask implements TaskType<AddImageTask.AddImageTaskParameter
 
 	@Override
 	public TaskResult<AddImageResult> runTask(AddImageTaskParameters parameter, TaskContext<RepositoryApi> taskContext) {
-		var result = taskContext.getApi().getInRepositoryService().addImage(
-			parameter.repoId(),
-			parameter.path()
-		);
+		InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
+		var result = inRepositoryService.images().addImage(parameter.repoId(), parameter.path());
 		if (result.isSuccess()) {
 			return TaskResult.success(new AddImageResult());
 		} else {

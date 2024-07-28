@@ -58,28 +58,28 @@ public class InRepositoryParentTagsTest extends TestContainersTest {
 		repositoryService.addParentChild(childRepo.id(), parentRepo2.id());
 		repositoryService.addParentChild(childRepo.id(), parentRepo3.id());
 
-		var parentRepo1Image = inRepositoryService.addEmptySyntheticImage(parentRepo1.id());
-		inRepositoryService.setPersistentId(parentRepo1Image, "PERSISTENT_ID");
+		var parentRepo1Image = inRepositoryService.images().addEmptySyntheticImage(parentRepo1.id());
+		inRepositoryService.images().setPersistentId(parentRepo1Image, "PERSISTENT_ID");
 		inRepositoryService.addTag(parentRepo1Image, new Tag("CATEGORY1", "TAG1"));
 		inRepositoryService.addTag(parentRepo1Image, new Tag("CATEGORY2", "TAG2"));
-		var parentRepo2Image = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
-		inRepositoryService.setPersistentId(parentRepo2Image, "PERSISTENT_ID");
+		var parentRepo2Image = inRepositoryService.images().addEmptySyntheticImage(parentRepo2.id());
+		inRepositoryService.images().setPersistentId(parentRepo2Image, "PERSISTENT_ID");
 		inRepositoryService.addTag(parentRepo2Image, new Tag("CATEGORY3", "TAG3"));
 		inRepositoryService.addTag(parentRepo2Image, new Tag("CATEGORY1", "TAG1"));
-		var parentRepo3Image = inRepositoryService.addEmptySyntheticImage(parentRepo3.id());
-		inRepositoryService.setPersistentId(parentRepo3Image, "PERSISTENT_ID");
+		var parentRepo3Image = inRepositoryService.images().addEmptySyntheticImage(parentRepo3.id());
+		inRepositoryService.images().setPersistentId(parentRepo3Image, "PERSISTENT_ID");
 		inRepositoryService.addTag(parentRepo3Image, new Tag("CATEGORY4", "TAG4"));
-		var unrelatedRepoImage = inRepositoryService.addEmptySyntheticImage(unrelatedRepo.id());
-		inRepositoryService.setPersistentId(unrelatedRepoImage, "PERSISTENT_ID");
+		var unrelatedRepoImage = inRepositoryService.images().addEmptySyntheticImage(unrelatedRepo.id());
+		inRepositoryService.images().setPersistentId(unrelatedRepoImage, "PERSISTENT_ID");
 		inRepositoryService.addTag(unrelatedRepoImage, new Tag("CATEGORY5", "TAG5"));
 
-		var parentRepo2UnrelatedImage = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
-		inRepositoryService.setPersistentId(parentRepo2UnrelatedImage, "UNRELATED_PERSISTENT_ID");
+		var parentRepo2UnrelatedImage = inRepositoryService.images().addEmptySyntheticImage(parentRepo2.id());
+		inRepositoryService.images().setPersistentId(parentRepo2UnrelatedImage, "UNRELATED_PERSISTENT_ID");
 		inRepositoryService.addTag(parentRepo2UnrelatedImage, new Tag("CATEGORY6", "TAG6"));
 
-		var childRepoImage = inRepositoryService.addEmptySyntheticImage(childRepo.id());
-		inRepositoryService.setParentPersistentId(childRepoImage, "PERSISTENT_ID");
-		inRepositoryService.setPersistentId(childRepoImage, "CHILD_PERSISTENT_ID");
+		var childRepoImage = inRepositoryService.images().addEmptySyntheticImage(childRepo.id());
+		inRepositoryService.images().setParentPersistentId(childRepoImage, "PERSISTENT_ID");
+		inRepositoryService.images().setPersistentId(childRepoImage, "CHILD_PERSISTENT_ID");
 		inRepositoryService.addTag(childRepoImage, new Tag("CATEGORY7", "TAG7"));
 
 		// when

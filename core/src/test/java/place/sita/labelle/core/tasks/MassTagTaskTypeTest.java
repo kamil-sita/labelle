@@ -69,7 +69,7 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 	public void shouldMassTagRepositoryWithImages() {
 		// given
 		Repository repository = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repository.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
@@ -91,8 +91,8 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 	public void shouldMassTagRepositoryWithMultipleImages() {
 		// given
 		Repository repository = repositoryService.addRepository("Test repo");
-		UUID imageId1 = inRepositoryService.addEmptySyntheticImage(repository.id());
-		UUID imageId2 = inRepositoryService.addEmptySyntheticImage(repository.id());
+		UUID imageId1 = inRepositoryService.images().addEmptySyntheticImage(repository.id());
+		UUID imageId2 = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
@@ -118,10 +118,10 @@ public class MassTagTaskTypeTest extends TestContainersTest {
 	public void shouldMassTagRepositoryWithExistingTagsWithoutOverridingThem() {
 		// given
 		Repository repository = repositoryService.addRepository("Test repo");
-		UUID firstImage = inRepositoryService.addEmptySyntheticImage(repository.id());
+		UUID firstImage = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 		inRepositoryService.addTag(firstImage, new Tag("category", "tag"));
 		inRepositoryService.addTag(firstImage, new Tag("category", "some other tag"));
-		UUID secondImage = inRepositoryService.addEmptySyntheticImage(repository.id());
+		UUID secondImage = inRepositoryService.images().addEmptySyntheticImage(repository.id());
 		inRepositoryService.addTag(secondImage, new Tag("of different category", "another tag"));
 
 		// when

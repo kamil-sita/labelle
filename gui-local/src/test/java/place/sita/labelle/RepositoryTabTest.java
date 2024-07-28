@@ -48,8 +48,8 @@ public class RepositoryTabTest extends GuiTest {
 		var repo = repositoryService.addRepository("Test repo");
 		imageLocatorService.createRoot("C:/test1/");
 		imageLocatorService.createRoot("C:/test2/");
-		var img1 = inRepositoryService.addImage(repo.id(), "C:/test1/test.jpg").getSuccess();
-		var img2 = inRepositoryService.addImage(repo.id(), "C:/test2/test.jpg").getSuccess();
+		var img1 = inRepositoryService.images().addImage(repo.id(), "C:/test1/test.jpg").getSuccess();
+		var img2 = inRepositoryService.images().addImage(repo.id(), "C:/test2/test.jpg").getSuccess();
 		inRepositoryService.addTag(img1.id(), new Tag("category 1", "tag 1"));
 		inRepositoryService.addTag(img1.id(), new Tag("category 1", "tag 2"));
 		inRepositoryService.addTag(img2.id(), new Tag("category 2", "tag 1"));

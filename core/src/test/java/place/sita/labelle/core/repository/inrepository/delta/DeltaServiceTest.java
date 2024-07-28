@@ -52,7 +52,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldHaveEmptyDeltaIfHasNoTagsAndNoParents() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(imageId));
@@ -69,12 +69,12 @@ public class DeltaServiceTest extends TestContainersTest {
 		Repository parentRepo = repositoryService.addRepository("Parent repo");
 		repositoryService.addParentChild(childRepo.id(), parentRepo.id());
 
-		UUID childImageId = inRepositoryService.addEmptySyntheticImage(childRepo.id());
-		UUID parentImageId = inRepositoryService.addEmptySyntheticImage(parentRepo.id());
+		UUID childImageId = inRepositoryService.images().addEmptySyntheticImage(childRepo.id());
+		UUID parentImageId = inRepositoryService.images().addEmptySyntheticImage(parentRepo.id());
 
-		inRepositoryService.setPersistentId(childImageId, "child persistent id");
-		inRepositoryService.setPersistentId(parentImageId, "parent persistent id");
-		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
+		inRepositoryService.images().setPersistentId(childImageId, "child persistent id");
+		inRepositoryService.images().setPersistentId(parentImageId, "parent persistent id");
+		inRepositoryService.images().setParentPersistentId(childImageId, "parent persistent id");
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));
@@ -93,14 +93,14 @@ public class DeltaServiceTest extends TestContainersTest {
 		repositoryService.addParentChild(childRepo.id(), parentRepo1.id());
 		repositoryService.addParentChild(childRepo.id(), parentRepo2.id());
 
-		UUID childImageId = inRepositoryService.addEmptySyntheticImage(childRepo.id());
-		UUID parentImageId1 = inRepositoryService.addEmptySyntheticImage(parentRepo1.id());
-		UUID parentImageId2 = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
+		UUID childImageId = inRepositoryService.images().addEmptySyntheticImage(childRepo.id());
+		UUID parentImageId1 = inRepositoryService.images().addEmptySyntheticImage(parentRepo1.id());
+		UUID parentImageId2 = inRepositoryService.images().addEmptySyntheticImage(parentRepo2.id());
 
-		inRepositoryService.setPersistentId(childImageId, "child persistent id");
-		inRepositoryService.setPersistentId(parentImageId1, "parent persistent id");
-		inRepositoryService.setPersistentId(parentImageId2, "parent persistent id");
-		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
+		inRepositoryService.images().setPersistentId(childImageId, "child persistent id");
+		inRepositoryService.images().setPersistentId(parentImageId1, "parent persistent id");
+		inRepositoryService.images().setPersistentId(parentImageId2, "parent persistent id");
+		inRepositoryService.images().setParentPersistentId(childImageId, "parent persistent id");
 
 		// when
 		deltaService.recalculateTagDeltas(Set.of(childImageId));
@@ -114,7 +114,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldNotCalculateDeltaIfHasTagsAndNoParentsReference() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// when
@@ -129,8 +129,8 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldHaveDeltaIfHasTagsAndParentsReference() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.setParentPersistentId(imageId, "parent persistent id");
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		inRepositoryService.images().setParentPersistentId(imageId, "parent persistent id");
 		tagRepository.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// when
@@ -151,12 +151,12 @@ public class DeltaServiceTest extends TestContainersTest {
 		Repository parentRepo = repositoryService.addRepository("Parent repo");
 		repositoryService.addParentChild(childRepo.id(), parentRepo.id());
 
-		UUID childImageId = inRepositoryService.addEmptySyntheticImage(childRepo.id());
-		UUID parentImageId = inRepositoryService.addEmptySyntheticImage(parentRepo.id());
+		UUID childImageId = inRepositoryService.images().addEmptySyntheticImage(childRepo.id());
+		UUID parentImageId = inRepositoryService.images().addEmptySyntheticImage(parentRepo.id());
 
-		inRepositoryService.setPersistentId(childImageId, "child persistent id");
-		inRepositoryService.setPersistentId(parentImageId, "parent persistent id");
-		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
+		inRepositoryService.images().setPersistentId(childImageId, "child persistent id");
+		inRepositoryService.images().setPersistentId(parentImageId, "parent persistent id");
+		inRepositoryService.images().setParentPersistentId(childImageId, "parent persistent id");
 
 		tagRepository.addTag(childImageId, new Tag("Some category", "Some tag"));
 		tagRepository.addTag(parentImageId, new Tag("Some category", "Some tag"));
@@ -176,12 +176,12 @@ public class DeltaServiceTest extends TestContainersTest {
 		Repository parentRepo = repositoryService.addRepository("Parent repo");
 		repositoryService.addParentChild(childRepo.id(), parentRepo.id());
 
-		UUID childImageId = inRepositoryService.addEmptySyntheticImage(childRepo.id());
-		UUID parentImageId = inRepositoryService.addEmptySyntheticImage(parentRepo.id());
+		UUID childImageId = inRepositoryService.images().addEmptySyntheticImage(childRepo.id());
+		UUID parentImageId = inRepositoryService.images().addEmptySyntheticImage(parentRepo.id());
 
-		inRepositoryService.setPersistentId(childImageId, "child persistent id");
-		inRepositoryService.setPersistentId(parentImageId, "parent persistent id");
-		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
+		inRepositoryService.images().setPersistentId(childImageId, "child persistent id");
+		inRepositoryService.images().setPersistentId(parentImageId, "parent persistent id");
+		inRepositoryService.images().setParentPersistentId(childImageId, "parent persistent id");
 
 		tagRepository.addTag(parentImageId, new Tag("Some category", "Some tag"));
 
@@ -205,14 +205,14 @@ public class DeltaServiceTest extends TestContainersTest {
 		repositoryService.addParentChild(childRepo.id(), parentRepo1.id());
 		repositoryService.addParentChild(childRepo.id(), parentRepo2.id());
 
-		UUID childImageId = inRepositoryService.addEmptySyntheticImage(childRepo.id());
-		UUID parentImageId1 = inRepositoryService.addEmptySyntheticImage(parentRepo1.id());
-		UUID parentImageId2 = inRepositoryService.addEmptySyntheticImage(parentRepo2.id());
+		UUID childImageId = inRepositoryService.images().addEmptySyntheticImage(childRepo.id());
+		UUID parentImageId1 = inRepositoryService.images().addEmptySyntheticImage(parentRepo1.id());
+		UUID parentImageId2 = inRepositoryService.images().addEmptySyntheticImage(parentRepo2.id());
 
-		inRepositoryService.setPersistentId(childImageId, "child persistent id");
-		inRepositoryService.setPersistentId(parentImageId1, "parent persistent id");
-		inRepositoryService.setPersistentId(parentImageId2, "parent persistent id");
-		inRepositoryService.setParentPersistentId(childImageId, "parent persistent id");
+		inRepositoryService.images().setPersistentId(childImageId, "child persistent id");
+		inRepositoryService.images().setPersistentId(parentImageId1, "parent persistent id");
+		inRepositoryService.images().setPersistentId(parentImageId2, "parent persistent id");
+		inRepositoryService.images().setParentPersistentId(childImageId, "parent persistent id");
 
 		tagRepository.addTag(childImageId, new Tag("Some category", "Some tag 1"));
 		tagRepository.addTag(childImageId, new Tag("Some category", "Some tag 2"));
@@ -231,7 +231,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldManuallyAddPositiveDelta() {
 		// given
 		Repository repo = repositoryService.addRepository("Repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.ADD);
@@ -248,7 +248,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldManuallyAddNegativeDelta() {
 		// given
 		Repository repo = repositoryService.addRepository("Repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.REMOVE);
@@ -265,7 +265,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldManuallyAddManyDeltas() {
 		// given
 		Repository repo = repositoryService.addRepository("Repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.ADD);
@@ -286,7 +286,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldAddingNegativeDeltaRemovePositiveDelta() {
 		// given
 		Repository repo = repositoryService.addRepository("repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.ADD);
@@ -304,7 +304,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldAddingPositiveDeltaRemoveNegativeDelta() {
 		// given
 		Repository repo = repositoryService.addRepository("repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.addTagDelta(imageId, "Some tag", "Some category", TagDeltaType.REMOVE);
@@ -322,8 +322,8 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldAddingAPositiveDeltaNotAccidentallyRemoveADeltaFromAnotherImage() {
 		// given
 		Repository repo = repositoryService.addRepository("Repo");
-		UUID imageId1 = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID imageId2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId1 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID imageId2 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.addTagDelta(imageId1, "Some tag", "Some category", TagDeltaType.ADD);
@@ -347,7 +347,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldSetTagDeltaToEnabled() {
 		// given
 		Repository repo = repositoryService.addRepository("Repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.enableTagDelta(imageId, true);
@@ -360,7 +360,7 @@ public class DeltaServiceTest extends TestContainersTest {
 	public void shouldSetTagDeltaToDisabled() {
 		// given
 		Repository repo = repositoryService.addRepository("Repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		deltaService.enableTagDelta(imageId, false);

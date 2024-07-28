@@ -118,7 +118,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldReportOneElementWhenAddingOne() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		int count = imageRepository.images().count();
@@ -131,7 +131,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldReportOneElementWhenAddingOneAndFiltering() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		int count = imageRepository.images().process().filterByImageId(imageId).count();
@@ -144,7 +144,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldReportOneElementWhenAddingOneAndFilteringByRepository() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		int count = imageRepository.images().process().filterByRepository(repo.id()).count();
@@ -158,7 +158,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		for (int i = 0; i < 100; i++) {
-			inRepositoryService.addEmptySyntheticImage(repo.id());
+			inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		}
 
 		// when
@@ -174,7 +174,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		Repository repo = repositoryService.addRepository("Test repo");
 		Set<UUID> idsCreated = new HashSet<>();
 		for (int i = 0; i < 100; i++) {
-			idsCreated.add(inRepositoryService.addEmptySyntheticImage(repo.id()));
+			idsCreated.add(inRepositoryService.images().addEmptySyntheticImage(repo.id()));
 		}
 
 		// when
@@ -196,7 +196,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		Repository repo = repositoryService.addRepository("Test repo");
 		Set<UUID> idsCreated = new HashSet<>();
 		for (int i = 0; i < 100; i++) {
-			idsCreated.add(inRepositoryService.addEmptySyntheticImage(repo.id()));
+			idsCreated.add(inRepositoryService.images().addEmptySyntheticImage(repo.id()));
 		}
 
 		// when
@@ -210,9 +210,9 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldReportZeroElementsWhenFiltersAreExclusive() {
 		// given
 		Repository firstRepo = repositoryService.addRepository("Test repo");
-		inRepositoryService.addEmptySyntheticImage(firstRepo.id());
+		inRepositoryService.images().addEmptySyntheticImage(firstRepo.id());
 		Repository secondRepo = repositoryService.addRepository("Test repo 2");
-		inRepositoryService.addEmptySyntheticImage(secondRepo.id());
+		inRepositoryService.images().addEmptySyntheticImage(secondRepo.id());
 
 		// when
 		int count = imageRepository.images().process().filterByRepository(firstRepo.id()).process().filterByRepository(secondRepo.id()).count();
@@ -227,10 +227,10 @@ public class ImageRepositoryTest extends TestContainersTest {
 		Repository firstRepo = repositoryService.addRepository("Test repo");
 		Set<UUID> imagesInFirstRepo = new HashSet<>();
 		for (int i = 0; i < 100; i++) {
-			imagesInFirstRepo.add(inRepositoryService.addEmptySyntheticImage(firstRepo.id()));
+			imagesInFirstRepo.add(inRepositoryService.images().addEmptySyntheticImage(firstRepo.id()));
 		}
 		Repository secondRepo = repositoryService.addRepository("Test repo 2");
-		inRepositoryService.addEmptySyntheticImage(secondRepo.id());
+		inRepositoryService.images().addEmptySyntheticImage(secondRepo.id());
 
 		// when
 		Set<UUID> images = imageRepository.images().process().filterByRepository(firstRepo.id()).getAll().stream().map(ImageResponse::id).collect(Collectors.toSet());
@@ -244,7 +244,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		for (int i = 0; i < 100; i++) {
-			inRepositoryService.addEmptySyntheticImage(repo.id());
+			inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		}
 
 		// when
@@ -260,7 +260,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		Repository repo = repositoryService.addRepository("Test repo");
 		Set<UUID> imagesInRepo = new HashSet<>();
 		for (int i = 0; i < 100; i++) {
-			imagesInRepo.add(inRepositoryService.addEmptySyntheticImage(repo.id()));
+			imagesInRepo.add(inRepositoryService.images().addEmptySyntheticImage(repo.id()));
 		}
 
 		// when
@@ -280,7 +280,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		for (int i = 0; i < 15; i++) {
-			inRepositoryService.addEmptySyntheticImage(repo.id());
+			inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		}
 
 		// when
@@ -295,7 +295,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
 		for (int i = 0; i < 100; i++) {
-			inRepositoryService.addEmptySyntheticImage(repo.id());
+			inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		}
 
 		// when
@@ -309,10 +309,10 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldRemoveSomeImages() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		Set<UUID> extraImagesInRepo = new HashSet<>();
 		for (int i = 0; i < 100; i++) {
-			extraImagesInRepo.add(inRepositoryService.addEmptySyntheticImage(repo.id()));
+			extraImagesInRepo.add(inRepositoryService.images().addEmptySyntheticImage(repo.id()));
 		}
 
 		// when
@@ -331,7 +331,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldGetAnyImageOptional_isAvailable() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		var optional = imageRepository.images().getAnyOptional();
@@ -345,8 +345,8 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldGetAnyImageOptional_isAvailable_multipleImages() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID image2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID image2 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		var optional = imageRepository.images().getAnyOptional();
@@ -364,7 +364,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldNotGetAnyImageOptional_becauseOfFiltering() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		var optional = imageRepository.images().process().filterByImageId(UUID.randomUUID()).getAnyOptional();
@@ -377,7 +377,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldGetAnyImage() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		var any = imageRepository.images().getAny();
@@ -390,8 +390,8 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldGetAnyImage_multipleImages() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
-		UUID image2 = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		UUID image2 = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		var any = imageRepository.images().getAny();
@@ -417,7 +417,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldGetOnlyImage() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		var only = imageRepository.images().getOne();
@@ -430,7 +430,7 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldGetOnlyImageOptional() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID image = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID image = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when
 		var optional = imageRepository.images().getOneOptional();
@@ -453,8 +453,8 @@ public class ImageRepositoryTest extends TestContainersTest {
 	public void shouldThrowWhenThereAreMultipleImagesAndRequiringOnly() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		inRepositoryService.addEmptySyntheticImage(repo.id());
-		inRepositoryService.addEmptySyntheticImage(repo.id());
+		inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		inRepositoryService.images().addEmptySyntheticImage(repo.id());
 
 		// when / then
 		assertThatThrownBy(() -> imageRepository.images().getOne())
@@ -469,12 +469,12 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/some_other_directory/");
 
 		// when / then
-		ImageResponse fifthImage = inRepositoryService.addImage(repo.id(), "C:/some_other_directory/image2.jpg").getSuccess();
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/some_other_directory/image1.jpg").getSuccess();
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/some_basic_directory/image3.jpg").getSuccess();
-		ImageResponse sixthImage = inRepositoryService.addImage(repo.id(), "C:/some_other_directory/image3.jpg").getSuccess();
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/some_basic_directory/image1.jpg").getSuccess();
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/some_basic_directory/image2.jpg").getSuccess();
+		ImageResponse fifthImage = inRepositoryService.images().addImage(repo.id(), "C:/some_other_directory/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/some_other_directory/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/some_basic_directory/image3.jpg").getSuccess();
+		ImageResponse sixthImage = inRepositoryService.images().addImage(repo.id(), "C:/some_other_directory/image3.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/some_basic_directory/image1.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/some_basic_directory/image2.jpg").getSuccess();
 
 		assertThat(imageRepository.images().indexOf(firstImage)).isEqualTo(0);
 		assertThat(imageRepository.images().indexOf(secondImage)).isEqualTo(1);
@@ -491,10 +491,10 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 
 		// when
 		var images = imageRepository.images().process().filterUsingTfLang("path = \"C:/dir_2/image1.jpg\"").getAll();
@@ -510,10 +510,10 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 
 		// when
 		var images = imageRepository.images().process().filterUsingTfLang("path like \"%dir_2%\"").getAll();
@@ -529,16 +529,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 
@@ -556,16 +556,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 
@@ -583,16 +583,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 
@@ -610,16 +610,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category3", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category3", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category4", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category4", "tag2"));
 
@@ -637,16 +637,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 
@@ -673,16 +673,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 
@@ -711,16 +711,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 
@@ -754,16 +754,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 
@@ -797,16 +797,16 @@ public class ImageRepositoryTest extends TestContainersTest {
 		imageLocatorService.createRoot("C:/dir_1/");
 		imageLocatorService.createRoot("C:/dir_2/");
 
-		ImageResponse firstImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
 		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
-		ImageResponse secondImage = inRepositoryService.addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
 		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
-		ImageResponse thirdImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag3"));
 		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
-		ImageResponse fourthImage = inRepositoryService.addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
 		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
 

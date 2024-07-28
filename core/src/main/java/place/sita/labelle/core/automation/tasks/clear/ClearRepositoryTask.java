@@ -2,6 +2,7 @@ package place.sita.labelle.core.automation.tasks.clear;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
@@ -26,10 +27,10 @@ public class ClearRepositoryTask implements TaskType<ClearRepositoryTaskInput, R
 	@Override
 	@Transactional
 	public TaskResult<UUID> runTask(ClearRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext) {
-		try (var imagesIterator = taskContext
+		InRepositoryService inRepositoryService = taskContext
 			.getApi()
-			.getInRepositoryService()
-			.imagesFiltering()
+			.getInRepositoryService();
+		try (var imagesIterator = (inRepositoryService.images().images())
 			.process()
 			.filterByRepository(parameter.repositoryId())
 			.getIterator()) {

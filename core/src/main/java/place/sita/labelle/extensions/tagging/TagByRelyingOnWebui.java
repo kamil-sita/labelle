@@ -1,6 +1,7 @@
 package place.sita.labelle.extensions.tagging;
 
 import org.springframework.stereotype.Component;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.labelle.extensions.tagging.TagByRelyingOnWebuiSingleImage.WebuiSingleImageArgs;
 import place.sita.magicscheduler.TaskContext;
@@ -35,7 +36,8 @@ public class TagByRelyingOnWebui implements TaskType<TagByRelyingOnWebui.WebuiAr
 	@Override
 	public TaskResult<Results> runTask(WebuiArgs parameter, TaskContext<RepositoryApi> taskContext) {
 		List<UUID> scheduled = new ArrayList<>();
-		taskContext.getApi().getInRepositoryService().imagesFiltering().process().filterByRepository(parameter.repositoryId).forEach(
+		InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
+		(inRepositoryService.images().images()).process().filterByRepository(parameter.repositoryId).forEach(
 			image -> {
 				WebuiSingleImageArgs singleImageArgs = new WebuiSingleImageArgs(parameter.tagger, image.id());
 				UUID id = taskContext.submitAnotherTask(tagByRelyingOnWebuiSingleImage, singleImageArgs, RunPolicy.ifJobSucceeded());

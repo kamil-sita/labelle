@@ -51,8 +51,8 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 	public void shouldCreateChildRepository() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
-		Ids parentIds = inRepositoryService.getIds(imageId);
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
+		Ids parentIds = inRepositoryService.images().getIds(imageId);
 		inRepositoryService.addTag(imageId, new Tag("Some category", "Some tag"));
 
 		// when
@@ -71,13 +71,13 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(2);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
-		var images = inRepositoryService.imagesFiltering().process().filterByRepository(results.result()).getAll();
+		var images = (inRepositoryService.images().images()).process().filterByRepository(results.result()).getAll();
 		assertThat(images).hasSize(1);
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(1);
 		assertThat(tags.get(0).tag()).isEqualTo("Some tag");
 		assertThat(tags.get(0).category()).isEqualTo("Some category");
-		Ids imageIds = inRepositoryService.getIds(images.get(0).id());
+		Ids imageIds = inRepositoryService.images().getIds(images.get(0).id());
 		assertThat(imageIds.persistentId()).isEqualTo(parentIds.persistentId());
 		assertThat(imageIds.parentPersistentId()).isEqualTo(parentIds.persistentId());
 	}
@@ -86,14 +86,14 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 	public void shouldCreateChildRepositoryWithTagsFromBothRepos() {
 		// given
 		Repository firstParentRepo = repositoryService.addRepository("First parent repo");
-		UUID firstParentImageId = inRepositoryService.addEmptySyntheticImage(firstParentRepo.id());
+		UUID firstParentImageId = inRepositoryService.images().addEmptySyntheticImage(firstParentRepo.id());
 		inRepositoryService.addTag(firstParentImageId, new Tag("First category", "First tag"));
-		inRepositoryService.setPersistentId(firstParentImageId, "persistent ID");
+		inRepositoryService.images().setPersistentId(firstParentImageId, "persistent ID");
 
 		Repository secondParentRepo = repositoryService.addRepository("Second parent repo");
-		UUID secondParentImageId = inRepositoryService.addEmptySyntheticImage(secondParentRepo.id());
+		UUID secondParentImageId = inRepositoryService.images().addEmptySyntheticImage(secondParentRepo.id());
 		inRepositoryService.addTag(secondParentImageId, new Tag("Second category", "Second tag"));
-		inRepositoryService.setPersistentId(secondParentImageId, "persistent ID");
+		inRepositoryService.images().setPersistentId(secondParentImageId, "persistent ID");
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
@@ -111,13 +111,13 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(3);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
-		var images = inRepositoryService.imagesFiltering().process().filterByRepository(results.result()).getAll();
+		var images = (inRepositoryService.images().images()).process().filterByRepository(results.result()).getAll();
 		assertThat(images).hasSize(1);
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(2);
 		assertThat(tags).contains(new Tag("First category", "First tag"));
 		assertThat(tags).contains(new Tag("Second category", "Second tag"));
-		Ids imageIds = inRepositoryService.getIds(images.get(0).id());
+		Ids imageIds = inRepositoryService.images().getIds(images.get(0).id());
 		assertThat(imageIds.persistentId()).isEqualTo("persistent ID");
 		assertThat(imageIds.parentPersistentId()).isEqualTo("persistent ID");
 	}
@@ -126,9 +126,9 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 	public void shouldCreateChildRepositoryWithoutImagesIfImagesAreNotVisibleOutsideTheRepo() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
-		UUID imageId = inRepositoryService.addEmptySyntheticImage(repo.id());
+		UUID imageId = inRepositoryService.images().addEmptySyntheticImage(repo.id());
 		inRepositoryService.addTag(imageId, new Tag("Some category", "Some tag"));
-		inRepositoryService.setVisibility(imageId, false);
+		inRepositoryService.images().setVisibility(imageId, false);
 
 		// when
 		var results = taskExecutionEnvironment.executeTask(
@@ -146,7 +146,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(2);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
-		var images = inRepositoryService.imagesFiltering().getAll();
+		var images = (inRepositoryService.images().images()).getAll();
 		assertThat(images).isEmpty();
 	}
 
