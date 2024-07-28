@@ -1,4 +1,4 @@
-package place.sita.labelle.core.repository.inrepository;
+package place.sita.labelle.core.repository.inrepository.image;
 
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.AfterEach;
@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.cache.CacheRegistry;
 import place.sita.labelle.core.images.imagelocator.ImageLocatorService;
-import place.sita.labelle.core.repository.inrepository.delta.DeltaService;
-import place.sita.labelle.core.repository.inrepository.image.ImageRepository;
-import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
@@ -30,7 +28,6 @@ public class ImageRepositoryTest extends TestContainersTest {
 	@Autowired
 	private ImageRepository imageRepository;
 
-
 	@Autowired
 	private DSLContext context;
 
@@ -42,9 +39,6 @@ public class ImageRepositoryTest extends TestContainersTest {
 
 	@Autowired
 	private ImageLocatorService imageLocatorService;
-
-	@Autowired
-	private DeltaService deltaService;
 
 	@Autowired
 	private CacheRegistry cacheRegistry;

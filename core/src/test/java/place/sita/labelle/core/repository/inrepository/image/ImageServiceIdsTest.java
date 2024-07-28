@@ -1,4 +1,4 @@
-package place.sita.labelle.core.repository.inrepository;
+package place.sita.labelle.core.repository.inrepository.image;
 
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.AfterEach;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.cache.CacheRegistry;
-import place.sita.labelle.core.repository.inrepository.image.ImageService;
+import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
@@ -14,7 +14,7 @@ import place.sita.labelle.jooq.Tables;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InRepositoryTest extends TestContainersTest {
+public class ImageServiceIdsTest extends TestContainersTest {
 
 	@Autowired
 	private DSLContext context;
