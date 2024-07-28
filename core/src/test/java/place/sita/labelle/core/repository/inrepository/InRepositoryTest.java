@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import place.sita.labelle.core.TestContainersTest;
 import place.sita.labelle.core.cache.CacheRegistry;
+import place.sita.labelle.core.repository.inrepository.image.ImageService;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
@@ -78,7 +79,7 @@ public class InRepositoryTest extends TestContainersTest {
 		);
 
 		// then
-		assertThat(result).isInstanceOf(InRepositoryService.UpdateIdsResult.Success.class);
+		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.Success.class);
 		var ids = inRepositoryService.getIds(imageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("newParentPersistentId");
@@ -107,7 +108,7 @@ public class InRepositoryTest extends TestContainersTest {
 		);
 
 		// then
-		assertThat(result).isInstanceOf(InRepositoryService.UpdateIdsResult.IdReuse.class);
+		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.IdReuse.class);
 		var ids = inRepositoryService.getIds(firstImageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("newParentPersistentId");
@@ -142,7 +143,7 @@ public class InRepositoryTest extends TestContainersTest {
 		);
 
 		// then
-		assertThat(result).isInstanceOf(InRepositoryService.UpdateIdsResult.Success.class);
+		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.Success.class);
 		var ids = inRepositoryService.getIds(firstImageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("newParentPersistentId");
@@ -170,7 +171,7 @@ public class InRepositoryTest extends TestContainersTest {
 		);
 
 		// then
-		assertThat(result).isInstanceOf(InRepositoryService.UpdateIdsResult.Success.class);
+		assertThat(result).isInstanceOf(ImageService.UpdateIdsResult.Success.class);
 		var ids = inRepositoryService.getIds(imageId);
 		assertThat(ids.persistentId()).isEqualTo("newPersistentId");
 		assertThat(ids.parentPersistentId()).isEqualTo("something");

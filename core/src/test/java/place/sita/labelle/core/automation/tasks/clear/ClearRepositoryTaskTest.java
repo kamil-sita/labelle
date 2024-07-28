@@ -62,7 +62,7 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		int imageCount = inRepositoryService.images().count();
+		int imageCount = inRepositoryService.imagesFiltering().count();
 		assertThat(imageCount).isZero();
 	}
 
@@ -88,10 +88,10 @@ public class ClearRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		int imageCount = inRepositoryService.images().process().filterByRepository(repo.id()).count();
+		int imageCount = inRepositoryService.imagesFiltering().process().filterByRepository(repo.id()).count();
 		assertThat(imageCount).isZero();
 
-		int imageCountInUnrelatedRepo = inRepositoryService.images().process().filterByRepository(unrelatedRepo.id()).count();
+		int imageCountInUnrelatedRepo = inRepositoryService.imagesFiltering().process().filterByRepository(unrelatedRepo.id()).count();
 		assertThat(imageCountInUnrelatedRepo).isOne();
 	}
 

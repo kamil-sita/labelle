@@ -47,7 +47,7 @@ public class CloneRepositoryTask implements TaskType<CloneRepositoryTaskInput, R
     private static void copyImages(CloneRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext, UUID newRepoId) {
         InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
 
-        try (CloseableIterator<ImageResponse> imageIterator = inRepositoryService.images().process().filterByRepository(parameter.repositoryToClone()).getIterator()) {
+        try (CloseableIterator<ImageResponse> imageIterator = inRepositoryService.imagesFiltering().process().filterByRepository(parameter.repositoryToClone()).getIterator()) {
             imageIterator.forEachRemaining(image -> {
                 UUID imageId = copyImage(taskContext, newRepoId, image);
 

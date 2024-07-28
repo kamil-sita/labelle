@@ -35,7 +35,7 @@ public class ExportForTrainingTask implements TaskType<ExportForTrainingTask.Con
 	public TaskResult<Void> runTask(Config parameter, TaskContext<RepositoryApi> taskContext) {
 
 		taskContext.getApi().getInRepositoryService()
-			.images()
+			.imagesFiltering()
 			.process()
 			.filterByRepository(parameter.repositoryId)
 			.forEach(imageResponse -> {

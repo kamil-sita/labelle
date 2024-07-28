@@ -140,12 +140,12 @@ public class RepositoryTab implements MainMenuTab {
         labPaginator = LabPaginatorFactory.factory(
             paginator,
             pageSize,
-            filteringParameters ->  inRepositoryService.images().process()
+            filteringParameters ->  inRepositoryService.imagesFiltering().process()
                 .filterByRepository(getRepositoryId(filteringParameters))
                 .process()
                 .filterUsingTfLang(validatedQuery)
                 .count(),
-            (paging, filtering) ->  inRepositoryService.images().process()
+            (paging, filtering) ->  inRepositoryService.imagesFiltering().process()
                 .filterByRepository(getRepositoryId(filtering))
                 .process()
                 .filterUsingTfLang(validatedQuery)
@@ -266,14 +266,14 @@ public class RepositoryTab implements MainMenuTab {
 
     @FxMessageListener
     public void onRequestSelect(SelectImageEvent selectImageEvent) {
-        ImageResponse imageResponse = inRepositoryService.images().process().filterByImageId(selectImageEvent.imageId()).getOne();
-        labPaginator.insertSelectInto(inRepositoryService.images().process().filterByRepository(selectedRepository.id()).indexOf(imageResponse), imageResponse);
+        ImageResponse imageResponse = inRepositoryService.imagesFiltering().process().filterByImageId(selectImageEvent.imageId()).getOne();
+        labPaginator.insertSelectInto(inRepositoryService.imagesFiltering().process().filterByRepository(selectedRepository.id()).indexOf(imageResponse), imageResponse);
     }
 
     private void onUserAdded(List<ImageResponse> image) {
         if (!image.isEmpty()) {
             ImageResponse first = image.getFirst();
-            labPaginator.insertSelectInto(inRepositoryService.images().process().filterByRepository(selectedRepository.id()).indexOf(first), first);
+            labPaginator.insertSelectInto(inRepositoryService.imagesFiltering().process().filterByRepository(selectedRepository.id()).indexOf(first), first);
         }
     }
 

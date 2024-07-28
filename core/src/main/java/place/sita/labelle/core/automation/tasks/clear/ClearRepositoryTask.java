@@ -29,7 +29,7 @@ public class ClearRepositoryTask implements TaskType<ClearRepositoryTaskInput, R
 		try (var imagesIterator = taskContext
 			.getApi()
 			.getInRepositoryService()
-			.images()
+			.imagesFiltering()
 			.process()
 			.filterByRepository(parameter.repositoryId())
 			.getIterator()) {

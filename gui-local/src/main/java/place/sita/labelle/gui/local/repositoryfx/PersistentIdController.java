@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.repository.inrepository.Ids;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.image.ImageService;
 import place.sita.labelle.gui.local.fx.Alerts;
 import place.sita.modulefx.annotations.FxDictatesHeight;
 import place.sita.modulefx.annotations.FxMessageListener;
@@ -56,15 +57,15 @@ public class PersistentIdController {
 
 	@FXML
     public void onSavePress(ActionEvent event) {
-        InRepositoryService.UpdateIdsResult result = inRepositoryService.updateIds(
+        ImageService.UpdateIdsResult result = inRepositoryService.updateIds(
             selectedImageId,
             persistentIdTextField.getText(),
             parentPersistentIdTextField.getText(),
             isVisibleForChildrenCheckBox.isSelected()
         );
         switch (result) {
-	        case InRepositoryService.UpdateIdsResult.Success success -> { } // what we wanted, so let's ignore it
-            case InRepositoryService.UpdateIdsResult.IdReuse idReuse -> {
+	        case ImageService.UpdateIdsResult.Success success -> { } // what we wanted, so let's ignore it
+            case ImageService.UpdateIdsResult.IdReuse idReuse -> {
                 Alerts.error("Persistent ID is already in use");
             }
         }

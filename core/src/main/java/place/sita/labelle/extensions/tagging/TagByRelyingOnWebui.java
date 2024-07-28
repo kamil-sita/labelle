@@ -35,7 +35,7 @@ public class TagByRelyingOnWebui implements TaskType<TagByRelyingOnWebui.WebuiAr
 	@Override
 	public TaskResult<Results> runTask(WebuiArgs parameter, TaskContext<RepositoryApi> taskContext) {
 		List<UUID> scheduled = new ArrayList<>();
-		taskContext.getApi().getInRepositoryService().images().process().filterByRepository(parameter.repositoryId).forEach(
+		taskContext.getApi().getInRepositoryService().imagesFiltering().process().filterByRepository(parameter.repositoryId).forEach(
 			image -> {
 				WebuiSingleImageArgs singleImageArgs = new WebuiSingleImageArgs(parameter.tagger, image.id());
 				UUID id = taskContext.submitAnotherTask(tagByRelyingOnWebuiSingleImage, singleImageArgs, RunPolicy.ifJobSucceeded());
