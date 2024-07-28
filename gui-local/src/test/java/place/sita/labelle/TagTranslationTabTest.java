@@ -46,6 +46,12 @@ public class TagTranslationTabTest extends GuiTest {
 			.expect(toBeTrueAfterAction(() -> unstableSceneReporter.isStable()))
 			.test();
 
+		try { // todo fix test randomly failing
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
 		// perform tag translation
 		withAction(() -> {
 			robot.clickOn(TagTranslationActions.tagLevelRulesTextArea());
