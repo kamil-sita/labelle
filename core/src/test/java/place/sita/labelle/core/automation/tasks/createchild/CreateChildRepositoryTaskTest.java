@@ -71,7 +71,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(2);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
-		var images = (inRepositoryService.images().images()).process().filterByRepository(results.result()).getAll();
+		var images = inRepositoryService.images().images().process().filterByRepository(results.result()).getAll();
 		assertThat(images).hasSize(1);
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(1);
@@ -111,7 +111,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(3);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
-		var images = (inRepositoryService.images().images()).process().filterByRepository(results.result()).getAll();
+		var images = inRepositoryService.images().images().process().filterByRepository(results.result()).getAll();
 		assertThat(images).hasSize(1);
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(2);
@@ -146,7 +146,7 @@ public class CreateChildRepositoryTaskTest extends TestContainersTest {
 		List<Repository> repos = repositoryService.getRepositories();
 		assertThat(repos).hasSize(2);
 		assertThat(repos.stream().map(Repository::name).toList()).contains("New repo name");
-		var images = (inRepositoryService.images().images()).getAll();
+		var images = inRepositoryService.images().images().process().filterByRepository(results.result()).getAll();
 		assertThat(images).isEmpty();
 	}
 
