@@ -35,7 +35,9 @@ public class ExportForTrainingTask implements TaskType<ExportForTrainingTask.Con
 	public TaskResult<Void> runTask(Config parameter, TaskContext<RepositoryApi> taskContext) {
 
 		taskContext.getApi().getInRepositoryService()
-			.images(parameter.repositoryId, 0, Integer.MAX_VALUE, "")
+			.images()
+			.process()
+			.filterByRepository(parameter.repositoryId)
 			.forEach(imageResponse -> {
 				var ptr = imageResponse.toPtr();
 				if (ptr instanceof ImagePtr.ImageOnPath imageOnPath) { // todo no hacks

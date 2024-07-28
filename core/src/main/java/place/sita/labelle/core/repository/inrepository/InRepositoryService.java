@@ -56,10 +56,6 @@ public class InRepositoryService {
         return deltaRepository.tagDeltas();
     }
 
-    public List<ImageResponse> images(UUID repositoryUuid, int offset, int limit, String query) {
-        return imageRepository.images(repositoryUuid, offset, limit, query);
-    }
-
     @Transactional
     public List<Root> roots() {
         return rootRepository.getRoots();

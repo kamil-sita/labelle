@@ -65,7 +65,7 @@ public class CloneRepositoryTaskTest extends TestContainersTest {
 		);
 
 		// then
-		var images = inRepositoryService.images(results.result(), 0, Integer.MAX_VALUE, "");
+		var images = inRepositoryService.images().process().filterByRepository(results.result()).getAll();
 		assertThat(images).hasSize(1);
 		var tags = inRepositoryService.getTags(images.get(0).id());
 		assertThat(tags).hasSize(1);
