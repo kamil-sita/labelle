@@ -305,7 +305,8 @@ public class ImageService {
 	@Transactional
 	public ImageResponse addEmptySyntheticImageWrap(UUID repoId) {
 		UUID id = addEmptySyntheticImage(repoId);
-		return imageRepository.loadImage(id).get();
+		return imageRepository.loadImage(id)
+			.orElse(null);
 	}
 
 	private String subtr(String fileDir, String directory) {
