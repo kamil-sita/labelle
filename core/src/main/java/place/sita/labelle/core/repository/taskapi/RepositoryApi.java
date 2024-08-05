@@ -1,8 +1,8 @@
 package place.sita.labelle.core.repository.taskapi;
 
 import org.springframework.stereotype.Component;
-import place.sita.labelle.core.repository.acrossrepository.AcrossRepositoryService;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.image.replication.ImageReplication;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
 
 @Component
@@ -10,15 +10,15 @@ public class RepositoryApi {
 
 	private final RepositoryService repositoryService;
 	private final InRepositoryService inRepositoryService;
-	private final AcrossRepositoryService acrossRepositoryService;
+	private final ImageReplication imageReplication;
 
 
 	public RepositoryApi(RepositoryService repositoryService,
 	                     InRepositoryService inRepositoryService,
-	                     AcrossRepositoryService acrossRepositoryService) {
+	                     ImageReplication imageReplication) {
 		this.repositoryService = repositoryService;
 		this.inRepositoryService = inRepositoryService;
-		this.acrossRepositoryService = acrossRepositoryService;
+		this.imageReplication = imageReplication;
 	}
 
 	public RepositoryService getRepositoryService() {
@@ -29,7 +29,8 @@ public class RepositoryApi {
 		return inRepositoryService;
 	}
 
-	public AcrossRepositoryService getAcrossRepositoryService() {
-		return acrossRepositoryService;
+	public ImageReplication getImageReplication() {
+		return imageReplication;
 	}
+
 }

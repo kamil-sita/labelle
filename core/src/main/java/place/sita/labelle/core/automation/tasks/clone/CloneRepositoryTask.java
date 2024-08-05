@@ -3,15 +3,12 @@ package place.sita.labelle.core.automation.tasks.clone;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.core.automation.tasks.AutomationTasksCommon;
-import place.sita.labelle.core.repository.inrepository.InRepositoryService;
-import place.sita.labelle.core.repository.inrepository.image.ImageResponse;
-import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
+import place.sita.labelle.core.repository.inrepository.image.replication.ReplicationParam;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
-import place.sita.labelle.datasource.util.CloseableIterator;
 import place.sita.magicscheduler.TaskContext;
 import place.sita.magicscheduler.TaskResult;
-import place.sita.magicscheduler.tasktype.TaskType;
 import place.sita.magicscheduler.scheduler.resources.resource.Resource;
+import place.sita.magicscheduler.tasktype.TaskType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,63 +34,12 @@ public class CloneRepositoryTask implements TaskType<CloneRepositoryTaskInput, R
 
         AutomationTasksCommon.createRepo(parameter.newRepositoryName(), taskContext, newRepoId);
 
-        addParents(parameter, taskContext, newRepoId);
-
-        copyImages(parameter, taskContext, newRepoId);
+        taskContext.getApi().getImageReplication().execute(new ReplicationParam.HardCopyToNewRepo(
+            parameter.repositoryToClone(),
+            newRepoId
+        ));
 
         return TaskResult.success(newRepoId);
-    }
-
-    private static void copyImages(CloneRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext, UUID newRepoId) {
-        InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
-
-        try (CloseableIterator<ImageResponse> imageIterator = (inRepositoryService.images().images()).process().filterByRepository(parameter.repositoryToClone()).getIterator()) {
-            imageIterator.forEachRemaining(image -> {
-                UUID imageId = copyImage(taskContext, newRepoId, image);
-
-                addTags(taskContext, image, imageId);
-            });
-        }
-    }
-
-    private static void addTags(TaskContext<RepositoryApi> taskContext, ImageResponse image, UUID imageId) {
-        PersistableImagesTags persistableImagesTags = new PersistableImagesTags();
-
-        taskContext.getApi()
-                .getInRepositoryService()
-                .getTags(image.id())
-                .forEach(tagResponse -> {
-                    persistableImagesTags.addTag(imageId, tagResponse.category(), tagResponse.tag());
-                });
-
-        taskContext.getApi()
-            .getInRepositoryService()
-            .addTags(persistableImagesTags);
-    }
-
-    private static UUID copyImage(TaskContext<RepositoryApi> taskContext, UUID newRepoId, ImageResponse image) {
-        InRepositoryService inRepositoryService = taskContext.getApi()
-                .getInRepositoryService();
-        UUID imageId = inRepositoryService.images().copyImage(newRepoId, image.id());
-        return imageId;
-    }
-
-    private static void addParents(CloneRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext, UUID newRepoId) {
-        taskContext
-                .getApi()
-                .getRepositoryService()
-                .getParents(parameter.repositoryToClone())
-                .forEach(parent -> {
-                    UUID remappedParent = parameter.parentsRemapping().getOrDefault(parent.id(), parent.id());
-                    taskContext.getApi().getRepositoryService().addParentChild(newRepoId, remappedParent);
-                });
-    }
-
-    private static void createRepo(CloneRepositoryTaskInput parameter, TaskContext<RepositoryApi> taskContext, UUID newRepoId) {
-        taskContext
-                .getApi()
-                .getRepositoryService()
-                .addRepository(newRepoId, parameter.newRepositoryName());
     }
 
     @Override

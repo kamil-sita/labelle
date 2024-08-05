@@ -9,7 +9,8 @@ import place.sita.labelle.core.persistence.JqRepo;
 import place.sita.labelle.core.repository.RootRepository;
 import place.sita.labelle.core.repository.inrepository.Ids;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
-import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
+import place.sita.labelle.core.repository.inrepository.image.replication.ImageReplication;
+import place.sita.labelle.core.repository.inrepository.image.replication.ReplicationParam;
 import place.sita.labelle.core.repository.inrepository.tags.TagRepository;
 import place.sita.labelle.core.utils.Result3;
 import place.sita.labelle.datasource.cross.PreprocessableIdDataSourceWithRemoval;
@@ -19,7 +20,6 @@ import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
-import static place.sita.labelle.jooq.Tables.TAG_DELTA;
 import static place.sita.labelle.jooq.tables.Image.IMAGE;
 
 @Service
@@ -29,15 +29,18 @@ public class ImageService {
 	private final ImageRepository imageRepository;
 	private final RootRepository rootRepository;
 	private final TagRepository tagRepository;
+	private final ImageReplication imageReplication;
 
 	public ImageService(DSLContext dslContext,
 	                    ImageRepository imageRepository,
 	                    RootRepository rootRepository,
-	                    TagRepository tagRepository) {
+	                    TagRepository tagRepository,
+	                    ImageReplication imageReplication) {
 		this.dslContext = dslContext;
 		this.imageRepository = imageRepository;
 		this.rootRepository = rootRepository;
 		this.tagRepository = tagRepository;
+		this.imageReplication = imageReplication;
 	}
 
 
@@ -79,21 +82,6 @@ public class ImageService {
 
 		ImageResponse image = new ImageResponse(imageInRepoId, r.directory(), relPath);
 		return Result3.success(image);
-	}
-
-	/**
-	 * Copies this image definition to another repository.
-	 *
-	 * Note that this should not be used for children-parent repositories, but only for clones of repositories. See {@link ImageService#referImage(UUID, UUID, String)}
-	 */
-	@Transactional
-	public UUID copyImage(UUID newRepoId, UUID originalImageId) {
-		return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.COPY, null);
-	}
-
-	@Transactional
-	public UUID referImage(UUID newRepoId, UUID originalImageId, String persistentId) {
-		return copyOrRefer(newRepoId, originalImageId, CopyOrRefer.REFER, persistentId);
 	}
 
 	@Transactional
@@ -162,111 +150,7 @@ public class ImageService {
 
 	@Transactional
 	public UUID duplicateImage(UUID selectedImageId) {
-		// todo consider rewriting this to be event-based.
-		UUID newId = UUID.randomUUID();
-		UUID newReference = UUID.randomUUID();
-
-		var originalImage = dslContext.select(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE, IMAGE.VISIBLE_TO_CHILDREN)
-			.from(IMAGE)
-			.where(IMAGE.ID.eq(selectedImageId))
-			.fetch()
-			.getFirst();
-
-
-		dslContext.insertInto(IMAGE)
-			.columns(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE, IMAGE.VISIBLE_TO_CHILDREN)
-			.values(newId, originalImage.value2(), originalImage.value3(), newReference.toString(), originalImage.value5(), originalImage.value6())
-			.execute();
-
-		PersistableImagesTags pit = new PersistableImagesTags();
-		tagRepository.getTags(selectedImageId).forEach(tag -> pit.addTag(newId, tag));
-		tagRepository.addTags(pit);
-
-		var originalDelta = dslContext.select(TAG_DELTA.IMAGE_ID, TAG_DELTA.ADDS, TAG_DELTA.CATEGORY, TAG_DELTA.TAG)
-			.from(TAG_DELTA)
-			.where(TAG_DELTA.IMAGE_ID.eq(selectedImageId))
-			.fetch();
-
-		var ongoingTagDelta =
-			dslContext.insertInto(TAG_DELTA)
-				.columns(TAG_DELTA.IMAGE_ID, TAG_DELTA.ADDS, TAG_DELTA.CATEGORY, TAG_DELTA.TAG);
-
-		for (var delta : originalDelta) {
-			ongoingTagDelta = ongoingTagDelta.values(newId, delta.value2(), delta.value3(), delta.value4());
-		}
-
-		ongoingTagDelta.execute();
-
-		// todo image delta
-
-		return newId;
-	}
-
-	private enum CopyOrRefer {
-		COPY,
-		REFER;
-	}
-
-	private UUID copyOrRefer(UUID newRepoId, UUID originalImageId, CopyOrRefer copyOrRefer, String persistentId) {
-		// this operation makes absolutely no sense if we are copying from the same repo, or if this image exists here. Let's check for that.
-		UUID underlyingImageResolvable = JqRepo.fetchOne(() ->
-			dslContext
-				.select(IMAGE.IMAGE_RESOLVABLE_ID)
-				.from(IMAGE)
-				.where(IMAGE.ID.eq(originalImageId))
-				.fetch()
-		);
-
-		boolean thisImageExistsInCurrentRepo =
-			dslContext.fetchExists(
-				dslContext
-					.select(IMAGE.ID)
-					.from(IMAGE)
-					.where(IMAGE.REPOSITORY_ID.eq(newRepoId).and(IMAGE.IMAGE_RESOLVABLE_ID.eq(underlyingImageResolvable)))
-			);
-
-		if (thisImageExistsInCurrentRepo) {
-			throw new RuntimeException("Image already exists in this repository.");
-		}
-
-		UUID newImageId = UUID.randomUUID();
-
-		String referenceId;
-		if (persistentId == null) {
-			referenceId = JqRepo.fetchOne(() ->
-				dslContext
-					.select(IMAGE.REFERENCE_ID)
-					.from(IMAGE)
-					.where(IMAGE.ID.eq(originalImageId))
-					.fetch()
-			);
-		} else {
-			referenceId = persistentId;
-		}
-
-		String parentReferenceId;
-		if (copyOrRefer == CopyOrRefer.COPY) {
-			parentReferenceId = JqRepo.fetchOne(() ->
-				dslContext
-					.select(IMAGE.PARENT_REFERENCE)
-					.from(IMAGE)
-					.where(IMAGE.ID.eq(originalImageId))
-					.fetch()
-			);
-		} else {
-			parentReferenceId = referenceId;
-		}
-
-		// todo we can probably do with less queries. And better copying, not one by one.
-
-		JqRepo.insertOne(() ->
-			dslContext.insertInto(IMAGE)
-				.columns(IMAGE.ID, IMAGE.IMAGE_RESOLVABLE_ID, IMAGE.REPOSITORY_ID, IMAGE.REFERENCE_ID, IMAGE.PARENT_REFERENCE)
-				.values(newImageId, underlyingImageResolvable, newRepoId, referenceId, parentReferenceId)
-				.execute()
-		);
-
-		return newImageId;
+		return imageReplication.execute(new ReplicationParam.Duplicate(selectedImageId)).imageId();
 	}
 
 	public ImagePtr getImagePtr(UUID imageId) {

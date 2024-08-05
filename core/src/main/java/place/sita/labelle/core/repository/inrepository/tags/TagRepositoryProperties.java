@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "place.sita.magic.scheduler")
+@ConfigurationProperties(prefix = "place.sita.imageapi.tags")
 public class TagRepositoryProperties {
 
 	private int tagBulkSize = 100;
