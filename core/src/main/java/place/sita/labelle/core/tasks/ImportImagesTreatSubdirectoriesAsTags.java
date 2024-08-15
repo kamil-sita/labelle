@@ -3,6 +3,7 @@ package place.sita.labelle.core.tasks;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.images.imagelocator.Root;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
+import place.sita.labelle.core.repository.inrepository.tags.PersistableImagesTags;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
 import place.sita.labelle.core.repository.taskapi.RepositoryApi;
 import place.sita.magicscheduler.TaskContext;
@@ -40,6 +41,8 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 		Set<UUID> images = new HashSet<>();
 		Map<UUID, Set<String>> tagsToImages = new HashMap<>();
 
+		PersistableImagesTags pit = new PersistableImagesTags();
+
 		for (File file : fileList) {
 			InRepositoryService inRepositoryService = taskContext.getApi().getInRepositoryService();
 			var result = inRepositoryService.images().addImage(parameter.repositoryId, file);
@@ -49,15 +52,18 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 				images.add(img.id());
 				tagsToImages.put(img.id(), new HashSet<>());
 				List<String> tags = getTagsInPath(file.getPath(), directory);
+
 				for (String tag : tags) {
 					tagsToImages.get(img.id()).add(tag);
-					taskContext.getApi().getInRepositoryService().addTag(img.id(), new Tag("folder", tag));
+					pit.addTag(img.id(), new Tag("folder", tag));
 				}
 			} else {
 				taskContext.log("Failed to add image: " + file.getAbsolutePath());
 			}
 
 		}
+
+		taskContext.getApi().getInRepositoryService().addTags(pit);
 
 		return TaskResult.success(new Response(parameter.repositoryId, images, tagsToImages));
 	}
@@ -67,6 +73,9 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 		if (files != null) {
 			for (File file : files) {
 				if (file.isFile()) {
+					if (file.getPath().toLowerCase().endsWith("thumbs.db")) {
+						continue;
+					}
 					fileList.add(file);
 				} else if (file.isDirectory()) {
 					findAllFilesInDir(file, fileList);
