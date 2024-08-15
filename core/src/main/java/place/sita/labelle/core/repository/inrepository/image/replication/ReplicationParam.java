@@ -17,6 +17,10 @@ public sealed interface ReplicationParam<ExpectedResultT> {
 
 	}
 
+	record FillChildRepoWithUpdates(Collection<UUID> parentRepoIds, UUID childRepoId, Collection<String> parentImagePersistentIds) implements ReplicationParam<Void> {
+
+	}
+
 	//
 
 

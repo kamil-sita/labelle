@@ -59,6 +59,7 @@ public class ImageReplication {
 			case ReplicationParam.Duplicate duplicate -> preValidateParams(duplicate);
 			case ReplicationParam.FillChildRepo fillChildRepo -> preValidateParams(fillChildRepo);
 			case ReplicationParam.HardCopyToNewRepo hardCopyToNewRepo -> preValidateParams(hardCopyToNewRepo);
+			case ReplicationParam.FillChildRepoWithUpdates fillChildRepoWithUpdates -> preValidateParams(fillChildRepoWithUpdates);
 		};
 	}
 
@@ -116,11 +117,30 @@ public class ImageReplication {
 		return null;
 	}
 
+	private Void preValidateParams(ReplicationParam.FillChildRepoWithUpdates fillChildRepoWithUpdates) {
+		int parentExistsCount = dslContext.fetchCount(dslContext.selectFrom(REPOSITORY).where(REPOSITORY.ID.in(fillChildRepoWithUpdates.parentRepoIds())));
+
+		if (parentExistsCount != fillChildRepoWithUpdates.parentRepoIds().size()) {
+			throw new ImageReplicationUserException("One or more parent repositories do not exist");
+		}
+
+		boolean childExists = dslContext.fetchExists(dslContext.selectFrom(REPOSITORY).where(REPOSITORY.ID.eq(fillChildRepoWithUpdates.childRepoId())));
+
+		if (!childExists) {
+			throw new ImageReplicationUserException("Child repository does not exist");
+		}
+
+		// todo consider validating whether images really are in parent
+
+		return null;
+	}
+
 	private <ReturnT, ReplicationParamT extends ReplicationParam<ReturnT>> Set<UUID> doCopyImages(ReplicationParamT param) {
 		return switch (param) {
 			case ReplicationParam.Duplicate duplicate -> doDuplicate(duplicate);
 			case ReplicationParam.FillChildRepo fillChildRepo -> doFillChildRepo(fillChildRepo);
 			case ReplicationParam.HardCopyToNewRepo hardCopyToNewRepo -> doHardCopyToNewRepo(hardCopyToNewRepo);
+			case ReplicationParam.FillChildRepoWithUpdates fillChildRepoWithUpdates -> doFillChildRepoWithUpdates(fillChildRepoWithUpdates);
 		};
 	}
 
@@ -218,6 +238,10 @@ public class ImageReplication {
 		}
 
 		return createdImageIds;
+	}
+
+	private Set<UUID> doFillChildRepoWithUpdates(ReplicationParam.FillChildRepoWithUpdates fillChildRepoWithUpdates) {
+		return null;
 	}
 
 	private InsertValuesStep8<ImageRecord, UUID, UUID, UUID, String, String, Boolean, Boolean, Boolean> createOngoingImageInsert() {
