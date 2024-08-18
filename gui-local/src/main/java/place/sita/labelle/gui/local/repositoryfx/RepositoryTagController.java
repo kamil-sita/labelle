@@ -8,10 +8,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import org.controlsfx.control.textfield.TextFields;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.repository.inrepository.InRepositoryService;
 import place.sita.labelle.core.repository.inrepository.tags.Tag;
+import place.sita.labelle.extensions.tag.suggestions.TagSuggestions;
 import place.sita.labelle.gui.local.fx.ButtonCell;
 import place.sita.modulefx.annotations.FxMessageListener;
 import place.sita.modulefx.annotations.FxNode;
@@ -28,10 +30,14 @@ import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROT
 @FxNode(resourceFile = "/fx/repository/repository_tags.fxml")
 public class RepositoryTagController {
 
+	private final TagSuggestions tagSuggestions;
 	private final InRepositoryService inRepositoryService;
 
-	public RepositoryTagController(InRepositoryService inRepositoryService) {
-		this.inRepositoryService = inRepositoryService;
+	public RepositoryTagController(
+			TagSuggestions tagSuggestions,
+			InRepositoryService inRepositoryService) {
+        this.tagSuggestions = tagSuggestions;
+        this.inRepositoryService = inRepositoryService;
 	}
 
 	@FXML
@@ -69,6 +75,36 @@ public class RepositoryTagController {
 				});
 			});
 		});
+	}
+
+	@PostFxConstruct
+	public void addAutocompletion() {
+		TextFields.bindAutoCompletion(
+			tagTagTextField,
+			req -> {
+				if (selectedImageId != null) {
+					return tagSuggestions.getTagSuggestionsForImage(
+						tagCategoryTextField.getText(), req.getUserText(),
+						selectedImageId
+					);
+				} else {
+					return List.of();
+				}
+			}
+		);
+		TextFields.bindAutoCompletion(
+			tagCategoryTextField,
+			req -> {
+				if (selectedImageId != null) {
+					return tagSuggestions.getCategorySuggestionsForImage(
+						req.getUserText(), tagTagTextField.getText(),
+						selectedImageId
+					);
+				} else {
+					return List.of();
+				}
+			}
+		);
 	}
 
 	private final Threading.KeyStone loadTagsKeyStone = Threading.keyStone();

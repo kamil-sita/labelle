@@ -20,3 +20,10 @@
 .monofont {
     -fx-font-family: "Consolas";
 }
+
+/* autocomplete */
+.auto-complete-popup > .list-view {
+    -fx-control-inner-background:BLACK;
+    -fx-accent: #E8EAF6;
+    -fx-selection-bar-non-focused:#0078d7;
+}
