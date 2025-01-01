@@ -785,6 +785,43 @@ public class ImageRepositoryTest extends TestContainersTest {
 	}
 
 	@Test
+	public void shouldFilterUsingOrStatementUsingTfLangOptimizedCase() {
+		// given
+		Repository repo = repositoryService.addRepository("Test repo");
+		imageLocatorService.createRoot("C:/dir_1/");
+		imageLocatorService.createRoot("C:/dir_2/");
+
+		ImageResponse firstImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image1.jpg").getSuccess();
+		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag1"));
+		inRepositoryService.addTag(firstImage.id(), new Tag("category1", "tag2"));
+		ImageResponse secondImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_1/image2.jpg").getSuccess();
+		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag3"));
+		inRepositoryService.addTag(secondImage.id(), new Tag("category2", "tag4"));
+		ImageResponse thirdImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image1.jpg").getSuccess();
+		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag5"));
+		inRepositoryService.addTag(thirdImage.id(), new Tag("category1", "tag4"));
+		ImageResponse fourthImage = inRepositoryService.images().addImage(repo.id(), "C:/dir_2/image2.jpg").getSuccess();
+		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag1"));
+		inRepositoryService.addTag(fourthImage.id(), new Tag("category2", "tag2"));
+
+		// when
+		var images = imageRepository.images().process().filterUsingTfLang(
+			"""
+				IN tags EXISTS (
+					tag = "tag1"
+				)
+				OR
+				IN tags EXISTS (
+					tag = "tag3"
+				)
+				"""
+		).getAll();
+
+		// then
+		assertThat(images).containsExactlyInAnyOrder(firstImage, secondImage, fourthImage);
+	}
+
+	@Test
 	public void shouldFilterUsingAndStatementUsingTfLang_2() {
 		// given
 		Repository repo = repositoryService.addRepository("Test repo");
