@@ -25,10 +25,16 @@ import place.sita.labelle.jooq.tables.records.ImageRecord;
 import place.sita.labelle.jooq.tables.records.RootRecord;
 import place.sita.tflang.TFLangLexer;
 import place.sita.tflang.TFLangParser;
+import place.sita.tflang.filteringexpression.fillteringexpression.EqualExpression;
 import place.sita.tflang.filteringexpression.fillteringexpression.FilteringExpression;
+import place.sita.tflang.filteringexpression.fillteringexpression.InSubEntityExpression;
+import place.sita.tflang.filteringexpression.fillteringexpression.OrExpression;
+import place.sita.tflang.filteringexpression.impl.InSubEntityExpressionImpl;
+import place.sita.tflang.filteringexpression.impl.OrExpressionImpl;
 import place.sita.tflang.filteringexpression.parsing.TFlangFilteringExpressionParser;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static place.sita.labelle.jooq.tables.Image.IMAGE;
 
@@ -59,7 +65,36 @@ public class ImageRepository {
 
 		ParseTree parseTree = parser.parseMatchExpression();
 
-		return new TFlangFilteringExpressionParser().visit(parseTree);
+		FilteringExpression filteringExpression = new TFlangFilteringExpressionParser().visit(parseTree);
+		return simplify(filteringExpression);
+	}
+
+	private static FilteringExpression simplify(FilteringExpression filteringExpression) {
+		if (filteringExpression instanceof OrExpression orExpression) {
+			AtomicBoolean allSimpleEqualsInSubEntities = new AtomicBoolean(true);
+			Set<String> subEntities = new HashSet<>();
+			Set<EqualExpression> equalExpressions = new HashSet<>();
+			orExpression.expressions().forEach(possiblyInSubEntityExpression -> {
+				if (possiblyInSubEntityExpression instanceof InSubEntityExpression inSubEntityExpression) {
+					subEntities.add(inSubEntityExpression.subEntity());
+					if (inSubEntityExpression.expression() instanceof EqualExpression equalExpression) {
+						equalExpressions.add(equalExpression);
+					} else {
+						allSimpleEqualsInSubEntities.set(false);
+					}
+				} else {
+					allSimpleEqualsInSubEntities.set(false);
+				}
+			});
+
+			if (allSimpleEqualsInSubEntities.get() && subEntities.size() == 1) {
+				return new InSubEntityExpressionImpl(
+					subEntities.iterator().next(),
+					new OrExpressionImpl(new ArrayList<>(equalExpressions))
+				);
+			}
+		}
+		return filteringExpression;
 	}
 
 	public static Condition parseToCondition(String query, ANTLRErrorListener errorListener) {
