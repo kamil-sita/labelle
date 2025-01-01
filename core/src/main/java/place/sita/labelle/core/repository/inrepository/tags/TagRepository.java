@@ -1,6 +1,8 @@
 package place.sita.labelle.core.repository.inrepository.tags;
 
 import org.jooq.DSLContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import place.sita.labelle.jooq.Tables;
@@ -16,6 +18,7 @@ import static place.sita.labelle.jooq.Tables.TAG_CATEGORY;
 
 @Component
 public class TagRepository {
+	private static final Logger log = LoggerFactory.getLogger(TagRepository.class);
 
 	// todo this TagRepository assumes that *something* will clean up tags, families after they are no longer needed. Write vacuuming process
 
@@ -29,6 +32,7 @@ public class TagRepository {
 
 	@Transactional
 	public void addTags(PersistableImagesTags persistableImagesTags) {
+		log.info("Adding to {} images", persistableImagesTags.images().size());
 		Set<UUID> images = persistableImagesTags.images();
 		if (images.isEmpty()) {
 			return;
@@ -42,6 +46,7 @@ public class TagRepository {
 	}
 
 	private void applyChangesToRepo(UUID repoId, List<UUID> imagesIds, PersistableImagesTags persistableImagesTags) {
+		log.info("Adding tags in repo {}", repoId);
 		Set<String> uniqueCategories = new HashSet<>();
 		Set<Tag> uniqueTags = new HashSet<>();
 		for (var image : imagesIds) {
@@ -53,6 +58,8 @@ public class TagRepository {
 
 		Map<String, UUID> categoryIds = getOrCreateCategoryIds(repoId, uniqueCategories);
 		Map<Tag, UUID> tagIds = getOrCreateTagIds(categoryIds, uniqueTags);
+
+		dslContext.commit();
 
 		assignTagsToImages(persistableImagesTags, tagIds, imagesIds);
 	}
@@ -71,6 +78,7 @@ public class TagRepository {
 		return reposImages;
 	}
 
+	// todo: if someone's aggressive with categories, this will fail due to the size of the queries
 	private Map<String, UUID> getOrCreateCategoryIds(UUID actualRepositoryId, Set<String> uniqueCategories) {
 		var results = dslContext.select(TAG_CATEGORY.VALUE, TAG_CATEGORY.ID)
 			.from(TAG_CATEGORY)
@@ -110,6 +118,19 @@ public class TagRepository {
 	}
 
 	private Map<Tag, UUID> getOrCreateTagIds(Map<String, UUID> categoryIds, Set<Tag> uniqueTags) {
+		Map<Tag, UUID> allResults = new HashMap<>();
+		List<Tag> tagsAsList = new ArrayList<>(uniqueTags);
+		int i = 0;
+		while (i < tagsAsList.size()) {
+			List<Tag> batchOfTags = tagsAsList.subList(i, Math.min(i + tagRepositoryProperties.getTagBulkSize(), tagsAsList.size()));
+			allResults.putAll(getOrCreateTagIdsActual(categoryIds, new HashSet<>(batchOfTags)));
+			i += tagRepositoryProperties.getTagBulkSize();
+		}
+
+		return allResults;
+	}
+
+	private Map<Tag, UUID> getOrCreateTagIdsActual(Map<String, UUID> categoryIds, Set<Tag> uniqueTags) {
 		record TagViewId(String value, UUID categoryId) { }
 
 		Set<TagViewId> uniqueTagIds = new HashSet<>();
@@ -162,6 +183,7 @@ public class TagRepository {
 			List<UUID> batchOfImages = imagesIdsScope.subList(i, Math.min(i + tagRepositoryProperties.getImageBulkSize(), imagesIdsScope.size()));
 			assignTagsToImagesBatch(persistableImagesTags, tagIds, batchOfImages);
 			i += tagRepositoryProperties.getImageBulkSize();
+			dslContext.commit();
 		}
 	}
 
@@ -184,8 +206,8 @@ public class TagRepository {
 		dslContext.select(Tables.IMAGE_TAGS.IMAGE_ID, Tables.IMAGE_TAGS.TAG, Tables.IMAGE_TAGS.TAG_CATEGORY)
 			.from(Tables.IMAGE_TAGS)
 			.where(
-				row(Tables.IMAGE_TAGS.IMAGE_ID, Tables.IMAGE_TAGS.TAG, Tables.IMAGE_TAGS.TAG_CATEGORY)
-					.in(imageTags.stream().map(imageTag -> row(imageTag.imageId(), imageTag.tag(), imageTag.category())).toList())
+				row(Tables.IMAGE_TAGS.IMAGE_ID)
+					.in(batchOfImages.stream().map(id -> row(id)).toList())
 			)
 			.fetch()
 			.forEach(rr -> {

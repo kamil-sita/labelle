@@ -36,7 +36,7 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 		String directory = root.directory();
 
 		List<File> fileList = new ArrayList<>();
-		findAllFilesInDir(new File(directory), fileList);
+		Utils.findAllFilesInDir(new File(directory), fileList);
 
 		Set<UUID> images = new HashSet<>();
 		Map<UUID, Set<String>> tagsToImages = new HashMap<>();
@@ -66,22 +66,6 @@ public class ImportImagesTreatSubdirectoriesAsTags implements TaskType<ImportIma
 		taskContext.getApi().getInRepositoryService().addTags(pit);
 
 		return TaskResult.success(new Response(parameter.repositoryId, images, tagsToImages));
-	}
-
-	private static void findAllFilesInDir(File dir, List<File> fileList) {
-		File[] files = dir.listFiles();
-		if (files != null) {
-			for (File file : files) {
-				if (file.isFile()) {
-					if (file.getPath().toLowerCase().endsWith("thumbs.db")) {
-						continue;
-					}
-					fileList.add(file);
-				} else if (file.isDirectory()) {
-					findAllFilesInDir(file, fileList);
-				}
-			}
-		}
 	}
 
 	private static List<String> getTagsInPath(String filePath, String basePath) {
