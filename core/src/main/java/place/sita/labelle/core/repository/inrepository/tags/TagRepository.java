@@ -144,7 +144,7 @@ public class TagRepository {
 				row(TAG.VALUE, TAG.TAG_CATEGORY_ID)
 				.in(uniqueTagIds.stream().map(tagViewId -> row(tagViewId.value(), tagViewId.categoryId())).toList())
 			)
-			.fetch();
+			.fetch(); // 75 seconds. Maybe missing idx?
 
 		Map<Tag, UUID> tagIds = new HashMap<>();
 
@@ -209,7 +209,7 @@ public class TagRepository {
 				row(Tables.IMAGE_TAGS.IMAGE_ID)
 					.in(batchOfImages.stream().map(id -> row(id)).toList())
 			)
-			.fetch()
+			.fetch() // todo: seemingly after adding indexes it went from 150s to 220s. Why?
 			.forEach(rr -> {
 				UUID imageId = rr.value1();
 				String tag = rr.value2();
@@ -232,7 +232,7 @@ public class TagRepository {
 			ongoing = ongoing.values(tagId, imageId);
 			toPersist++;
 			if (toPersist > tagRepositoryProperties.getTagBulkSize()) {
-				int c = ongoing.execute();
+				int c = ongoing.execute(); // 30s
 				if (c != toPersist) {
 					throw new RuntimeException();
 				}

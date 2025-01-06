@@ -321,53 +321,45 @@ public class ImageReplication {
 	}
 
 	private Void updateImageDeltaFillChildRepo(Set<UUID> newImageIds, ReplicationParam.FillChildRepo fillChildRepo) {
-		for (Set<UUID> ids : partition(newImageIds)) {
-			// let's use data of original, it's the same but doesn't require recalculation like view does. Match by reference_id
-
-			Image origin = IMAGE.as("origin");
-			Image copy = IMAGE.as("copy");
-
-			var ref = new Object() {
-				InsertValuesStep4<TagDeltaRecord, UUID, Boolean, String, String> ongoing = dslContext
-					.insertInto(Tables.TAG_DELTA)
-					.columns(Tables.TAG_DELTA.IMAGE_ID, Tables.TAG_DELTA.ADDS, Tables.TAG_DELTA.CATEGORY, Tables.TAG_DELTA.TAG);
-			};
-
-			dslContext
-				.select(Tables.TAG_DELTA.ADDS, Tables.TAG_DELTA.CATEGORY, Tables.TAG_DELTA.TAG, copy.ID, origin.ID)
-				.from(Tables.TAG_DELTA)
-				.join(origin).on(Tables.TAG_DELTA.IMAGE_ID.eq(origin.ID))
-				.join(copy).on(copy.REFERENCE_ID.eq(origin.REFERENCE_ID))
-				.where(copy.ID.in(ids))
-				.fetch()
-				.forEach(record -> {
-					ref.ongoing = ref.ongoing
-						.values(record.get(origin.ID), record.get(Tables.TAG_DELTA.ADDS), record.get(Tables.TAG_DELTA.CATEGORY), record.get(Tables.TAG_DELTA.TAG));
-				});
-
-			ref.ongoing.execute();
-		}
 
 		return null;
 	}
 
 	private Void updateImageDeltaHardCopyToNewRepo(Set<UUID> newImageIds, ReplicationParam.HardCopyToNewRepo hardCopyToNewRepo) {
+		Image origin = IMAGE.as("origin");
+		Image copy = IMAGE.as("copy");
+
 		for (Set<UUID> ids : partition(newImageIds)) {
+
 			var ref = new Object() {
 				InsertValuesStep4<TagDeltaRecord, UUID, Boolean, String, String> ongoing =
 					dslContext
 						.insertInto(Tables.TAG_DELTA)
 						.columns(Tables.TAG_DELTA.IMAGE_ID, Tables.TAG_DELTA.ADDS, Tables.TAG_DELTA.CATEGORY, Tables.TAG_DELTA.TAG);
 			};
+
+			UUID originRepoId = hardCopyToNewRepo.sourceRepoId();
+			// let's copy by referencable ID
+			Map<UUID, UUID> copyToOriginId = dslContext
+				.select(copy.ID, origin.ID)
+				.from(copy)
+				.join(origin).on(copy.REFERENCE_ID.eq(origin.REFERENCE_ID))
+				.where(copy.ID.in(ids))
+				.and(origin.REPOSITORY_ID.eq(originRepoId))
+				.fetch()
+				.intoMap(copy.ID, origin.ID);
+
+			Set<UUID> originIds = new HashSet<>(copyToOriginId.values());
+
 			dslContext
-				.select(Tables.TAG_DELTA_CALC.IMAGE_ID, Tables.TAG_DELTA_CALC.ADDED, Tables.TAG_DELTA_CALC.CATEGORY, Tables.TAG_DELTA_CALC.TAG)
-				.from(Tables.TAG_DELTA_CALC)
-				.where(Tables.TAG_DELTA_CALC.IMAGE_ID.in(ids))
+				.select(Tables.TAG_DELTA.IMAGE_ID, Tables.TAG_DELTA.ADDS, Tables.TAG_DELTA.CATEGORY, Tables.TAG_DELTA.TAG)
+				.from(Tables.TAG_DELTA)
+				.where(Tables.TAG_DELTA.IMAGE_ID.in(originIds))
 				.fetch()
 				.forEach(record -> {
-					ref.ongoing = ref.ongoing
-						.values(record.get(Tables.TAG_DELTA_CALC.IMAGE_ID), record.get(Tables.TAG_DELTA_CALC.ADDED), record.get(Tables.TAG_DELTA_CALC.CATEGORY), record.get(Tables.TAG_DELTA_CALC.TAG));
+					ref.ongoing = ref.ongoing.values(copyToOriginId.get(record.get(Tables.TAG_DELTA.IMAGE_ID)), record.get(Tables.TAG_DELTA.ADDS), record.get(Tables.TAG_DELTA.CATEGORY), record.get(Tables.TAG_DELTA.TAG));
 				});
+
 			ref.ongoing.execute();
 		}
 
