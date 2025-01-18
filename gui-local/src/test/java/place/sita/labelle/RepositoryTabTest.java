@@ -44,7 +44,7 @@ public class RepositoryTabTest extends GuiTest {
 	}
 
 	@Test
-	public void shouldBeAbleToAddAndRemoveRepository(FxRobot robot) {
+	public void shouldBeAbleToSearchAndGetFeedback(FxRobot robot) {
 		var repo = repositoryService.addRepository("Test repo");
 		imageLocatorService.createRoot("C:/test1/");
 		imageLocatorService.createRoot("C:/test2/");

@@ -189,7 +189,7 @@ public class RepositoriesFxTab implements MainMenuTab {
             observableParents.clear();
             observableChildren.clear();
             observableOtherRepos.clear();
-            AddChildToParent.addChildToThisPotentialJavaFxParent(graphPane, null);
+            AddChildToParent.addChildToThisPotentialJavaFxParent(graphPane, new AnchorPane());
         }
     }
 
