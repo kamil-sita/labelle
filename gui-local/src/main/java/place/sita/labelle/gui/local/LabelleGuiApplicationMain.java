@@ -10,6 +10,7 @@ public class LabelleGuiApplicationMain {
 
     public static void main(String[] args) {
         System.setProperty("java.awt.headless", "false");
+        System.setProperty("org.graphstream.ui", "javafx");
 
         SplashScreen.getSplashScreen();
 

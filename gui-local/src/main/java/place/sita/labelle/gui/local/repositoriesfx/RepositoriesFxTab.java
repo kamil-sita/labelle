@@ -2,24 +2,30 @@ package place.sita.labelle.gui.local.repositoriesfx;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.fx_viewer.FxViewPanel;
+import org.graphstream.ui.fx_viewer.FxViewer;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import place.sita.labelle.core.repository.repositories.Repository;
 import place.sita.labelle.core.repository.repositories.RepositoryService;
-
-import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
-import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelected;
-
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
 import place.sita.labelle.gui.local.menu.MainMenuTab;
+import place.sita.modulefx.AddChildToParent;
 import place.sita.modulefx.annotations.FxTab;
 import place.sita.modulefx.annotations.PostFxConstruct;
 
 import java.util.List;
 import java.util.Objects;
+
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+import static place.sita.labelle.gui.local.fx.functional.FxFunctionalUi.ifSelected;
 
 @Scope(scopeName = SCOPE_PROTOTYPE)
 @Component
@@ -81,6 +87,9 @@ public class RepositoriesFxTab implements MainMenuTab {
 
     @FXML
     private TextField uuidField;
+
+    @FXML
+    private AnchorPane graphPane;
 
     @FXML
     void addAsChildButtonPress(ActionEvent event) {
@@ -172,6 +181,7 @@ public class RepositoriesFxTab implements MainMenuTab {
                     .filter(repo -> !Objects.equals(repo.id(), newValue.id()))
                     .toList();
             observableOtherRepos.setAll(allReposButThis);
+            AddChildToParent.addChildToThisPotentialJavaFxParent(graphPane, createGraph(newValue, children, parents));
         } else {
             repositoryNameTextField.clear();
             uuidField.clear();
@@ -179,7 +189,55 @@ public class RepositoriesFxTab implements MainMenuTab {
             observableParents.clear();
             observableChildren.clear();
             observableOtherRepos.clear();
+            AddChildToParent.addChildToThisPotentialJavaFxParent(graphPane, null);
         }
+    }
+
+    private Node createGraph(Repository currentRepo, List<Repository> children, List<Repository> parents) {
+        Graph graph = new MultiGraph("RepositoryGraph");
+        graph.setAttribute("ui.stylesheet",
+            """
+                node {
+                    text-alignment: under;
+                    text-offset: 0, 10;
+                }
+                """
+
+            );
+
+        org.graphstream.graph.Node currentRepoNode = graph.addNode("CurrentRepo");
+
+        int max = Math.max(children.size(), parents.size());
+        int currentPos = max / 2;
+        int childrenOffset = children.size() == max ? 0 : (max - children.size()) / 2;
+        int parentsOffset = parents.size() == max ? 0 : (max - parents.size()) / 2;
+
+        currentRepoNode.setAttribute("ui.label", currentRepo.name());
+        currentRepoNode.setAttribute("xyz", 0, currentPos, 0);
+
+        int childId = 0;
+        for (Repository child : children) {
+            org.graphstream.graph.Node childNode = graph.addNode(child.id().toString());
+            childNode.setAttribute("ui.label", child.name());
+            graph.addEdge("Edge" + currentRepo.id() + child.id(), "CurrentRepo", child.id().toString(), true);
+            childNode.setAttribute("xyz", 1, childId + childrenOffset, 0);
+            childId++;
+        }
+
+        int parentId = 0;
+        for (Repository parent : parents) {
+            org.graphstream.graph.Node parentNode = graph.addNode(parent.id().toString());
+            parentNode.setAttribute("ui.label", parent.name());
+            graph.addEdge("Edge" + parent.id() + currentRepo.id(), parent.id().toString(), "CurrentRepo", true);
+            parentNode.setAttribute("xyz", -1, parentId + parentsOffset, 0);
+            parentId++;
+        }
+
+        FxViewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+
+        FxViewPanel viewPanel = (FxViewPanel) viewer.addDefaultView(false);
+
+        return viewPanel;
     }
 
 }

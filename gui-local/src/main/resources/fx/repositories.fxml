@@ -30,6 +30,7 @@
             <Button layoutX="447.0" layoutY="382.0" mnemonicParsing="false" onAction="#addAsParentButtonPress" prefHeight="26.0" prefWidth="200.0" text="Add as parent" />
             <Button layoutX="447.0" layoutY="427.0" mnemonicParsing="false" onAction="#addAsChildButtonPress" prefHeight="26.0" prefWidth="200.0" text="Add as child" />
             <TextField fx:id="nameField" editable="false" layoutX="14.0" layoutY="14.0" prefHeight="26.0" prefWidth="293.0" promptText="Name" />
+            <AnchorPane fx:id="graphPane" layoutX="14.0" layoutY="479.0" prefHeight="129.0" prefWidth="646.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="475.0" />
          </children></AnchorPane>
   </items>
 </SplitPane>

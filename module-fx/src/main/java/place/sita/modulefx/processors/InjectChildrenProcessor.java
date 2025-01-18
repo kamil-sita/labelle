@@ -1,8 +1,7 @@
 package place.sita.modulefx.processors;
 
 import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
+import place.sita.modulefx.AddChildToParent;
 import place.sita.modulefx.ChildrenFactory;
 import place.sita.modulefx.FxSceneBuilderProcessor;
 import place.sita.modulefx.FxSetupContext;
@@ -49,7 +48,7 @@ public class InjectChildrenProcessor implements FxSceneBuilderProcessor {
 				fieldWithAnnotation.set(parentController, bean);
 
 				// patch correlated node in parent controller
-				addChildToThisPotentialJavaFxParent(parentNode, node);
+				AddChildToParent.addChildToThisPotentialJavaFxParent(parentNode, node);
 			} else {
 				throw new RuntimeException("Cannot inject something that is not an @FxNode");
 			}
@@ -76,18 +75,6 @@ public class InjectChildrenProcessor implements FxSceneBuilderProcessor {
 			return node;
 		}
 		throw new RuntimeException("Cannot patch field: " + fieldToPatchName + " in " + classType.getName() + ": not a Node");
-	}
-
-	private static void addChildToThisPotentialJavaFxParent(Node parent, Node node) {
-		if (parent instanceof Pane pane) {
-			pane.getChildren().setAll(node);
-			AnchorPane.setTopAnchor(node, 0.0);
-			AnchorPane.setLeftAnchor(node, 0.0);
-			AnchorPane.setRightAnchor(node, 0.0);
-			AnchorPane.setBottomAnchor(node, 0.0);
-		} else {
-			throw new RuntimeException("Not a Pane - cannot inject");
-		}
 	}
 
 }
